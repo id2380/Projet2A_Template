@@ -1,5 +1,6 @@
 # Diagramme de classes
 Ce diagramme est codé avec mermaid :
+
 *Avantage : facile à coder
 *Inconvénient : on ne maîtrise pas bien l'affichage
 
