@@ -1,4 +1,6 @@
-'''mermaid
+# Diagramme de classes
+
+```mermaid
 classDiagram
     class Film {
         +id_film : int
@@ -105,4 +107,4 @@ classDiagram
     AvisService <--  DAO_avis : uses
     EditeurService <--  DAO_editeurs : uses
     UserService <--  DAO_user : uses
-'''
+```
