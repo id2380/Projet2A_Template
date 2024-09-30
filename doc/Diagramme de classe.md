@@ -2,15 +2,21 @@
 Ce diagramme est codé avec mermaid :
 
 *Avantage : facile à coder
+
 *Inconvénient : on ne maîtrise pas bien l'affichage
 
 Pour afficher ce diagramme dans VScode :
 
 *à gauche aller dans **Extensions** (ou CTRL + SHIFT + X)
+
 *rechercher `mermaid`
+
 *installer l'extension Markdown Preview Mermaid Support
+
 *revenir sur ce fichier
+
 *faire CTRL + K, puis V
+
 ```mermaid
 classDiagram
     class Film {
