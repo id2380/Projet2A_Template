@@ -40,9 +40,9 @@ classDiagram
     }
 
     class EclaireurService {
-        +consulter_avis_données(user : User)
-        +ajouter_eclaireur(user : User)
-        +supprimer_eclaireur(user : User)
+        +consulter_avis_donnés(user : User)
+        +ajouter_éclaireur(user : User)
+        +supprimer_éclaireur(user : User)
         +Film_commun(user : User)
     }
     
@@ -95,15 +95,15 @@ classDiagram
     Avis "1" -- "0..*" User : critique
     User "1" -- "*" FilmService
     User "1" -- "*" AvisService
+    User "1" -- "*" UserService
     User "1" -- "*" EclaireurService
     Film "1" -- "*" FilmService
-```
 
     FilmService ..> TMDBConnexion : uses
     
 
-    FilmService <-- DAO_film : create
-    AvisService <--  DAO_avis : uses
-    EclaireurService <--  DAO_eclaireurs : uses
-    UserService <--  DAO_user : uses
+    FilmService <.. DAO_film : creates
+    AvisService <..  DAO_avis : creates
+    EclaireurService <.. DAO_eclaireur : creates
+    UserService <..  DAO_user : creates
 ```
