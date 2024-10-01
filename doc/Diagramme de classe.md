@@ -1,5 +1,5 @@
 # Diagramme de classes
-Ce diagramme est codé avec mermaid :
+Ce diagramme est codé avec [mermaid](https://www.mermaidchart.com/app/projects/f29f77fb-0c39-418a-8cad-4ba14bc93ee3/diagrams/2822c3cb-6469-4b4c-9a0e-a6a53c02c197/version/v0.1/edit) :
 
 *Avantage : facile à coder
 
@@ -58,10 +58,10 @@ classDiagram
         
     }
 
-    class EditeurService {
-        +consulter_avis_occultes(user : User)
-        +ajouter_editeur(user : User)
-        +supprimer_editeur(user : User)
+    class EclaireurService {
+        +consulter_avis_données(user : User)
+        +ajouter_eclaireur(user : User)
+        +supprimer_eclaireur(user : User)
         +Film_commun(user : User)
     }
     
