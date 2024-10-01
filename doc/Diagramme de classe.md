@@ -125,5 +125,4 @@ classDiagram
     AvisService <..  DAO_avis : uses
     EclaireurService <..  DAO_eclaireur : uses
     UserService <..  DAO_user : uses
-
 ```
