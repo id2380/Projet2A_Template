@@ -97,6 +97,7 @@ classDiagram
     User "1" -- "*" AvisService
     User "1" -- "*" EclaireurService
     Film "1" -- "*" FilmService
+```
 
     FilmService ..> TMDBConnexion : uses
     
