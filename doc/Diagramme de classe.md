@@ -87,7 +87,7 @@ classDiagram
         +delete()
     }
 
-    class DAO_editeurs {
+    class DAO_eclaireur {
         +create()
         +read()
         +update()
@@ -114,7 +114,7 @@ classDiagram
     Avis "1" -- "0..*" User : critique
     User "1" -- "*" FilmService
     User "1" -- "*" AvisService
-    User "1" -- "*" EditeurService
+    User "1" -- "*" EclaireurService
     Film "1" -- "*" FilmService
 
     FilmService ..> TMDBConnexion : uses
@@ -122,6 +122,6 @@ classDiagram
 
     FilmService <-- DAO_film : create
     AvisService <--  DAO_avis : uses
-    EditeurService <--  DAO_editeurs : uses
+    EclaireurService <--  DAO_eclaireurs : uses
     UserService <--  DAO_user : uses
 ```
