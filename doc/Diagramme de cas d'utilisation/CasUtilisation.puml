@@ -1,0 +1,58 @@
+@startuml Diagramme de cas d'utilisation
+title Diagramme de cas d'utilisation
+left to right direction
+
+' Activer le style awesome pour les acteurs
+skinparam actorStyle awesome
+package Utilisateur #FFB6C1 {
+' Styliser chaque acteur séparément
+actor "Non connecté" as u1 #FFDAB9
+actor "Connecté" as u2 #DDA0DD
+}
+
+rectangle Système {
+  usecase "Consulter la liste de ses éclaireurs" as 2 #DDA0DD
+  usecase "Rechercher un utilisateur" as 3 #DDA0DD
+  usecase "Sélectionner un utilisateur/éclaireur" as 4 #DDA0DD
+  usecase "Consulter la liste des films en commun et les notes associées" as 5 #DDA0DD
+  usecase "Consulter la liste des films vus par l'utilsateur/éclaireur et les notes associées" as 6 #DDA0DD
+  usecase "Gérer son abonnement à un utilisateur/éclaireur" as 7 #DDA0DD
+  usecase "S'abonner à un utilisateur (ajout à sa liste d'éclaireur)" as 8 #DDA0DD
+  usecase "Se désabonner d'un éclaireur (suppression de sa liste d'éclaireur)" as 9 #DDA0DD
+  usecase "Consulter sa liste de films" as 10 #DDA0DD
+  usecase "Rechercher un film" as 11 #FFB6C1
+  usecase "Sélectionner un film" as 12 #FFB6C1
+  usecase "Consulter la fiche technique du film" as 13 #FFB6C1
+  usecase "Consulter tous les avis" as 14 #FFB6C1
+  usecase "Consulter l'avis de ses éclaireurs" as 15 #DDA0DD
+  usecase "Gérer ses avis" as 16 #DDA0DD
+  usecase "Ajouter un avis" as 17 #DDA0DD
+  usecase "Modifier un avis" as 18 #DDA0DD
+  usecase "Supprimer un avis" as 19 #DDA0DD
+  usecase "Créer un compte" as 20 #FFDAB9
+  usecase "Se connecter" as 21 #FFDAB9
+}
+u1 --> 11 #FFDAB9
+10 --> 12 #DDA0DD
+11 --> 12 #FFB6C1
+12 --> 13 #FFB6C1
+12 --> 14 #FFB6C1
+12 --> 15 #DDA0DD
+12 --> 16 #DDA0DD
+16 --> 17 #DDA0DD
+16 --> 18 #DDA0DD
+16 --> 19 #DDA0DD
+u1 --> 20 #FFDAB9
+u1 --> 21 #FFDAB9
+u2 --> 11 #DDA0DD
+u2 --> 2 #DDA0DD
+u2 --> 3 #DDA0DD
+2 --> 4 #DDA0DD
+3 --> 4 #DDA0DD
+4 --> 5 #DDA0DD
+4 --> 6 #DDA0DD
+4 --> 7 #DDA0DD
+7 --> 8 #DDA0DD
+7 --> 9 #DDA0DD
+u2 --> 10 #DDA0DD
+@enduml

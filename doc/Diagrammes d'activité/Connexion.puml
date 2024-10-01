@@ -1,0 +1,23 @@
+@startuml Diagramme d'activité
+
+title Diagramme d'activité connexion
+
+(*) -down-> "Utilisateur non connecté"
+
+"Utilisateur non connecté" --> "Tentative de connexion"
+
+if "Pseudo/mdp valides ?" then
+  -down->[Oui] "Utilisateur connecté"
+else
+  -->[Non] "Utilisateur non connecté"
+endif
+
+"Utilisateur non connecté" -down-> "Tentative de création de compte"
+
+if "Informations valides ?" then
+  -down->[Oui] "Utilisateur connecté"
+else
+  -->[Non] "Utilisateur non connecté"
+endif
+
+"Utilisateur connecté" -->(*)

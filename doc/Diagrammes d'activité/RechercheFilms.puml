@@ -1,0 +1,43 @@
+@startuml Diagramme d'activité de consultation d'un film
+title Diagramme d'activité de consultation d'un film
+
+(*) -down-> "Utilisateur sur l'application"
+
+"Utilisateur sur l'application" -right-> if "Utilisateur connecté ?" then
+  -->[Oui] "Consulter sa liste de films"
+else
+  -->[Non] "Utilisateur sur l'application"
+endif
+
+"Utilisateur sur l'application" -down-> "Recherche de films"
+
+"Recherche de films" --> if "Saisie valide ?" then
+  -->[Oui] "Sélection d'un film"
+else
+  -->[Non] "Recherche de films"
+endif
+
+"Consulter sa liste de films" --> "Sélection d'un film"
+
+"Sélection d'un film" --> "Consulter la fiche technique d'un film"
+"Consulter la fiche technique d'un film" -->(*)
+
+"Sélection d'un film" --> "Consulter les avis d'un film"
+"Consulter les avis d'un film" -->(*)
+
+"Sélection d'un film" --> if "Utilisateur connecté ?" then
+  -->[Oui] "Gestion de son avis sur le film"
+else
+  -->[Non] "Sélection d'un film"
+endif
+
+"Sélection d'un film" --> if "Utilisateur connecté ?" then
+  -->[Oui] "Consulter l'avis de ses éclaireurs sur le film"
+else
+  -->[Non] "Sélection d'un film"
+endif
+
+"Gestion de son avis sur le film" -->(*)
+"Consulter l'avis de ses éclaireurs sur le film" -->(*)
+
+@enduml

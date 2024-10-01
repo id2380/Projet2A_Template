@@ -1,0 +1,27 @@
+@startuml Diagramme d'activité de gestion d'abonnement à un utilisateur
+title Diagramme d'activité de gestion d'abonnement à un utilisateur
+
+(*) -down-> "Utilisateur connecté sur l'application"
+
+"Utilisateur connecté sur l'application" --> "Gestion de son abonnement à un utilisateur"
+"Gestion de son abonnement à un utilisateur" --> "Ajouter un utilisateur à sa liste d'éclaireurs"
+"Gestion de son abonnement à un utilisateur" --> "Supprimer un utilisateur de sa liste d'éclaireurs"
+
+
+"Ajouter un utilisateur à sa liste d'éclaireurs" --> if "Déjà éclaireur ?" then
+  -->[Oui] (*)
+else
+  -->[Non]"Ajout de l'éclaireur"
+endif
+
+"Ajout de l'éclaireur" -->(*)
+
+"Supprimer un utilisateur de sa liste d'éclaireurs" --> if "Déjà éclaireur ?" then
+  -->[Oui] "Suppression de l'éclaireur"
+else
+  -->[Non](*)
+endif
+
+"Suppression de l'éclaireur" -->(*)
+
+@enduml
