@@ -1,0 +1,25 @@
+@startuml Diagramme d'activité de recherche d'un utilisateur
+title Diagramme d'activité de recherche d'un utilisateur
+
+(*) -down-> "Utilisateur connecté sur l'application"
+
+"Utilisateur connecté sur l'application" --> "Rechercher un utilisateur"
+"Utilisateur connecté sur l'application" --> "Consulter sa liste d'éclaireurs"
+
+
+"Rechercher un utilisateur" --> if "Saisie valide ?" then
+  -down->[Oui] "Sélectionner un utilisateur"
+else
+  -->[Non] "Rechercher un utilisateur"
+endif
+
+"Consulter sa liste d'éclaireurs" --> "Sélectionner un utilisateur"
+
+"Sélectionner un utilisateur" --> "Consulter les films en commun et les avis associés"
+"Sélectionner un utilisateur" --> "Gérer son abonnement à un utilisateur"
+"Sélectionner un utilisateur" --> "Consulter les films notés par l'utilisateur"
+
+"Consulter les films en commun et les avis associés" -->(*)
+"Gérer son abonnement à un utilisateur" -->(*)
+"Consulter les films notés par l'utilisateur" -->(*)
+@enduml

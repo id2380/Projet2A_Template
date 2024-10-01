@@ -1,0 +1,19 @@
+# Fonctionnement du diagramme de cas d'utilisation
+
+Ce diagramme est codé avec [plantUML](https://www.plantuml.com/plantuml/uml/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000) :
+
+Pour afficher le diagramme dans VScode :
+
+*à gauche aller dans **Extensions** (ou CTRL + SHIFT + X)
+
+*rechercher `plantUML`
+
+*installer l'extension plantUML
+
+*aller sur `CasUtilisation.puml`
+
+*faire ALT+D
+
+Sur GitHub, le diagramme est visible ici : 
+
+![Diagramme](https://www.plantuml.com/plantuml/png/bLN1Rjim3BtxAuZsaEvGB4hIjBqCJHjqf-smOX-WsMoYLPOyKSfG3FsN7UVly8_DifmgjJq7EmG8Nzvx52cAkI7BZNMvJ2G-Mh0QZDXiBMJ2O6g5LaaoWLNzROS690BPPud0VoBf7A7GpgC4FBNe32Nq95J13Syzeit38JifUFh4DmXVhP22k5V0wVtzxVAEmQywZMSBGWFfblzms9e2LMLjMPKvAfiqjd3oMIj8jLAOsgey0KxWcFTQhswlzvoxjx_Fu7IzNatNw-GbINnnN6qamiCpsUfFZlK901nXoWaRBJbfVSqSf22Ba24G4bHbAhamljh6DzeUoBzWkaNZF-0Kk5Xl8vaFIHwgKeQEgvxgVKpQ62oYmP4Z4pmAcHEWRrUUrxPecmjJslfh8zAfg4eCjLpyj-_E4HJSW9puu_PEEvfjEPJjOrKQD41Q0V_cU-5l7QhVHpfoETZIIR0mVJsSyU_QDSRqMjKachvhNAy6NMjcLL9hNQjgvoY4Ct95OP18Q0KPZjbVZxSxAZ5qkn6nwV61y-n0Pli7DZfgaJ-B_E49gBbr5h1rFYNy8ytSWNm-BhVQKLWNEz5MipYISEAf_tfxx69iXDxa6HosbP-1q8B871obJpeJZw9B7PuFV_yYxtA7BzjKPI2cEYyiXeqotM-opjYr2mzDeCM5zv8u1kVd7u15Z4q34lSJQpdnZjai8FCUikWXiTLxP1cHPK0kUyXL5ubzs9yvblkAi8YqkLXK1MJM1U9I3N7SaVDEl6ZYYqwyxCInbiiclkh4rzq373pC6rIP_qlz2m00)
