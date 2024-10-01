@@ -1,0 +1,43 @@
+@startuml Diagramme de base de données
+left to right direction
+
+entity "Utilisateur" as UTILISATEUR {
+    __id_user__: INTEGER
+    pseudo: VARCHAR
+    adresse_mail: VARCHAR
+    mot_de_passe: VARCHAR
+    date_creation: DATE
+}
+
+entity "Film" as FILM {
+    __id_film__: INT
+    titre: VARCHAR
+    genre: VARCHAR
+    date_de_sortie: DATE
+    langue_originale: VARCHAR
+    resume: VARCHAR
+}
+
+entity "Avis" as AVIS {
+    __id_user__: INTEGER
+    __id_film__: INTEGER
+    note: INTEGER
+    commentaire: VARCHAR
+}
+
+entity "Abonnes" as ABONNES {
+    __id_user__: INTEGER
+    __id_eclaireur__: INTEGER
+}
+
+' Relations pour positionner Avis entre Utilisateur et Film
+UTILISATEUR -- AVIS
+FILM -- AVIS
+
+' Relation avec Abonnes sous Utilisateur
+UTILISATEUR --down-- ABONNES
+
+@enduml
+
+
+
