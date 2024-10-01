@@ -121,8 +121,8 @@ classDiagram
     FilmService ..> TMDBConnexion : uses
     
 
-    FilmService <.. DAO_film : create
-    AvisService <..  DAO_avis : uses
-    EclaireurService <..  DAO_eclaireur : uses
-    UserService <..  DAO_user : uses
+    FilmService <.. DAO_film : creates
+    AvisService <..  DAO_avis : creates
+    EclaireurService <.. DAO_eclaireur : creates
+    UserService <..  DAO_user : creates
 ```
