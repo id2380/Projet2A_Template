@@ -3,26 +3,26 @@ left to right direction
 
 entity "Utilisateur" as UTILISATEUR {
     __id_user__: INTEGER
-    pseudo: VARCHAR
-    adresse_mail: VARCHAR
-    mot_de_passe: VARCHAR
+    pseudo: VARCHAR (60)
+    adresse_mail: VARCHAR (100)
+    mot_de_passe: VARCHAR (10)
     date_creation: DATE
 }
 
 entity "Film" as FILM {
     __id_film__: INT
-    titre: VARCHAR
-    genre: VARCHAR
+    titre: VARCHAR (200)
+    genre: VARCHAR (100)
     date_de_sortie: DATE
-    langue_originale: VARCHAR
-    resume: VARCHAR
+    langue_originale: VARCHAR (100)
+    resume: VARCHAR (500)
 }
 
 entity "Avis" as AVIS {
     __id_user__: INTEGER
     __id_film__: INTEGER
     note: INTEGER
-    commentaire: VARCHAR
+    commentaire: VARCHAR (400)
 }
 
 entity "Abonnes" as ABONNES {
