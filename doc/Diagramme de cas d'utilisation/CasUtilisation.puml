@@ -15,10 +15,10 @@ rectangle Système {
   usecase "Rechercher un utilisateur" as 3 #DDA0DD
   usecase "Sélectionner un utilisateur/éclaireur" as 4 #DDA0DD
   usecase "Consulter la liste des films en commun et les notes associées" as 5 #DDA0DD
-  usecase "Consulter la liste des films vus par l'utilsateur/éclaireur et les notes associées" as 6 #DDA0DD
+  usecase "Consulter la liste des films vus par l'utilisateur/éclaireur et les notes associées" as 6 #DDA0DD
   usecase "Gérer son abonnement à un utilisateur/éclaireur" as 7 #DDA0DD
-  usecase "S'abonner à un utilisateur (ajout à sa liste d'éclaireur)" as 8 #DDA0DD
-  usecase "Se désabonner d'un éclaireur (suppression de sa liste d'éclaireur)" as 9 #DDA0DD
+  usecase "S'abonner à un utilisateur (ajout à sa liste d'éclaireurs)" as 8 #DDA0DD
+  usecase "Se désabonner d'un éclaireur (suppression de sa liste d'éclaireurs)" as 9 #DDA0DD
   usecase "Consulter sa liste de films" as 10 #DDA0DD
   usecase "Rechercher un film" as 11 #FFB6C1
   usecase "Sélectionner un film" as 12 #FFB6C1
