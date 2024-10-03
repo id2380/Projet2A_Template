@@ -28,28 +28,26 @@ classDiagram
 
     namespace Couche DAO {
         class DAO_film {
-            +lire()
+            +rechercher_film(Film)
         }
 
         class DAO_avis {
-            +créer()
-            +lire()
-            +mise_à_jour()
-            +supprimer()
+            +créer_avis(Avis)
+            +Consulter_avis(Avis)
+            +Modifier_avis(Avis)
+            +supprimer_avis(avis)
         }
 
         class DAO_eclaireurs {
-            +créer()
-            +lire()
-            +mise_à_jour()
-            +supprimer()
+            +Ajouter_eclaireur(Pseudo:str)
+            +Chercher_éclaireur(Pseudo:str)
+            +supprimer_éclaireur(Pseudo:str)
         }
 
         class DAO_utilisateur {
-            +créer()
-            +lire()
-            +mise_à_jour()
-            +supprimer()
+            +créer(Utilisateur)
+            +Chercher_utilisateur(Utilisateur)
+            +supprimer_utilisateur(Utilisateur)
         }
     }
 

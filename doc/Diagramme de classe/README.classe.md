@@ -1,5 +1,5 @@
 # Diagramme de classes
-Ce diagramme est codé avec [mermaid](https://www.mermaidchart.com/app/projects/f29f77fb-0c39-418a-8cad-4ba14bc93ee3/diagrams/2822c3cb-6469-4b4c-9a0e-a6a53c02c197/version/v0.1/edit) :
+Ce diagramme est codé avec [mermaid](https://www.mermaidchart.com/app/projects/f29f77fb-0c39-418a-8cad-4ba14bc93ee3/diagrams/7886392b-11f5-433f-8bbd-3c55e70ca6ab/version/v0.1/edit) :
 
 Pour afficher ce diagramme dans VScode :
 
