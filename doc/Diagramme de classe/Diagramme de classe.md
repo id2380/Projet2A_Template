@@ -1,109 +1,108 @@
 ```mermaid
 classDiagram
-    class Film {
-        +id_film : int
-        +titre : str
-        +genre : str
-        +date_de_sortie : date
-        +langue_originale : str
-        +resume : str
+    namespace Couche Données {
+        class Film {
+            +id_film : int
+            +titre : str
+            +genre : str
+            +date_de_sortie : date
+            +langue_originale : str
+            +resume : str
+        }
+
+        class Utilisateur {
+            +pseudo : str
+            +adresse_mail : str
+            -mot_de_passe : str
+            +date_creation : date
+        }
+
+        class Avis {
+            +id : int
+            +film : Film
+            +Utilisateur: Utilisateur
+            +note : int
+            +commentaire : str
+        }
     }
 
-    class User {
-        +pseudo : str
-        +adresse_mail : str
-        -mot_de_passe : str
-        +date_creation : date
+    namespace Couche DAO {
+        class DAO_film {
+            +lire()
+        }
+
+        class DAO_avis {
+            +créer()
+            +lire()
+            +mise_à_jour()
+            +supprimer()
+        }
+
+        class DAO_eclaireurs {
+            +créer()
+            +lire()
+            +mise_à_jour()
+            +supprimer()
+        }
+
+        class DAO_utilisateur {
+            +créer()
+            +lire()
+            +mise_à_jour()
+            +supprimer()
+        }
     }
 
-    class Avis {
-        +id : int
-        +film : Film
-        +user : User
-        +note : int
-        +commentaire : str
+    namespace Couche Services {
+        class FilmService {
+            +rechercher_film(titre : str)
+            +consulter_fiche(titre : str)
+        }
+
+        class AvisService {
+            +consulter_note_moyenne(film : Film)
+            +consulter_avis(film : Film)
+            +ajouter_avis(avis : Avis)
+            +modifier_avis(avis : Avis)
+            +supprimer_avis(avis : Avis)
+        }
+
+        class EclaireurService {
+            +consulter_avis_donnés(user : User)
+            +ajouter_eclaireur(user : User)
+            +supprimer_eclaireur(user : User)
+            +Film_commun(user : User)
+        }
+
+        class UtilisateurService {
+            +authentification(pseudo : str, mot_de_passe : str)
+            +creation_compte(adresse_mail : str, pseudo : str, mot_de_passe : str)
+            +est_utilisateur(pseudo : str) bool
+            +hachage_mot_de_passe(mot_de_passe : str)
+            +gestion_compte(user : User)
+            +recherche_utilisateur(pseudo : str)
+        }
     }
 
-    class FilmService {
-        +rechercher_film(titre : str)
-        +consulter_fiche(titre : str)
-        
+    namespace Couche API {
+        class TMDBConnexion {<<Singleton>>
+            +RechercherFilm(titre: str, page: int, language: str)
+            +DétailsduFilm(Id_film: int, language: str)
+            +Filmsimilaires(Id_film: int, language: str, page: int)
+        }
     }
 
-    class AvisService {
-        +consulter_note_moyenne(film : Film)
-        +consulter_avis(film : Film)
-        +ajouter_avis(avis : Avis)
-        +modifier_avis(avis : Avis)
-        +supprimer_avis(avis : Avis)
-        
-    }
-
-    class EclaireurService {
-        +consulter_avis_donnés(user : User)
-        +ajouter_éclaireur(user : User)
-        +supprimer_éclaireur(user : User)
-        +Film_commun(user : User)
-    }
-    
-    class TMDBConnexion {<<Singleton>>
-        +searchMovie(title: string, page: int, includeAdult: bool, language: string)
-        +getMovieDetails(movieId: int, language: string)
-        +getSimilarMovies(movieId: int, language: string, page: int)
-    }
-
-    
-
-    class DAO_film {
-        +create()
-        +read()
-        +update()
-        +delete()
-    }
-
-    class DAO_avis {
-        +create()
-        +read()
-        +update()
-        +delete()
-    }
-
-    class DAO_eclaireur {
-        +create()
-        +read()
-        +update()
-        +delete()
-    }
-
-    class DAO_user {
-        +create()
-        +read()
-        +update()
-        +delete()
-    }
-
-    class UserService {
-        +authentification(pseudo : str, mot_de_passe : str)
-        +creation_compte(adresse_mail : str, pseudo : str, mot_de_passe : str)
-        +est_utilisateur(pseudo) bool
-        +hachage_mot_de_passe(mot_de_passe : str)
-        +gestion_compte(user : User)
-        +recherche_utilisateur(pseudo : str)
-    }
-
-    Film "0..*" -- "1" Avis 
-    Avis "1" -- "0..*" User : critique
-    User "1" -- "*" FilmService
-    User "1" -- "*" AvisService
-    User "1" -- "*" UserService
-    User "1" -- "*" EclaireurService
-    Film "1" -- "*" FilmService
-
+    %% Relations
+    Film "1" -- "0..*" Avis : concerne
+    Avis "1" -- "1" Utilisateur : rédigé_par
+    Utilisateur "1" -- "*" AvisService : interagit_avec
+    Utilisateur "1" -- "*" EclaireurService : accède_à
+    Utilisateur "1" -- "*" UtilisateurService : géré_par
+    Film "1" -- "*" FilmService : géré_par
     FilmService ..> TMDBConnexion : uses
     
-
-    FilmService <.. DAO_film : creates
-    AvisService <..  DAO_avis : creates
-    EclaireurService <.. DAO_eclaireur : creates
-    UserService <..  DAO_user : creates
+    FilmService ..>DAO_film : uses
+    AvisService ..> DAO_avis : uses
+    EclaireurService ..> DAO_eclaireurs: uses
+    UtilisateurService ..> DAO_utilisateur : uses
 ```
