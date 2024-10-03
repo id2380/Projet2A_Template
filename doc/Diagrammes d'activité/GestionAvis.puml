@@ -3,27 +3,27 @@ title Diagramme d'activité de gestion des avis d'un film
 
 (*) -down-> "Gestion avis d'un film"
 
-"Gestion avis d'un film" --> "Ajouter un avis"
-"Gestion avis d'un film" --> "Modifier un avis"
-"Gestion avis d'un film" --> "Supprimer un avis"
+"Gestion avis d'un film" --> "Ajout d'un avis"
+"Gestion avis d'un film" --> "Modification d'un avis"
+"Gestion avis d'un film" --> "Suppression d'un avis"
 
 
-"Ajouter un avis" --> if "Avis existant ?" then
-  -left->[Oui] "Gestion avis d'un film"
+"Ajout d'un avis" --> if "Avis existant ?" then
+  -left->[Oui, statut 403] "Gestion avis d'un film"
 else
   -down->[Non] "Avis ajouté"
 endif
 
-"Modifier un avis" --> if "Avis existant ?" then
+"Modification d'un avis" --> if "Avis existant ?" then
   -down->[Oui] "Avis modifié"
 else
-  -->[Non] "Gestion avis d'un film"
+  -->[Non, statut 404] "Gestion avis d'un film"
 endif
 
-"Supprimer un avis" --> if "Avis existant ?" then
+"Suppression d'un avis" --> if "Avis existant ?" then
   -down->[Oui] "Avis supprimé"
 else
-  -->[Non] "Gestion avis d'un film"
+  -->[Non, statut 404] "Gestion avis d'un film"
 endif
 
 "Avis ajouté" -->(*)

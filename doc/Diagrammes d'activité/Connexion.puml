@@ -9,7 +9,7 @@ title Diagramme d'activité connexion
 if "Pseudo/mdp valides ?" then
   -down->[Oui] "Utilisateur connecté"
 else
-  -->[Non] "Utilisateur non connecté"
+  -->[Non, statut 404] "Utilisateur non connecté"
 endif
 
 "Utilisateur non connecté" -down-> "Tentative de création de compte"
@@ -17,7 +17,7 @@ endif
 if "Informations valides ?" then
   -down->[Oui] "Utilisateur connecté"
 else
-  -->[Non] "Utilisateur non connecté"
+  -->[Non, statut 400] "Utilisateur non connecté"
 endif
 
 "Utilisateur connecté" -->(*)

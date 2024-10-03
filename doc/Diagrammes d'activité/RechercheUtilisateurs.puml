@@ -3,23 +3,31 @@ title Diagramme d'activité de recherche d'un utilisateur
 
 (*) -down-> "Utilisateur connecté sur l'application"
 
-"Utilisateur connecté sur l'application" --> "Rechercher un utilisateur"
-"Utilisateur connecté sur l'application" --> "Consulter sa liste d'éclaireurs"
+"Utilisateur connecté sur l'application" --> "Recherche d'utilisateurs"
+"Utilisateur connecté sur l'application" --> "Consultation de sa liste d'éclaireurs"
 
 
-"Rechercher un utilisateur" --> if "Saisie valide ?" then
-  -down->[Oui] "Sélectionner un utilisateur"
+"Recherche d'utilisateurs" --> if "Saisie valide ?" then
+  -down->[Oui] "Consultation d'une liste d'utilisateurs"
 else
-  -->[Non] "Rechercher un utilisateur"
+  -->[Non, statut 400] "Recherche d'utilisateurs"
 endif
 
-"Consulter sa liste d'éclaireurs" --> "Sélectionner un utilisateur"
+"Consultation d'une liste d'utilisateurs" --> "Tentative de sélection d'un utilisateur"
+"Consultation de sa liste d'éclaireurs" --> "Tentative de sélection d'un utilisateur"
 
-"Sélectionner un utilisateur" --> "Consulter les films en commun et les avis associés"
-"Sélectionner un utilisateur" --> "Gérer son abonnement à un utilisateur"
-"Sélectionner un utilisateur" --> "Consulter les films notés par l'utilisateur"
+"Tentative de sélection d'un utilisateur" --> if "Id valide ?" then
+  -down->[Oui] "Utilisateur sélectionné"
+else
+  -->[Non, statut 404] "Tentative de sélection d'un utilisateur"
+endif
 
-"Consulter les films en commun et les avis associés" -->(*)
+
+"Utilisateur sélectionné" --> "Consultation des films en commun et des avis associés"
+"Utilisateur sélectionné" --> "Gérer son abonnement à un utilisateur"
+"Utilisateur sélectionné" --> "Consultation des films notés par l'utilisateur"
+
+"Consultation des films en commun et des avis associés" -->(*)
 "Gérer son abonnement à un utilisateur" -->(*)
-"Consulter les films notés par l'utilisateur" -->(*)
+"Consultation des films notés par l'utilisateur" -->(*)
 @enduml
