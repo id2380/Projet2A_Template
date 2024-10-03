@@ -28,7 +28,9 @@ classDiagram
 
     namespace Couche DAO {
         class DAO_film {
+            +Créer_film(Film)
             +rechercher_film(Film)
+            +supprimer_film(Film)
         }
 
         class DAO_avis {
@@ -54,7 +56,7 @@ classDiagram
     namespace Couche Services {
         class FilmService {
             +rechercher_film(titre : str)
-            +consulter_fiche(titre : str)
+            +consulter_fiche(id_film : int)
         }
 
         class AvisService {
@@ -97,10 +99,10 @@ classDiagram
     Utilisateur "1" -- "*" EclaireurService : accède_à
     Utilisateur "1" -- "*" UtilisateurService : géré_par
     Film "1" -- "*" FilmService : géré_par
-    FilmService ..> TMDBConnexion : uses
+    FilmService ..> TMDBConnexion : utilise
     
-    FilmService ..>DAO_film : uses
-    AvisService ..> DAO_avis : uses
-    EclaireurService ..> DAO_eclaireurs: uses
-    UtilisateurService ..> DAO_utilisateur : uses
+    FilmService ..>DAO_film : utilise
+    AvisService ..> DAO_avis : utilise
+    EclaireurService ..> DAO_eclaireurs: utilise
+    UtilisateurService ..> DAO_utilisateur : utilise
 ```
