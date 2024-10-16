@@ -1,9 +1,7 @@
 #importer les modules nécéssaires
 
 class AvisService :
-    def __init__(
-
-    )
+    def __init__(    )
 
     def consulter_note_moyenne(self, film : Film) :
         pass 
