@@ -2,16 +2,56 @@ from datetime import datetime
 
 
 class Film():
-    """ Film """
 
-    def __init__(self, id_film, titre, genre, date_de_sortie, langue_originale,
-                 synopsis) -> None:
-        self._id_film: int = id
+    """
+    A class to represent a film.
+    """
+
+    # -------------------------------------------------------------------------
+    # Constructor
+    # -------------------------------------------------------------------------
+
+    """
+    Attributes
+    ----------
+    id_film : int
+        An unique id of the film.
+    titre : string
+        The title of the film.
+    genre : string
+        The genre of the film.
+    date_de_sortie : datetime
+        The day, month, and year of the film's release.
+    langue_originale : str
+        The original language of the film.
+    synopsis : str
+        The synopsis of the film.
+    """
+
+    def __init__(
+        self,
+        id_film,
+        titre,
+        genre,
+        date_de_sortie,
+        langue_originale,
+        synopsis,
+    ) -> None:
+
+        # -----------------------------
+        # Attributes
+        # -----------------------------
+
+        self._id_film: int = id_film
         self._titre: str = titre
         self._genre: str = genre
         self._date_de_sortie: datetime = date_de_sortie
         self._langue_originale: str = langue_originale
         self._synopsis: str = synopsis
+
+    # -------------------------------------------------------------------------
+    # Getters and Setters
+    # -------------------------------------------------------------------------
 
     @property
     def id_film(self):
