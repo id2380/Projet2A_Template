@@ -50,6 +50,21 @@ class Film():
         self._synopsis: str = synopsis
 
     # -------------------------------------------------------------------------
+    # Methods
+    # -------------------------------------------------------------------------
+
+    def __str__(self):
+        """
+        Returns a string representation of the Film object.
+        """
+        return (f"Id_film: {self.id_film}\n"
+                f"Titre: {self.titre}\n"
+                f"Genre: {self.genre}\n"
+                f"Date de sortie: {self.date_de_sortie}\n"
+                f"Langue originale: {self.langue_originale}\n"
+                f"Synopsis : {self.synopsis}")
+
+    # -------------------------------------------------------------------------
     # Getters and Setters
     # -------------------------------------------------------------------------
 

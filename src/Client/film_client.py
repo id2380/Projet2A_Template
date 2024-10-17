@@ -21,7 +21,7 @@ class FilmClient(metaclass=Singleton):
                   "page": page,
                   "sort_by": "popularity.desc"}
         req = requests.get(url, headers=self._headers, params=params)
-
+        
         # GENRE A COMPLETER !!!!!!
         films = []
         if req.status_code == 200:
@@ -35,9 +35,11 @@ class FilmClient(metaclass=Singleton):
                             synopsis=raw_film["overview"])             
                 if film:
                     films.append(film)
-        return films
+            return films
+        else:
+            return None
 
-# Pour tester à supprimer par la suite
+# Pour tester, à supprimer par la suite
 if __name__ == "__main__":
     # Pour charger les variables d'environnement contenues dans le fichier .env
     import dotenv
@@ -45,4 +47,4 @@ if __name__ == "__main__":
 
     filmClient = FilmClient()
 
-    filmClient.search_movies()
+    print(filmClient.search_movies())
