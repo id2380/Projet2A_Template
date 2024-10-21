@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from src.business_object.film import Film
 from src.data.db_connection import DBConnection
 
@@ -19,7 +21,7 @@ class FilmDAO:
         created : bool
             True si la création a réussi, False sinon
         """
-        created  = None
+        created = None
         with DBConnection().connection as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
@@ -43,4 +45,40 @@ class FilmDAO:
                     created = True
 
         return created
+
+    def read_film(self, movieId: int) -> Film:
+        """Lecture d'un film dans la base de données
+
+        Parameters
+        ----------
+        movieId : int
+            Identifiant du film à lire
+
+        Returns
+        -------
+        Film
+            Film à lire
+        """
+        film = None
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT *
+                    FROM film
+                    WHERE id_film=%(movieId)s;
+                    """,
+                    {
+                        "movieId": movieId,
+                    },
+                )
+                res = cursor.fetchone()
+        if res:
+            film = Film(id_film=movieId,
+                        titre=res["titre"],
+                        genre=res["genre"],
+                        date_de_sortie=res["date_de_sortie"],
+                        langue_originale=res["langue_originale"],
+                        synopsis=res["synopsis"],)
+        return film
 

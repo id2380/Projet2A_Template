@@ -1,4 +1,3 @@
-import time
 from datetime import datetime
 
 from src.business_object.film import Film
@@ -23,7 +22,6 @@ class TestFilmDao:
         # THEN
         assert created
 
-    
 
 if __name__ == "__main__":
     import pytest
