@@ -9,7 +9,7 @@ class TestFilmDao:
         # GIVEN
         film_dao = FilmDAO()
         film = Film(
-            id_film=0,
+            id_film=3,
             titre="Test",
             genre="Test",
             date_de_sortie=datetime(2024, 10, 21),
@@ -22,13 +22,11 @@ class TestFilmDao:
         # THEN
         assert created
 
-<<<<<<< HEAD
-=======
     def test_create_film_existant(self):
         # GIVEN
         film_dao = FilmDAO()
         film = Film(
-            id_film=0,
+            id_film=3,
             titre="Test",
             genre="Test",
             date_de_sortie=datetime(2024, 10, 21),
@@ -39,10 +37,8 @@ class TestFilmDao:
         created = film_dao.creer_film(film)
 
         # THEN
-        assert created == False
+        assert created is False
 
-    
->>>>>>> 6572b1c79cc65b755f6994ee77b7ca9d55a03d63
 
 if __name__ == "__main__":
     import pytest
