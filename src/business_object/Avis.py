@@ -4,9 +4,9 @@ from src.business_object.utilisateur import Utilisateur
 
 class Avis:
     def __init__(self, id, film, utilisateur, note, commentaire):
-        self.id_avis = id_avis
+        self.id_avis = id
         self.film = film
-        self.iutilisateur = utilisateur
+        self.utilisateur = utilisateur
         self.note = note
         self.commentaire = commentaire
 
