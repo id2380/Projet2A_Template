@@ -4,28 +4,28 @@ from datetime import datetime
 class Film():
 
     """
-    A class to represent a film.
+    Une classe qui représente un film.
     """
 
     # -------------------------------------------------------------------------
-    # Constructor
+    # Constructeur
     # -------------------------------------------------------------------------
 
     """
-    Attributes
+    Attributs
     ----------
     id_film : int
-        An unique id of the film.
+        Un identifiant unique du film.
     titre : string
-        The title of the film.
+        Le titre du film.
     genre : string
-        The genre of the film.
+        Le genre du film.
     date_de_sortie : datetime
-        The day, month, and year of the film's release.
+        Le jour, le mois et l'année de sortie du film.
     langue_originale : str
-        The original language of the film.
+        La langue originale du film.
     synopsis : str
-        The synopsis of the film.
+        Le résumé du film.
     """
 
     def __init__(
@@ -39,7 +39,7 @@ class Film():
     ) -> None:
 
         # -----------------------------
-        # Attributes
+        # Attributs
         # -----------------------------
 
         self._id_film: int = id_film
@@ -50,12 +50,12 @@ class Film():
         self._synopsis: str = synopsis
 
     # -------------------------------------------------------------------------
-    # Methods
+    # Methodes
     # -------------------------------------------------------------------------
 
     def __str__(self):
         """
-        Returns a string representation of the Film object.
+        Retourne un string représentant un objet Film.
         """
         return (f"Id_film: {self.id_film}\n"
                 f"Titre: {self.titre}\n"
@@ -65,7 +65,7 @@ class Film():
                 f"Synopsis : {self.synopsis}")
 
     # -------------------------------------------------------------------------
-    # Getters and Setters
+    # Getters et Setters
     # -------------------------------------------------------------------------
 
     @property
