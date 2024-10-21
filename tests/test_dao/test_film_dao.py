@@ -22,8 +22,6 @@ class TestFilmDao:
         # THEN
         assert created
 
-<<<<<<< HEAD
-=======
     def test_create_film_existant(self):
         # GIVEN
         film_dao = FilmDAO()
@@ -42,7 +40,6 @@ class TestFilmDao:
         assert created == False
 
     
->>>>>>> 6572b1c79cc65b755f6994ee77b7ca9d55a03d63
 
 if __name__ == "__main__":
     import pytest
