@@ -1,4 +1,3 @@
-import json
 import os
 
 import requests
@@ -21,7 +20,6 @@ class FilmClient(metaclass=Singleton):
                   "page": page,
                   "sort_by": "popularity.desc"}
         req = requests.get(url, headers=self._headers, params=params)
-        
         # GENRE A COMPLETER !!!!!!
         films = []
         if req.status_code == 200:
@@ -32,12 +30,39 @@ class FilmClient(metaclass=Singleton):
                             genre="",
                             date_de_sortie=raw_film["release_date"],
                             langue_originale=raw_film["original_language"],
-                            synopsis=raw_film["overview"])             
+                            synopsis=raw_film["overview"])
+
                 if film:
                     films.append(film)
             return films
         else:
             return None
+
+    def getSimilarMovies(self, movieId: int, language: str = "en-US",
+                         page: int = 1):
+        url = f"{self.__HOST}/movie/{movieId}/similar"
+        params = {"language": language,
+                  "page": page}
+        req = requests.get(url, headers=self._headers, params=params)
+
+        films = []
+        print(req.status_code)
+        if req.status_code == 200:
+            raw_films = req.json()["results"]
+            for raw_film in raw_films:
+                film = Film(id_film=raw_film["id"],
+                            titre=raw_film["title"],
+                            genre="",
+                            date_de_sortie=raw_film["release_date"],
+                            langue_originale=raw_film["original_language"],
+                            synopsis=raw_film["overview"])
+
+                if film:
+                    films.append(film)
+            return films
+        else:
+            return None
+
 
 # Pour tester, à supprimer par la suite
 if __name__ == "__main__":
@@ -48,3 +73,5 @@ if __name__ == "__main__":
     filmClient = FilmClient()
 
     print(filmClient.search_movies())
+
+    print(filmClient.getSimilarMovies(1184918))
