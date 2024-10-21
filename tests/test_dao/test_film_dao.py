@@ -39,6 +39,10 @@ class TestFilmDao:
         # THEN
         assert created is False
 
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 54c42a43633d7f86931c7f624c7444d73699a58f
 
 if __name__ == "__main__":
     import pytest

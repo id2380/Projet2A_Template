@@ -38,8 +38,7 @@ class FilmDAO:
                             "synopsis": film.synopsis,
                         },
                     )
-                    res = cursor.fetchone()
-        except Exception as e:
+        except Exception:
             return created
 
         created = True
