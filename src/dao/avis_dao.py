@@ -1,45 +1,47 @@
 from src.business_object.avis import Avis
 from src.business_object.film import Film
 from src.business_object.utilisateur import Utilisateur
+from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
+from src.Service.film_service import FilmService
+
 
 class AvisDAO:
 
     """Classe contenant les méthodes pour créer, consulter, modifier et supprimer des avis dans la base de données."""
-
+    def __init__(self, film_service: FilmService, utilisateur_dao: UtilisateurDAO):
+        self.film_service = film_service
+        self.utilisateur_dao = utilisateur_dao
     def creer_avis(self, avis: Avis) -> bool:
-        """Création d'un avis dans la base de données."""
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    # D'abord, récupérer l'id de l'utilisateur depuis le pseudo
-                    cursor.execute("SELECT id_utilisateur FROM utilisateur WHERE pseudo = %s;", (avis.utilisateur,))
-                    id_utilisateur = cursor.fetchone()
-                    if id_utilisateur is None:
-                        raise ValueError(f"L'utilisateur {avis.utilisateur} n'existe pas.")
+                 # Vérification si le film existe dans la base de données via l'id_film fourni
+                    cursor.execute("SELECT id_film FROM film WHERE id_film = %s;", (avis.id_film,))
+                    if not cursor.fetchone():
+                        print(f"Le film avec l'ID '{avis.id_film}' n'a pas été trouvé dans la base. Création en cours via l'API TMDB...")
+                        if not self.film_service.creer_film(avis.id_film):
+                            print(f"Impossible de créer le film avec l'ID '{avis.id_film}' via l'API TMDB.")
+                            return False
+                        print(f"Film avec l'ID '{avis.id_film}' créé avec succès.")
 
-                    # Ensuite, récupérer l'id du film depuis le titre
-                    cursor.execute("SELECT id_film FROM film WHERE titre = %s;", (avis.film,))
-                    id_film = cursor.fetchone()
-                    if id_film is None:
-                        raise ValueError(f"Le film {avis.film} n'existe pas.")
+                    # Insertion de l'avis dans la base de données sans vérifier l'utilisateur
+                    cursor.execute("""
+                        INSERT INTO avis(id_film, utilisateur, note, commentaire)
+                        VALUES (%s, %s, %s, %s) RETURNING id;
+                    """, (avis.id_film, avis.utilisateur, avis.note, avis.commentaire))
 
-                    # Insérer l'avis avec les id_utilisateur et id_film
-                    cursor.execute(
-                        """
-                        INSERT INTO avis(film, utilisateur, note, commentaire, id_utilisateur, id_film)
-                        VALUES (%s, %s, %s, %s, %s, %s)
-                        RETURNING id;
-                        """,
-                        (avis.film, avis.utilisateur, avis.note, avis.commentaire, id_utilisateur[0], id_film[0])
-                    )
-                    avis.id = cursor.fetchone()[0]  # Récupération de l'ID généré
+                    avis.id_avis = cursor.fetchone()[0]
                     connection.commit()
-            print(f"Avis créé avec succès dans la base.")
-            return True
+                    print(f"Avis créé avec succès pour le film avec l'ID '{avis.id_film}' par l'utilisateur '{avis.utilisateur}'.")
+                    return True
         except Exception as e:
             print(f"Erreur lors de la création de l'avis : {e}")
-            return False
+        return False
+
+
+
+
     
 
     def modifier_avis(self, avis: Avis) -> bool:
