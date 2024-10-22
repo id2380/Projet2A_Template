@@ -1,4 +1,5 @@
 from src.client.film_client import FilmClient
+from src.dao.film_dao import FilmDAO
 
 
 class FilmService:
@@ -19,3 +20,13 @@ class FilmService:
                                                        region,
                                                        year)
         return films
+
+    def creer_film(self, id_film: int):
+        Film = FilmClient().recherche_film_id(id_film)
+        print(Film)
+        if Film is not None:
+            boolean = FilmDAO().creer_film(Film)
+            print("       Boolean     ")
+            print(boolean)
+            return boolean
+        return False

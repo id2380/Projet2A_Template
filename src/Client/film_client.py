@@ -76,10 +76,8 @@ class FilmClient(metaclass=Singleton):
         else:
             return None
 
-    def recherche_film_id(self, id_film: int, page: int = 1,
-                          language: str = "en-US",
-                          primary_release_year: int = None,
-                          region: str = None, year: int = None):
+    def recherche_film_id(self, id_film: int,
+                          language: str = "en-US"):
         url = f"{self.__HOST}/movie/{id_film}"
         params = {"movie_id": id_film,
                   "language": language}
