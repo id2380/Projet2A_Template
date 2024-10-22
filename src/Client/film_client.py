@@ -12,13 +12,46 @@ class FilmClient(metaclass=Singleton):
         self._headers = {"accept": "application/json",
                          "Authorization": os.environ["WEBSERVICE_TOKEN"]}
 
-    def search_movies(self, page: int = 1, language: str = "en-US"):
+    def search_movies(self, page: int = 1, language: str = "en-US", primary_release_year: int = None, region: str = None, year: int = None):
         url = f"{self.__HOST}/discover/movie"
         params = {"include_adult": False,
                   "language": language,
                   "include_video": False,
                   "page": page,
-                  "sort_by": "popularity.desc"}
+                  "sort_by": "popularity.desc",
+                  "primary_release_year": primary_release_year,
+                  "region": region,
+                  "year": year}
+        req = requests.get(url, headers=self._headers, params=params)
+        # GENRE A COMPLETER !!!!!!
+        films = []
+        if req.status_code == 200:
+            raw_films = req.json()["results"]
+            for raw_film in raw_films:
+                film = Film(id_film=raw_film["id"],
+                            titre=raw_film["title"],
+                            genre="",
+                            date_de_sortie=raw_film["release_date"],
+                            langue_originale=raw_film["original_language"],
+                            synopsis=raw_film["overview"])
+
+                if film:
+                    films.append(film)
+            return films
+        else:
+            return None
+
+    def search_movies_title(self, titre: str, page: int = 1, language: str = "en-US", primary_release_year: int = None, region: str = None, year: int = None):
+        url = f"{self.__HOST}/search/movie"
+        params = {"query": titre,
+                  "include_adult": False,
+                  "language": language,
+                  "include_video": False,
+                  "page": page,
+                  "sort_by": "popularity.desc",
+                  "primary_release_year": primary_release_year,
+                  "region": region,
+                  "year": year}
         req = requests.get(url, headers=self._headers, params=params)
         # GENRE A COMPLETER !!!!!!
         films = []
@@ -72,6 +105,4 @@ if __name__ == "__main__":
 
     filmClient = FilmClient()
 
-    print(filmClient.search_movies())
-
-    print(filmClient.getSimilarMovies(1184918))
+    print(filmClient.search_movies_title("robot")[0].titre)
