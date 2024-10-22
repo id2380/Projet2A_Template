@@ -76,6 +76,26 @@ class FilmClient(metaclass=Singleton):
         else:
             return None
 
+    def recherche_film_id(self, id_film: int, page: int = 1,
+                          language: str = "en-US",
+                          primary_release_year: int = None,
+                          region: str = None, year: int = None):
+        url = f"{self.__HOST}/movie/{id_film}"
+        params = {"movie_id": id_film,
+                  "language": language}
+        req = requests.get(url, headers=self._headers, params=params)
+        # GENRE A COMPLETER !!!!!!
+        film = None
+        if req.status_code == 200:
+            proposition = req.json()
+            film = Film(id_film=proposition["id"],
+                        titre=proposition["title"],
+                        genre="",
+                        date_de_sortie=proposition["release_date"],
+                        langue_originale=proposition["original_language"],
+                        synopsis=proposition["overview"])
+        return film
+
     def obtenir_films_similaires(self, id_film: int, language: str = "en-US",
                                  page: int = 1):
         url = f"{self.__HOST}/movie/{id_film}/similar"

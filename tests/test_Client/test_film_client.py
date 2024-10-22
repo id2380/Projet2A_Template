@@ -41,6 +41,23 @@ class TestFilmClient:
         # THEN
         assert films is None
 
+    # methode recherche_film_id
+    def test_recherche_film_id_ok(self, id_film=1184918):
+        # GIVEN
+        film_client = FilmClient()
+        # WHEN
+        film = film_client.recherche_film_id(id_film)
+        # THEN
+        assert film is not None
+
+    def test_recherche_film_id_error(self, id_film=0):
+        # GIVEN
+        film_client = FilmClient()
+        # WHEN
+        film = film_client.recherche_film_id(id_film)
+        # THEN
+        assert film is None
+
     # methode obtenir_films_similaires
     def test_obtenir_films_similaires_ok(self, id_film=1184918):
         # GIVEN
