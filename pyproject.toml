@@ -6,14 +6,14 @@ authors = [
     {name = "ClémentValot", email = "clement.valot.pro@gmail.com"},
 ]
 dependencies = [
-    "fastapi>=0.112.1",
     "uvicorn>=0.30.6",
-    "pydantic>=2.8.2",
     "mypy>=1.11.2",
     "pandas>=2.2.2",
-    "python-dotenv>=1.0.1",
     "psycopg2>=2.9.9",
     "requests>=2.32.3",
+    "fastapi==0.78.0",
+    "pydantic>=1.10.18",
+    "python-dotenv>=1.0.1",
 ]
 requires-python = "==3.12.*"
 readme = "README.md"

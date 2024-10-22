@@ -16,17 +16,18 @@ class FilmDAO:
 
         Returns
         -------
-        created : bool
+        bool
             True si la création a réussi, False sinon
         """
-        created = False
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        INSERT INTO film(id_film,titre,genre,date_de_sortie,langue_originale,synopsis)
-                        VALUES (%(id_film)s, %(titre)s, %(genre)s, %(date_de_sortie)s, %(langue_originale)s, %(synopsis)s)
+                        INSERT INTO film(id_film,titre,genre,date_de_sortie,
+                        langue_originale,synopsis)
+                        VALUES (%(id_film)s, %(titre)s, %(genre)s,
+                        %(date_de_sortie)s, %(langue_originale)s, %(synopsis)s)
                         RETURNING id_film;
                         """,
                         {
@@ -39,17 +40,15 @@ class FilmDAO:
                         },
                     )
         except Exception:
-            return created
+            return False
+        return True
 
-        created = True
-        return created
-
-    def read_film(self, movieId: int) -> Film:
+    def lire_film(self, id_film: int) -> Film:
         """Lecture d'un film dans la base de données
 
         Parameters
         ----------
-        movieId : int
+        id_film : int
             Identifiant du film à lire
 
         Returns
@@ -64,15 +63,15 @@ class FilmDAO:
                     """
                     SELECT *
                     FROM film
-                    WHERE id_film=%(movieId)s;
+                    WHERE id_film=%(id_film)s;
                     """,
                     {
-                        "movieId": movieId,
+                        "id_film": id_film,
                     },
                 )
                 res = cursor.fetchone()
         if res:
-            film = Film(id_film=movieId,
+            film = Film(id_film=id_film,
                         titre=res["titre"],
                         genre=res["genre"],
                         date_de_sortie=res["date_de_sortie"],
@@ -80,3 +79,37 @@ class FilmDAO:
                         synopsis=res["synopsis"],)
         return film
 
+    def supprimer_film(self, id_film: int) -> bool:
+        """Suppression d'un film dans la base de données
+
+        Parameters
+        ----------
+        id_film : int
+            Identifiant du film à supprimer
+
+        Returns
+        -------
+        bool
+            True si le film a bien été supprimé, False sinon
+        """
+        if self.lire_film(id_film) is None:  # film n'existe pas
+            return False
+
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    DELETE
+                    FROM film
+                    WHERE id_film=%(id_film)s;
+                    """,
+                    {
+                        "id_film": id_film,
+                    },
+                )
+        return True
+if __name__ == "__main__":
+    # Pour charger les variables d'environnement contenues dans le fichier .env
+   
+
+    film_client = FilmDAO()

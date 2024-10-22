@@ -28,15 +28,8 @@ class Film():
         Le résumé du film.
     """
 
-    def __init__(
-        self,
-        id_film,
-        titre,
-        genre,
-        date_de_sortie,
-        langue_originale,
-        synopsis,
-    ) -> None:
+    def __init__(self, id_film, titre, genre, date_de_sortie, langue_originale,
+                 synopsis) -> None:
 
         # -----------------------------
         # Attributs
