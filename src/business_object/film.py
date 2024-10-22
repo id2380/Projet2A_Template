@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from fiche_technique import FicheTechnique
-
 
 class Film():
 
@@ -28,12 +26,10 @@ class Film():
         La langue originale du film.
     synopsis : str
         Le résumé du film.
-    fiche_technique : FicheTechnique
-        La fiche technique du film contenant ses caractéristiques.
     """
 
     def __init__(self, id_film, titre, genre, date_de_sortie, langue_originale,
-                 synopsis, fiche_technique) -> None:
+                 synopsis) -> None:
 
         # -----------------------------
         # Attributs
@@ -45,7 +41,6 @@ class Film():
         self._date_de_sortie: datetime = date_de_sortie
         self._langue_originale: str = langue_originale
         self._synopsis: str = synopsis
-        self._fiche_technique: FicheTechnique = []
 
     # -------------------------------------------------------------------------
     # Methodes
@@ -113,11 +108,3 @@ class Film():
     @synopsis.setter
     def synopsis(self, value: str):
         self._synopsis = value
-
-    @property
-    def fiche_technique(self):
-        return self._fiche_technique
-
-    @fiche_technique.setter
-    def fiche_technique(self, value: FicheTechnique):
-        self._fiche_technique = value

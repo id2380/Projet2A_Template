@@ -108,3 +108,8 @@ class FilmDAO:
                     },
                 )
         return True
+if __name__ == "__main__":
+    # Pour charger les variables d'environnement contenues dans le fichier .env
+   
+
+    film_client = FilmDAO()
