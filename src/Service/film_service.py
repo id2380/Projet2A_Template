@@ -1,4 +1,4 @@
-from src.client.film_client import FilmClient
+from src.Client.film_client import FilmClient
 from src.dao.film_dao import FilmDAO
 
 

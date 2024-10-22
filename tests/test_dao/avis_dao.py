@@ -53,7 +53,7 @@ class TestAvisDAO(unittest.TestCase):
         result = self.avis_dao.creer_avis(avis)
 
         # THEN
-        self.assertTrue(result, "L'avis n'a pas été créé correctement")
+        self.assertTrue(res5ult, "L'avis n'a pas été créé correctement")
         db_cursor_mock.execute.assert_called_with("SELECT id_film FROM film WHERE id_film = %s;", (123,))
         db_cursor_mock.execute.assert_any_call(
             """

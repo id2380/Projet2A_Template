@@ -1,8 +1,9 @@
 from src.business_object.avis import Avis
 from src.business_object.film import Film
 from src.business_object.utilisateur import Utilisateur
+from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
-from src.Service.filmservice import FilmService
+from src.Service.film_service import FilmService
 
 
 class AvisDAO:
