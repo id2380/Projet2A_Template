@@ -56,6 +56,31 @@ def test_creer_avis_film_non_existant(setup_avis_dao):
     # THEN: Vérifier que l'avis a été correctement créé
     assert resultat
 
+    def test_modifier_avis(setup_avis_dao):
+        avis_dao, mock_cursor = setup_avis_dao
+
+        # GIVEN: Un avis existant à modifier
+        avis = Avis(id_avis=1, id_film=1184918, utilisateur='Soukayna', note=4, commentaire="Très bon film")
+
+        # WHEN: Modification de l'avis
+        resultat = avis_dao.modifier_avis(avis)
+
+        # THEN: Vérifier que l'avis a été correctement modifié
+        assert resultat
+
+        # THEN: Vérifier que la requête SQL de modification a été appelée
+        mock_cursor.execute.assert_called_with(
+            """
+            UPDATE avis
+            SET note = %(note)s, commentaire = %(commentaire)s
+            WHERE id = %(id)s;
+            """,
+            {
+                "id": avis.id_avis,
+                "note": avis.note,
+                "commentaire": avis.commentaire
+            }
+        )
 if __name__ == "__main__":
     import pytest
     pytest.main([__file__])

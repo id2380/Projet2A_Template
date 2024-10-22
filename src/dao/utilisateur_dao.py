@@ -1,4 +1,4 @@
-from src.business_object.utilisateur import Utilisateur
+from src.business_object.Utilisateur import Utilisateur
 from src.data.db_connection import DBConnection
 
 
