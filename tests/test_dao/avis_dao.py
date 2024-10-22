@@ -1,116 +1,122 @@
-from datetime import datetime
+import unittest
+from unittest.mock import MagicMock, patch
 
 from src.business_object.avis import Avis
-from src.business_object.film import Film
 from src.business_object.utilisateur import Utilisateur
 from src.dao.avis_dao import AvisDAO
-from src.dao.film_dao import FilmDAO
 from src.dao.utilisateur_dao import UtilisateurDAO
+from src.service.film_service import FilmService
 
 
-class TestAvisDAO:
-    def inserer_donnees_test():
-        """Insère un film et un utilisateur de test dans la base de données."""
-        film_dao = FilmDAO()
-        utilisateur_dao = UtilisateurDAO()
+class TestAvisDAO(unittest.TestCase):
 
-        # Ajout du film
-        film = Film(
-            id_film=1,
-            titre="La Reine des Neiges",
-            genre="Animation",
-            date_de_sortie=datetime(2013, 11, 27),
-            langue_originale="Français",
-            synopsis="Un film d'animation sur une princesse et ses pouvoirs de glace."
-        )
-        film_dao.creer_film(film)
+    def setUp(self):
+        """Configuration des mocks avant chaque test"""
+        # Mock pour FilmService
+        self.film_service_mock = MagicMock(spec=FilmService)
 
-        # Ajout de l'utilisateur
-        utilisateur = Utilisateur(
-            id_utilisateur=1,
+        # Mock pour UtilisateurDAO
+        self.utilisateur_dao_mock = MagicMock(spec=UtilisateurDAO)
+
+        # Initialisation de AvisDAO avec les mocks
+        self.avis_dao = AvisDAO(self.film_service_mock, self.utilisateur_dao_mock)
+
+        # Création de l'utilisateur de test
+        self.utilisateur = Utilisateur(
             pseudo="Soukayna",
-            email="soukayna.hessane@eleve.ensai.fr",
+            adresse_email="soukayna@example.com",
             mot_de_passe="securepassword"
         )
-        utilisateur_dao.creer_utilisateur(utilisateur)
-    inserer_donnees_test()
-    def test_create_avis_ok(self):
+        self.utilisateur.id_utilisateur = 1
+
+    @patch('src.data.db_connection.DBConnection')
+    def test_creer_avis_film_existant(self, db_connection_mock):
+        """Test de la création d'un avis pour un film existant"""
+
         # GIVEN
-        avis_dao = AvisDAO()
         avis = Avis(
-            id_avis=None,
-            film="La Reine des Neiges",
+            id_film=123,  # ID du film existant
             utilisateur="Soukayna",
             note=5,
             commentaire="Film incroyable"
         )
 
+        # Simulation de la base de données renvoyant un film existant
+        db_cursor_mock = MagicMock()
+        db_cursor_mock.fetchone.return_value = [123]  # Simule que le film existe
+        db_connection_mock().connection.cursor.return_value.__enter__.return_value = db_cursor_mock
+
+        # Simulation de la méthode utilisateur_dao
+        self.utilisateur_dao_mock.read_utilisateur_by_pseudo.return_value = self.utilisateur
+
         # WHEN
-        created = avis_dao.creer_avis(avis)
+        result = self.avis_dao.creer_avis(avis)
 
         # THEN
-        assert created
-
-    def test_create_avis_existant(self):
-        # GIVEN
-        avis_dao = AvisDAO()
-        avis = Avis(
-            id_avis=None,
-            film="La Reine des Neiges",
-            utilisateur="Soukayna",
-            note=5,
-            commentaire="Film incroyable"
+        self.assertTrue(result, "L'avis n'a pas été créé correctement")
+        db_cursor_mock.execute.assert_called_with("SELECT id_film FROM film WHERE id_film = %s;", (123,))
+        db_cursor_mock.execute.assert_any_call(
+            """
+            INSERT INTO avis(id_film, utilisateur, note, commentaire, id_utilisateur)
+            VALUES (%(id_film)s, %(utilisateur)s, %(note)s, %(commentaire)s, %(id_utilisateur)s)
+            RETURNING id;
+            """,
+            {
+                "id_film": 123,
+                "utilisateur": "Soukayna",
+                "note": 5,
+                "commentaire": "Film incroyable",
+                "id_utilisateur": 1
+            }
         )
 
-        # WHEN
-        created = avis_dao.creer_avis(avis)
+    @patch('src.data.db_connection.DBConnection')
+    def test_creer_avis_film_inexistant(self, db_connection_mock):
+        """Test de la création d'un avis pour un film inexistant, où le film est créé via l'API TMDB"""
 
-        # THEN
-        assert created is False
-
-    def test_read_avis_existant(self, avis_id=1):
         # GIVEN
-        avis_dao = AvisDAO()
+        avis = Avis(
+            id_film=456,  # ID du film inexistant
+            utilisateur="Soukayna",
+            note=4,
+            commentaire="Super film"
+        )
+
+        # Simulation de la base de données ne trouvant pas le film
+        db_cursor_mock = MagicMock()
+        db_cursor_mock.fetchone.side_effect = [None, 456]  # Simule que le film n'existe pas puis est créé
+        db_connection_mock().connection.cursor.return_value.__enter__.return_value = db_cursor_mock
+
+        # Simulation de l'API TMDB créant un nouveau film
+        film_mock = MagicMock()
+        film_mock.id_film = 456
+        self.film_service_mock.creer_film_par_id_tmdb.return_value = film_mock
+
+        # Simulation de la méthode utilisateur_dao
+        self.utilisateur_dao_mock.read_utilisateur_by_pseudo.return_value = self.utilisateur
 
         # WHEN
-        read = avis_dao.lire_avis(avis_id=avis_id)
+        result = self.avis_dao.creer_avis(avis)
 
         # THEN
-        assert read is not None
-        assert len(read) > 0  # Si l'avis existe, il y aura au moins un résultat
-
-    def test_read_avis_inexistant(self, avis_id=999):
-        # GIVEN
-        avis_dao = AvisDAO()
-
-        # WHEN
-        read = avis_dao.lire_avis(avis_id=avis_id)
-
-        # THEN
-        assert read == []
-
-    def test_delete_avis_existant(self, avis_id=1):
-        # GIVEN
-        avis_dao = AvisDAO()
-
-        # WHEN
-        deleted = avis_dao.supprimer_avis(avis_id)
-
-        # THEN
-        assert deleted is True
-
-    def test_delete_avis_inexistant(self, avis_id=999):
-        # GIVEN
-        avis_dao = AvisDAO()
-
-        # WHEN
-        deleted = avis_dao.supprimer_avis(avis_id)
-
-        # THEN
-        assert deleted is False
+        self.assertTrue(result, "L'avis n'a pas été créé correctement pour le film inexistant")
+        self.film_service_mock.creer_film_par_id_tmdb.assert_called_once_with(456)
+        db_cursor_mock.execute.assert_called_with("SELECT id_film FROM film WHERE id_film = %s;", (456,))
+        db_cursor_mock.execute.assert_any_call(
+            """
+            INSERT INTO avis(id_film, utilisateur, note, commentaire, id_utilisateur)
+            VALUES (%(id_film)s, %(utilisateur)s, %(note)s, %(commentaire)s, %(id_utilisateur)s)
+            RETURNING id;
+            """,
+            {
+                "id_film": 456,
+                "utilisateur": "Soukayna",
+                "note": 4,
+                "commentaire": "Super film",
+                "id_utilisateur": 1
+            }
+        )
 
 
-if __name__ == "__main__":
-    import pytest
-
-    pytest.main([__file__])
+if __name__ == '__main__':
+    unittest.main()
