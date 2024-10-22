@@ -8,7 +8,8 @@ class Utilisateur:
     Attributes
     ----------
     _id_utilisateur : int or None
-        L'identifiant unique de l'utilisateur, généré automatiquement par la base de données.
+        L'identifiant unique de l'utilisateur, généré automatiquement par la
+        base de données.
     _pseudo : str
         Le pseudo de l'utilisateur, unique et non nul.
     _adresse_email : str
@@ -16,7 +17,8 @@ class Utilisateur:
     _mot_de_passe : str
         Le mot de passe de l'utilisateur, stocké sous forme hashée.
     _date_creation : datetime or None
-        La date de création du compte utilisateur, générée automatiquement par la base de données.
+        La date de création du compte utilisateur, générée automatiquement par
+        la base de données.
     """
 
     def __init__(self, pseudo: str, adresse_email: str, mot_de_passe: str):
@@ -32,11 +34,14 @@ class Utilisateur:
         mot_de_passe : str
             Le mot de passe de l'utilisateur (sera hashé ailleurs).
         """
-        self._id_utilisateur = None  # L'ID utilisateur sera généré par la base de données
+        self._id_utilisateur = None
+        # L'ID utilisateur sera généré par la base de données
         self._pseudo = pseudo
         self._adresse_email = adresse_email
-        self._mot_de_passe = mot_de_passe  # Le mot de passe sera hashé dans la classe utilisateur_service
-        self._date_creation = None  # La date de création sera générée par la base de données
+        self._mot_de_passe = mot_de_passe
+        # Le mot de passe sera hashé dans la classe utilisateur_service
+        self._date_creation = None
+        # La date de création sera générée par la base de données
 
     @property
     def id_utilisateur(self) -> int:
