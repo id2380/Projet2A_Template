@@ -80,3 +80,34 @@ class FilmDAO:
                         synopsis=res["synopsis"],)
         return film
 
+    def delete_film(self, movieId: int) -> bool:
+        """Suppression d'un film dans la base de données
+
+        Parameters
+        ----------
+        movieId : int
+            Identifiant du film à supprimer
+
+        Returns
+        -------
+        bool
+            True si le film a bien été supprimé, False sinon
+        """
+        if self.read_film(movieId) is None:  # film n'existe pas
+            return False
+
+        with DBConnection().connection as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    DELETE
+                    FROM film
+                    WHERE id_film=%(movieId)s;
+                    """,
+                    {
+                        "movieId": movieId,
+                    },
+                )
+        if self.read_film(movieId) is None:
+            print(True)
+        return True
