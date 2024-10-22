@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from src.Model.Movie import Movie
 from src.Service.MovieService import MovieService
 from src.Service.utilisateur_service import UtilisateurService
+from src.Service.avis_service import AvisService
+
 
 
 # Modèle pour la requête de création d'un compte utilisateur
@@ -13,8 +15,14 @@ class RequeteCreationCompte(BaseModel):
     adresse_email: str
     mot_de_passe: str
 
+class RequeteCreationAvis(BaseModel):
+    film: str
+    utilisateur: str
+    commentaire: str
+    note: int
 
-def run_app(movie_service: MovieService, utilisateur_service: UtilisateurService):
+
+def run_app(movie_service: MovieService, utilisateur_service: UtilisateurService, avis_service: AvisService):
     app = FastAPI()
 
     @app.get("/")
@@ -55,5 +63,24 @@ def run_app(movie_service: MovieService, utilisateur_service: UtilisateurService
             print("Stack Trace:")
             traceback.print_exc()  # Cela affichera l'exception complète avec le stack trace
             raise HTTPException(status_code=400, detail=f"Erreur : {str(e)}")
-
+        
+    
+    @app.post("/creer_avis", status_code=status.HTTP_201_CREATED)
+    def creer_avis(requete: RequeteCreationAvis):
+        try:
+            avis = avis_service.ajouter_avis(
+                id= None,
+                film=requete.film,
+                utilisateur=requete.utilisateur,
+                note=requete.note,
+                commentaire=requete.commentaire
+                
+            )
+            # Vérification si l'avis a été créé avec succès
+            if avis :
+                return {"message": "Votre avis a été créé avec succès."}
+            else:
+                raise ValueError("La création de l'avis a échoué.")
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Erreur : {str(e)}")
     uvicorn.run(app, port=8000, host="localhost")
