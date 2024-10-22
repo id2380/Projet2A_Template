@@ -11,9 +11,13 @@ dependencies = [
     "pandas>=2.2.2",
     "python-dotenv>=1.0.1",
     "psycopg2>=2.9.9",
+<<<<<<< HEAD
     "fastapi>=0.115.2",
     "pydantic>=2.9.2",
     "dotenv>=0.0.5",
+=======
+    "requests>=2.32.3",
+>>>>>>> 048f20a20b40a5727eb7a180717520d558f46cb4
 ]
 requires-python = "==3.12.*"
 readme = "README.md"
