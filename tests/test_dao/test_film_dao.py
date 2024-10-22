@@ -5,11 +5,11 @@ from src.dao.film_dao import FilmDAO
 
 
 class TestFilmDao:
-    def test_create_film_ok(self):
+    def test_creer_film_ok(self):
         # GIVEN
         film_dao = FilmDAO()
         film = Film(
-            id_film=9,
+            id_film=100,
             titre="Test",
             genre="Test",
             date_de_sortie=datetime(2024, 10, 21),
@@ -17,16 +17,15 @@ class TestFilmDao:
             synopsis="Ceci est un test.",
         )
         # WHEN
-        created = film_dao.creer_film(film)
-
+        boolean = film_dao.creer_film(film)
         # THEN
-        assert created
+        assert boolean
 
-    def test_create_film_existant(self):
+    def test_creer_film_existant(self):
         # GIVEN
         film_dao = FilmDAO()
         film = Film(
-            id_film=9,
+            id_film=100,
             titre="Test",
             genre="Test",
             date_de_sortie=datetime(2024, 10, 21),
@@ -34,42 +33,41 @@ class TestFilmDao:
             synopsis="Ceci est un test.",
         )
         # WHEN
-        created = film_dao.creer_film(film)
-
+        boolean = film_dao.creer_film(film)
         # THEN
-        assert created is False
+        assert boolean is False
 
-    def test_read_film_existant(self, movieId=9):
+    def test_lire_film_existant(self):
         # GIVEN
         film_dao = FilmDAO()
         # WHEN
-        read = film_dao.read_film(movieId)
+        film = film_dao.lire_film(100)
         # THEN
-        assert read is not None
+        assert film is not None
 
-    def test_read_film_inexistant(self, movieId=10):
+    def test_lire_film_inexistant(self):
         # GIVEN
         film_dao = FilmDAO()
         # WHEN
-        read = film_dao.read_film(movieId)
+        film = film_dao.lire_film(1000)
         # THEN
-        assert read is None
+        assert film is None
 
-    def test_delete_film_existant(self, movieId=9):
+    def test_supprimer_film_existant(self, id_movie=100):
         # GIVEN
         film_dao = FilmDAO()
         # WHEN
-        delete = film_dao.delete_film(movieId)
+        boolean = film_dao.supprimer_film(100)
         # THEN
-        assert delete is True
+        assert boolean is True
 
-    def test_delete_film_inexistant(self, movieId=10):
+    def test_supprimer_film_inexistant(self):
         # GIVEN
         film_dao = FilmDAO()
         # WHEN
-        delete = film_dao.delete_film(movieId)
+        boolean = film_dao.supprimer_film(100)
         # THEN
-        assert delete is False
+        assert boolean is False
 
 
 if __name__ == "__main__":

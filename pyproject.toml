@@ -6,9 +6,7 @@ authors = [
     {name = "ClémentValot", email = "clement.valot.pro@gmail.com"},
 ]
 dependencies = [
-    "fastapi>=0.112.1",
     "uvicorn>=0.30.6",
-    "pydantic>=2.8.2",
     "mypy>=1.11.2",
     "pandas>=2.2.2",
     "python-dotenv>=1.0.1",
