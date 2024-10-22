@@ -1,8 +1,4 @@
-import os
-from unittest import mock
-
 import pytest
-from pydantic_core import ValidationError
 
 from src.client.film_client import FilmClient
 
@@ -10,81 +6,58 @@ from src.client.film_client import FilmClient
 class TestFilmClient:
     import dotenv
     dotenv.load_dotenv(override=True)
-    # methode search_movies
-    def test_search_movies_ok(self):
+
+    # methode recherche_films
+    def test_recherche_films_ok(self):
         # GIVEN
         film_client = FilmClient()
-
         # WHEN
-        films = film_client.search_movies()
-
+        films = film_client.recherche_films()
         # THEN
         assert films is not None
 
-    def test_search_movies_properties_ok(self):
+    def test_recherche_films_error(self):
         # GIVEN
         film_client = FilmClient()
-
         # WHEN
-        films = film_client.search_movies(page=3)
-
-        # THEN
-        assert films is not None
-
-    def test_search_movies_error(self):
-        # GIVEN
-        film_client = FilmClient()
-
-        # WHEN
-        films = film_client.search_movies(page="test", language=3)
-
+        films = film_client.recherche_films(page="test", language=3)
         # THEN
         assert films is None
 
-    # methode search_movies
-    def test_search_movies_title_ok(self):
+    # methode recherche_films_titre
+    def test_recherche_films_titre_ok(self):
         # GIVEN
         film_client = FilmClient()
-
         # WHEN
-        films = film_client.search_movies_title("robot")
-
+        films = film_client.recherche_films_titre("robot")
         # THEN
         assert films is not None
 
-    def test_search_movies_title_error(self):
+    def test_recherche_films_titre_error(self):
         # GIVEN
         film_client = FilmClient()
-
         # WHEN
-        films = film_client.search_movies_title("robot", page="test")
-
+        films = film_client.recherche_films_titre("robot", page="test")
         # THEN
         assert films is None
 
-    # methode getSimilarMovies
-
-    def test_getSimilarMovies_ok(self, movieId=1184918):
+    # methode obtenir_films_similaires
+    def test_obtenir_films_similaires_ok(self, id_film=1184918):
         # GIVEN
         film_client = FilmClient()
-
         # WHEN
-        films = film_client.getSimilarMovies(movieId)
-
+        films = film_client.obtenir_films_similaires(id_film)
         # THEN
         assert films is not None
 
-    def test_getSimilarMovies_error(self, movieId=0):
+    def test_obtenir_films_similaires_error(self, id_film=0):
         # GIVEN
         film_client = FilmClient()
-
         # WHEN
-        films = film_client.getSimilarMovies(movieId)
-
+        films = film_client.obtenir_films_similaires(id_film)
         # THEN
         assert films is None
 
 
 if __name__ == "__main__":
-    import pytest
     pytest.main([__file__])
