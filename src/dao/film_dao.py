@@ -25,8 +25,10 @@ class FilmDAO:
                 with connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        INSERT INTO film(id_film,titre,genre,date_de_sortie,langue_originale,synopsis)
-                        VALUES (%(id_film)s, %(titre)s, %(genre)s, %(date_de_sortie)s, %(langue_originale)s, %(synopsis)s)
+                        INSERT INTO film(id_film,titre,genre,date_de_sortie,
+                        langue_originale,synopsis)
+                        VALUES (%(id_film)s, %(titre)s, %(genre)s,
+                        %(date_de_sortie)s, %(langue_originale)s, %(synopsis)s)
                         RETURNING id_film;
                         """,
                         {
@@ -108,6 +110,4 @@ class FilmDAO:
                         "movieId": movieId,
                     },
                 )
-        if self.read_film(movieId) is None:
-            print(True)
         return True
