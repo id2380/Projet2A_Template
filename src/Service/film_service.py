@@ -30,3 +30,13 @@ class FilmService:
             print(boolean)
             return boolean
         return False
+
+# Pour tester, à supprimer par la suite
+if __name__ == "__main__":
+    # Pour charger les variables d'environnement contenues dans le fichier .env
+    import dotenv
+    dotenv.load_dotenv(override=True)
+
+    film_service = FilmService()
+
+    print(film_service.recherche_films("robot",primary_release_year=2024,year=2024)[0].titre)

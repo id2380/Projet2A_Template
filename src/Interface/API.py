@@ -1,12 +1,14 @@
+from typing import Optional
+
 import uvicorn
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 
 from src.Model.Movie import Movie
+from src.Service.avis_service import AvisService
+from src.Service.film_service import FilmService
 from src.Service.MovieService import MovieService
 from src.Service.utilisateur_service import UtilisateurService
-from src.Service.avis_service import AvisService
-
 
 
 # Modèle pour la requête de création d'un compte utilisateur
@@ -15,14 +17,16 @@ class RequeteCreationCompte(BaseModel):
     adresse_email: str
     mot_de_passe: str
 
+
 class RequeteCreationAvis(BaseModel):
     film: str
     utilisateur: str
     commentaire: str
     note: int
 
-
-def run_app(movie_service: MovieService, utilisateur_service: UtilisateurService, avis_service: AvisService):
+def run_app(movie_service: MovieService,
+            utilisateur_service: UtilisateurService,
+            avis_service: AvisService):
     app = FastAPI()
 
     @app.get("/")
@@ -73,8 +77,7 @@ def run_app(movie_service: MovieService, utilisateur_service: UtilisateurService
                 film=requete.film,
                 utilisateur=requete.utilisateur,
                 note=requete.note,
-                commentaire=requete.commentaire
-                
+                commentaire=requete.commentaire   
             )
             # Vérification si l'avis a été créé avec succès
             if avis :
@@ -83,4 +86,25 @@ def run_app(movie_service: MovieService, utilisateur_service: UtilisateurService
                 raise ValueError("La création de l'avis a échoué.")
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Erreur : {str(e)}")
+
+    @app.get("/recherche_films", status_code=status.HTTP_200_OK)
+    def recherche_films(title: str = None,
+                        language: str = "en-US",
+                        primary_release_year: int = None,
+                        year: int = None):
+        import dotenv
+        dotenv.load_dotenv(override=True)
+        films = None
+        try:
+            films = FilmService().recherche_films(title=title,
+                                                  language = language,
+                                                  primary_release_year = primary_release_year,
+                                                  year = year)
+            # Vérification si l'avis a été créé avec succès
+            if films is None:
+                raise ValueError("Aucun film ne correspond à vos critères")
+            return films
+        except Exception as e:
+            raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
+
     uvicorn.run(app, port=8000, host="localhost")
