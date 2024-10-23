@@ -93,7 +93,9 @@ class FilmClient(metaclass=Singleton):
                                              pays_origine=proposition["origin_country"][0],
                                              societe_prod=proposition["production_companies"][0]["name"],
                                              duree=proposition["runtime"],
-                                             revenue=proposition["revenue"])
+                                             revenue=proposition["revenue"]
+                                             note_moyenne=None,
+                                             avis=None)
             film = Film(id_film=proposition["id"],
                         titre=proposition["title"],
                         genre="",
