@@ -5,10 +5,6 @@
 groups = ["default", "lint", "test", "typing"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-<<<<<<< HEAD
-=======
-
->>>>>>> 0bd0f71e46c58e3cce96503672da0fbac3e79e62
 content_hash = "sha256:54eebae46f72cede5b703634c843f53c984223696122cf90c8ef88182ade778f"
 
 [[metadata.targets]]
