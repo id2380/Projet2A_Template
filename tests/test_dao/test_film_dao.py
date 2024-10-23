@@ -10,7 +10,7 @@ class TestFilmDao:
         # GIVEN
         film_dao = FilmDAO()
         film = Film(
-            id_film=500,
+            id_film=1,
             titre="Test",
             genre="Test",
             date_de_sortie=datetime(2024, 10, 21),
@@ -27,7 +27,7 @@ class TestFilmDao:
         # GIVEN
         film_dao = FilmDAO()
         film = Film(
-            id_film=300,
+            id_film=1,
             titre="Test",
             genre="Test",
             date_de_sortie=datetime(2024, 10, 21),
@@ -44,7 +44,7 @@ class TestFilmDao:
         # GIVEN
         film_dao = FilmDAO()
         # WHEN
-        film = film_dao.lire_film(300)
+        film = film_dao.lire_film(1)
         # THEN
         assert film is not None
 
@@ -52,7 +52,7 @@ class TestFilmDao:
         # GIVEN
         film_dao = FilmDAO()
         # WHEN
-        film = film_dao.lire_film(1000)
+        film = film_dao.lire_film(2)
         # THEN
         assert film is None
 
@@ -60,7 +60,7 @@ class TestFilmDao:
         # GIVEN
         film_dao = FilmDAO()
         # WHEN
-        boolean = film_dao.supprimer_film(300)
+        boolean = film_dao.supprimer_film(1)
         # THEN
         assert boolean is True
 
@@ -68,7 +68,7 @@ class TestFilmDao:
         # GIVEN
         film_dao = FilmDAO()
         # WHEN
-        boolean = film_dao.supprimer_film(300)
+        boolean = film_dao.supprimer_film(1)
         # THEN
         assert boolean is False
 

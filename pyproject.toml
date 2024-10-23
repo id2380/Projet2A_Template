@@ -15,10 +15,16 @@ dependencies = [
     "pydantic>=1.10.18",
     "python-dotenv>=1.0.1",
     "pyjwt>=2.9.0",
+<<<<<<< HEAD
+=======
     "starlette>=0.19.1",
     "iniconfig>=2.0.0",
     "sniffio>=1.3.1",
+<<<<<<< HEAD
     "dotenv>=0.0.5",
+=======
+>>>>>>> 9f052b616781bf271268ac6af338b8ebb4fe5a61
+>>>>>>> efd5669d8e85f44ea39c456503a02957bbfc6b52
 ]
 requires-python = "==3.12.*"
 readme = "README.md"

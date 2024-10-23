@@ -1,10 +1,25 @@
 from src.business_object.avis import Avis
 from src.business_object.film import Film
+<<<<<<< HEAD
 from src.business_object.Utilisateur import Utilisateur
+=======
+from src.business_object.utilisateur import Utilisateur
+<<<<<<< HEAD
+=======
+from src.dao.film_dao import FilmDAO
+=======
+<<<<<<< HEAD
+from src.business_object.utilisateur import Utilisateur
+=======
+from src.Model.Utilisateur import Utilisateur
+>>>>>>> 71565cea0018bd3011f48c09fae644688f5e4104
+>>>>>>> 9f052b616781bf271268ac6af338b8ebb4fe5a61
+>>>>>>> f60061e3de08b55f008970547097e4e102bdb6d2
+>>>>>>> efd5669d8e85f44ea39c456503a02957bbfc6b52
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
 from src.Service.film_service import FilmService
-from src.dao.film_dao import FilmDAO
+
 
 class AvisDAO:
 
