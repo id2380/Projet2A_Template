@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel
+
 
 class Utilisateur(BaseModel):
     """
@@ -22,10 +24,9 @@ class Utilisateur(BaseModel):
         Le sel utilisé pour sécuriser le mot de passe.
     """
 
-    id_utilisateur: Optional[int] = None 
+    id_utilisateur: Optional[int] = None
     pseudo: str  
     adresse_email: str  
     mot_de_passe: str  
     date_creation: Optional[datetime] = None  
     sel: Optional[str] = None  
-
