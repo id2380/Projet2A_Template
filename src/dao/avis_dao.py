@@ -1,10 +1,6 @@
 from src.business_object.avis import Avis
 from src.business_object.film import Film
-<<<<<<< HEAD
 from src.Model.Utilisateur import Utilisateur
-=======
-from src.business_object.utilisateur import Utilisateur
->>>>>>> 08420aba6f4162dc43dc8ecbf222b0f64e2ac38e
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
 from src.Service.film_service import FilmService
@@ -196,20 +192,17 @@ class AvisDAO:
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    if utilisateur:
+                    if id_film and utilisateur::
                         # L'utilisateur souhaite lire son propre avis pour un film spécifique
                         query = "SELECT * FROM avis WHERE id_film = %s AND utilisateur = %s;"
                         cursor.execute(query, (id_film, utilisateur))
-                    else:
-                        # L'utilisateur souhaite lire tous les avis pour un film spécifique
+                    elif id_film:
                         query = "SELECT * FROM avis WHERE id_film = %s;"
                         cursor.execute(query, (id_film,))
+                    else:
+                        return avis_list  # Pas de critère, retourne une liste vide
 
                     rows = cursor.fetchall()
-                    if not rows:
-                        # Aucun avis trouvé
-                        print(f"Aucun avis trouvé pour le film avec l'ID {id_film}.")
-                        return "Aucun avis trouvé."
 
                     for row in rows:
                         avis = Avis(
@@ -224,4 +217,4 @@ class AvisDAO:
                 return avis_list
         except Exception as e:
             print(f"Erreur lors de la lecture des avis : {e}")
-            return "Erreur lors de la lecture des avis."
+            return avis_list
