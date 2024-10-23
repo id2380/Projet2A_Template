@@ -9,13 +9,14 @@ from src.Interface.init_app import jwt_service, utilisateur_service, utilisateur
 from src.Interface.jwt_bearer import JWTBearer
 from src.Service.mot_de_passe_service import valider_nom_utilisateur_mot_de_passe
 from pydantic import BaseModel
+from src.Service.film_service import FilmService
 
 if TYPE_CHECKING:
     from src.Model.Movie import Movie
 
-user_router = APIRouter(prefix="/films", tags=["Films"])
+film_router = APIRouter(prefix="/films", tags=["Films"])
 
-@user_router.get("/recherche_films", status_code=status.HTTP_200_OK)
+@film_router.get("/recherche_films", status_code=status.HTTP_200_OK)
 def recherche_films(title: str = None,
                     language: str = "en-US",
                     primary_release_year: int = None,
@@ -35,13 +36,13 @@ def recherche_films(title: str = None,
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
 
-@user_router.get("/recherche_films_similaires", status_code=status.HTTP_200_OK)
-def recherche_films_similaires(id_film : int, language: str = "en-US", page: int = 1):
+@film_router.get("/recherche_films_similaires", status_code=status.HTTP_200_OK)
+def recherche_films_similaires(id_film: int, language: str = "en-US"):
     import dotenv
     dotenv.load_dotenv(override=True)
     films = None
     try:
-        films = FilmService().recherche_films_similaires(id_film, language, page)
+        films = FilmService().recherche_films_similaires(id_film, language)
         # Vérification si l'avis a été créé avec succès
         if films is None:
             raise ValueError("Aucun film ne correspond à vos critères")

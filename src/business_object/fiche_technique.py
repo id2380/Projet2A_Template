@@ -24,9 +24,13 @@ class FicheTechnique():
         La durée du film.
     revenue : int
         Le revenue du film.
+    note_moyenne : float
+        La note moyenne du film.
+    avis : Liste[Avis]
+        Les avis associés au film.
     """
 
-    def __init__(self, budget, pays_origine, societe_prod, duree, revenue) -> None:
+    def __init__(self, budget, pays_origine, societe_prod, duree, revenue, note_moyenne, avis) -> None:
 
         # -----------------------------
         # Attributs
@@ -37,6 +41,8 @@ class FicheTechnique():
         self._societe_prod: str = societe_prod
         self._duree: int = duree
         self._revenue: int = revenue
+        self._note_moyenne: float = note_moyenne
+        self.avis = avis
 
     # -------------------------------------------------------------------------
     # Methodes
@@ -95,3 +101,12 @@ class FicheTechnique():
     @revenue.setter
     def revenue(self, value: int):
         self._revenue = value
+    
+    @property
+    def note_moyenne(self):
+        return self._note_moyenne
+
+    @note_moyenne.setter
+    def note_moyenne(self, value: float):
+        self._note_moyenne = value
+    
