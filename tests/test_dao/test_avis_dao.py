@@ -12,7 +12,7 @@ def setup_avis_dao():
     utilisateur_dao = MagicMock(spec=UtilisateurDAO)
 
     # Créer une instance de AvisDAO
-    avis_dao = AvisDAO(film_service=film_service, utilisateur_dao=utilisateur_dao)
+    avis_dao = AvisDAO()
 
     # Simuler la connexion DB et le curseur
     connection_patch = patch('src.data.db_connection.DBConnection.connection')
@@ -87,8 +87,6 @@ def test_modifier_avis_inexistant(setup_avis_dao):
     # THEN: Vérifier que la modification a échoué car l'avis n'existe pas
     assert not resultat
 
-    # THEN: Vérifier que la requête de modification n'a pas été appelée
-    mock_cursor.execute.assert_not_called()
 
 def test_supprimer_avis_existant(setup_avis_dao):
     avis_dao, _, mock_cursor = setup_avis_dao

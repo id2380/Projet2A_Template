@@ -1,10 +1,6 @@
 from src.business_object.avis import Avis
 from src.business_object.film import Film
-<<<<<<< HEAD
-from src.Model.Utilisateur import Utilisateur
-=======
 from src.business_object.utilisateur import Utilisateur
->>>>>>> 08420aba6f4162dc43dc8ecbf222b0f64e2ac38e
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
 from src.Service.film_service import FilmService
