@@ -1,9 +1,10 @@
 from datetime import datetime
 from src.business_object.fiche_technique import FicheTechnique
-from pydantic import BaseModel
+from src.Model.film import Film
+from typing import Optional
 
 
-class FilmComplet(BaseModel):
+class FilmComplet(Film):
 
     """
     Une classe qui représente un film complet.
@@ -44,16 +45,10 @@ class FilmComplet(BaseModel):
         Les avis associés au film.
     """
 
-    id_film: int
-    titre: str
-    genre: str
-    date_de_sortie: datetime
-    langue_originale: str
-    synopsis: str
-    budget: int
-    pays_origine: str
-    societe_prod: str
-    duree: int
-    revenue: int
-    note_moyenne: float = None
-    avis: list = None
+    budget: Optional[int] = None
+    pays_origine: Optional[str] = None
+    societe_prod: Optional[str] = None
+    duree: Optional[int] = None
+    revenue: Optional[int] = None
+    note_moyenne: Optional[float] = None
+    avis: Optional[list] = None

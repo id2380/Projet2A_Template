@@ -1,5 +1,6 @@
-from src.business_object.film import Film
+from src.Model.film import Film
 from src.data.db_connection import DBConnection
+from datetime import datetime
 
 
 class FilmDAO:
@@ -76,9 +77,13 @@ class FilmDAO:
                         genre=res["genre"],
                         date_de_sortie=res["date_de_sortie"],
                         langue_originale=res["langue_originale"],
-                        synopsis=res["synopsis"],
-                        fiche_technique=None)
+                        synopsis=res["synopsis"])
         return film
+
+    def parse_str(self,date:str):
+        if date != '':
+            return datetime.strptime(date, "%Y-%m-%d")
+        return None
 
     def supprimer_film(self, id_film: int) -> bool:
         """Suppression d'un film dans la base de données
@@ -114,3 +119,13 @@ if __name__ == "__main__":
    
 
     film_client = FilmDAO()
+    film = Film(id_film=1,
+                titre="Test",
+                genre="",
+                date_de_sortie=None,
+                langue_originale="",
+                synopsis="")
+    
+    # boolean = film_client.creer_film(film)
+    boolean = film_client.supprimer_film(1)
+    print(boolean)

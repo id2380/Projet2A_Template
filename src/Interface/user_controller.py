@@ -1,14 +1,17 @@
 from typing import TYPE_CHECKING, Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
-
-from src.Model.api_utilisateur import APIUtilisateur
-from src.Model.utilisateur import Utilisateur
-from src.Model.jwt_response import JWTResponse
-from src.Interface.init_app import jwt_service, utilisateur_service, utilisateur_dao
-from src.Interface.jwt_bearer import JWTBearer
-from src.Service.mot_de_passe_service import valider_nom_utilisateur_mot_de_passe
 from pydantic import BaseModel
+
+from src.Interface.init_app import (jwt_service, utilisateur_dao,
+                                    utilisateur_service)
+from src.Interface.jwt_bearer import JWTBearer
+from src.Model.api_utilisateur import APIUtilisateur
+from src.Model.jwt_response import JWTResponse
+from src.Model.utilisateur import Utilisateur
+from src.Service.mot_de_passe_service import \
+    valider_pseudo_utilisateur_mot_de_passe
 
 if TYPE_CHECKING:
     from src.Model.utilisateur import Utilisateur
@@ -45,30 +48,26 @@ def creer_compte(requete: Utilisateur) -> APIReponseCreationCompte:
     )
 
 
-@user_router.post("/jwt", status_code=status.HTTP_201_CREATED)
-def connexion(pseudo: str, mot_de_passe: str) -> JWTResponse:
+class AuthRequete(BaseModel):
+    pseudo: str
+    mot_de_passe: str
+
+@user_router.post("/authentification", status_code=status.HTTP_201_CREATED)
+def authentification(requete: AuthRequete) -> JWTResponse:
     """
     Authentifie l'utilisateur avec son pseudo et son mot de passe et retourne un token JWT.
     """
     try:
-        utilisateur = valider_nom_utilisateur_mot_de_passe(
-            nom_utilisateur=pseudo, 
-            mot_de_passe=mot_de_passe, 
-            utilisateur_DAO=utilisateur_dao  
+        utilisateur = valider_pseudo_utilisateur_mot_de_passe(
+            pseudo=requete.pseudo,
+            mot_de_passe=requete.mot_de_passe,
+            utilisateur_DAO=utilisateur_dao
         )
     except Exception as error:
         print(f"Erreur lors de la connexion : {error}")  # Log l'erreur dans le terminal
         raise HTTPException(status_code=403, detail="Combinaison nom d'utilisateur et mot de passe invalide") from error
 
-    return jwt_service.encoder_jwt(utilisateur.id_utilisateur)
-
-
-@user_router.get("/moi", dependencies=[Depends(JWTBearer())])
-def recuperer_profil_utilisateur(credentials: Annotated[HTTPAuthorizationCredentials, Depends(JWTBearer())]) -> APIUtilisateur:
-    """
-    Récupère le profil de l'utilisateur authentifié via JWT.
-    """
-    return obtenir_utilisateur_depuis_credentials(credentials)
+    return jwt_service.encode_jwt(utilisateur.id_utilisateur)
 
 
 def obtenir_utilisateur_depuis_credentials(credentials: HTTPAuthorizationCredentials) -> APIUtilisateur:
@@ -76,9 +75,17 @@ def obtenir_utilisateur_depuis_credentials(credentials: HTTPAuthorizationCredent
     Valide le JWT et récupère l'utilisateur associé à ce token.
     """
     token = credentials.credentials
-    user_id = int(jwt_service.valider_jwt_utilisateur(token))
-    utilisateur = utilisateur_dao.chercher_utilisateur_par_id(user_id)  
+    user_id = int(jwt_service.validate_user_jwt(token))  # Utilisation de la méthode correcte
+    utilisateur = utilisateur_dao.chercher_utilisateur_par_id(user_id)
     if not utilisateur:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
 
     return APIUtilisateur(id_utilisateur=utilisateur.id_utilisateur, pseudo=utilisateur.pseudo)
+
+
+@user_router.get("/mon_profil", response_model=APIUtilisateur)
+def recuperer_profil_utilisateur(credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())) -> APIUtilisateur:
+    """
+    Récupère le profil de l'utilisateur authentifié via JWT.
+    """
+    return obtenir_utilisateur_depuis_credentials(credentials)

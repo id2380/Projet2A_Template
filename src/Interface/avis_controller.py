@@ -1,40 +1,40 @@
-from typing import TYPE_CHECKING, Annotated
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials
-
-from src.Model.api_utilisateur import APIUtilisateur
-from src.Model.utilisateur import Utilisateur
-from src.Model.jwt_response import JWTResponse
-from src.Interface.init_app import jwt_service, utilisateur_service, utilisateur_dao
-from src.Interface.jwt_bearer import JWTBearer
-from src.Service.mot_de_passe_service import valider_nom_utilisateur_mot_de_passe
+from typing import TYPE_CHECKING
+from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
+from src.Interface.init_app import avis_service
 
-if TYPE_CHECKING: # Soukayna, la classe Avis sera à rajouter dans les modèles
+if TYPE_CHECKING:
     from src.Model.avis import Avis
 
-user_router = APIRouter(prefix="/avis", tags=["Avis"])
+# Création du routeur pour l'API Avis
+avis_router = APIRouter(prefix="/avis", tags=["Avis"])
 
+# Modèle de requête pour la création d'avis (non nécessaire ici car utilisation des paramètres GET)
 class RequeteCreationAvis(BaseModel):
-    film: str
+    id_film: int
     utilisateur: str
     commentaire: str
     note: int
 
-@app.post("/creer_avis", status_code=status.HTTP_201_CREATED)
-    def creer_avis(requete: RequeteCreationAvis):
-        try:
-            avis = avis_service.ajouter_avis(
-                id= None,
-                film=requete.film,
-                utilisateur=requete.utilisateur,
-                note=requete.note,
-                commentaire=requete.commentaire   
-            )
-            # Vérification si l'avis a été créé avec succès
-            if avis :
-                return {"message": "Votre avis a été créé avec succès."}
-            else:
-                raise ValueError("La création de l'avis a échoué.")
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Erreur : {str(e)}")
+@avis_router.get("/creer_avis", status_code=status.HTTP_201_CREATED)
+def creer_avis(id_film: int, utilisateur: str, commentaire: str, note: int):
+    import dotenv
+    dotenv.load_dotenv(override=True)
+    try:
+        # Création de l'avis avec l'ID du film fourni par l'utilisateur
+        avis = avis_service.ajouter_avis(
+            id_avis=None,
+            id_film=id_film,  # Utilisation de l'ID du film fourni en paramètre
+            utilisateur=utilisateur,
+            note=note,
+            commentaire=commentaire
+        )
+
+        # Vérification si l'avis a été créé avec succès
+        if avis:
+            return {"message": "Votre avis a été créé avec succès."}
+        else:
+            raise ValueError("La création de l'avis a échoué.")
+    
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Erreur lors de la création de l'avis : {str(e)}")

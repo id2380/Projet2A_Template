@@ -26,16 +26,16 @@ def verifier_robustesse_mot_de_passe(mot_de_passe: str):
         raise Exception("Le mot de passe doit contenir au moins 8 caractères")
 
 
-def valider_nom_utilisateur_mot_de_passe(
-        nom_utilisateur: str, mot_de_passe: str, utilisateur_DAO: UtilisateurDAO
+def valider_pseudo_utilisateur_mot_de_passe(
+        pseudo: str, mot_de_passe: str, utilisateur_DAO: UtilisateurDAO
     ) -> Utilisateur:
     """
     Valide les informations d'authentification fournies par l'utilisateur.
     
     Parameters
     ----------
-    nom_utilisateur : str
-        Le nom d'utilisateur fourni par l'utilisateur.
+    pseudo : str
+        Le pseudo fourni par l'utilisateur.
     mot_de_passe : str
         Le mot de passe fourni par l'utilisateur.
     utilisateur_DAO: UtilisateurDAO
@@ -51,15 +51,19 @@ def valider_nom_utilisateur_mot_de_passe(
     Exception
         Si l'utilisateur ou le mot de passe est incorrect.
     """
-    utilisateur_avec_nom: Optional[Utilisateur] = utilisateur_DAO.chercher_utilisateur_par_pseudo(nom_utilisateur=nom_utilisateur)
+    utilisateur_avec_pseudo: Optional[Utilisateur] = utilisateur_DAO.chercher_utilisateur_par_pseudo(pseudo=pseudo)
 
-    if utilisateur_avec_nom is None:
+    if utilisateur_avec_pseudo is None:
+        print(f"Nom d'utilisateur {pseudo} non trouvé")
         raise Exception("Nom d'utilisateur incorrect")
 
     # Vérifier le hachage du mot de passe avec celui enregistré dans la base
-    mot_de_passe_hache = hacher_mot_de_passe(mot_de_passe, utilisateur_avec_nom.sel)  # Utiliser le sel de l'utilisateur
-    if mot_de_passe_hache != utilisateur_avec_nom.mot_de_passe:
+    mot_de_passe_hache = hacher_mot_de_passe(mot_de_passe, utilisateur_avec_pseudo.sel)  # Utiliser le sel de l'utilisateur
+    print(f"Mot de passe haché attendu : {utilisateur_avec_pseudo.mot_de_passe}, Mot de passe haché reçu : {mot_de_passe_hache}")
+
+    if mot_de_passe_hache != utilisateur_avec_pseudo.mot_de_passe:
+        print(f"Mot de passe incorrect pour l'utilisateur {pseudo}")
         raise Exception("Mot de passe incorrect")
 
-    return utilisateur_avec_nom
-
+    print(f"Authentification réussie pour l'utilisateur {pseudo}")
+    return utilisateur_avec_pseudo
