@@ -1,9 +1,12 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
+
+from src.business_object.Avis import Avis
 from src.dao.avis_dao import AvisDAO
-from src.business_object.avis import Avis
-from src.Service.film_service import FilmService
 from src.dao.utilisateur_dao import UtilisateurDAO
+from src.Service.film_service import FilmService
+
 
 @pytest.fixture
 def setup_avis_dao():
