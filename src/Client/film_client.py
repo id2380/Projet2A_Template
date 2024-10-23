@@ -139,4 +139,4 @@ if __name__ == "__main__":
 
     film_client = FilmClient()
 
-    print(film_client.recherche_film_id(1184918).fiche_technique)
+    print(film_client.recherche_film_id(1184918).date_de_sortie)
