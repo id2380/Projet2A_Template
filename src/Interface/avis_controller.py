@@ -1,8 +1,15 @@
-from typing import TYPE_CHECKING
-from fastapi import APIRouter, HTTPException, status
+from typing import TYPE_CHECKING, Annotated
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
-from src.Interface.init_app import avis_service
-
+from fastapi.security import HTTPAuthorizationCredentials
+from src.Interface.init_app import jwt_service, utilisateur_service, utilisateur_dao
+from src.Model.api_utilisateur import APIUtilisateur
+from src.Model.utilisateur import Utilisateur
+from src.Model.jwt_response import JWTResponse
+from src.Interface.jwt_bearer import JWTBearer
+from pydantic import BaseModel
+from src.Service.film_service import FilmService
+from src.Service.avis_service import AvisService
 if TYPE_CHECKING:
     from src.Model.avis import Avis
 
@@ -22,8 +29,7 @@ def creer_avis(id_film: int, utilisateur: str, commentaire: str, note: int):
     dotenv.load_dotenv(override=True)
     try:
         # Création de l'avis avec l'ID du film fourni par l'utilisateur
-        avis = avis_service.ajouter_avis(
-            id_avis=None,
+        avis = AvisService.ajouter_avis(
             id_film=id_film,  # Utilisation de l'ID du film fourni en paramètre
             utilisateur=utilisateur,
             note=note,

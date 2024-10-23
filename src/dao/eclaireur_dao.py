@@ -42,11 +42,11 @@ class EclaireurDAO(metaclass=Singleton):
                     )
                     id_eclaireur = cursor.fetchone()
                     print(self.id_utilisateur)
-                    print(id_eclaireur["id_utilisateur"])
-
-                    if id_eclaireur is None:
+                    if cursor.rowcount == 0:
                         print("Utilisateur non trouvé.")
                         return False
+                    elif:
+                    print(id_eclaireur["id_utilisateur"])
         
         # Ajouter l'éclaireur en utilisant l'id_utilisateur récupéré
                     cursor.execute(
@@ -59,6 +59,7 @@ class EclaireurDAO(metaclass=Singleton):
                          'id_eclaireur': id_eclaireur["id_utilisateur"]}
                      )
                     res = cursor.fetchone()
+                    print(f"Vous suivez désormais {pseudo_eclaireur}.")
                     return True
             
         except Exception as e:
@@ -123,18 +124,25 @@ class EclaireurDAO(metaclass=Singleton):
                         print("Utilisateur non trouvé.")
                         return False
 
-                           # supprimer le couple utilisateur/éclaireur
+                    # supprimer le couple utilisateur/éclaireur
                     cursor.execute(
                         """
-                        DELETE id_utilisateur, id_eclaireur FROM abonne
+                        DELETE FROM abonne
                         WHERE (id_eclaireur = %(id_eclaireur)s
                         AND id_utilisateur = %(id_utilisateur)s)
                         """,
                         {'id_utilisateur': self.id_utilisateur,
                          'id_eclaireur': id_eclaireur["id_utilisateur"]}
                      )
-                    res = cursor.fetchone()
-                    return True
+                    
+                    if cursor.rowcount == 0:
+                        print("Aucun éclaireur trouvé. Vous n'êtes pas abonné.e à cet utilisateur.")
+                        return False
+                    elif cursor.rowcount == 1:
+                        print(f"{pseudo_eclaireur} a été supprimé.e de la liste de vos éclaireurs.")
+                        return True
+                    else:
+                        return False
             
         except Exception as e:
             print(f"Erreur lors de la suppression de l'éclaireur : {e}")
@@ -142,15 +150,21 @@ class EclaireurDAO(metaclass=Singleton):
 
 #test ajout eclaireur existant
 if __name__ == "__main__":
-    utilisateur = Utilisateur(4, "gab_utilisateur", mot_de_passe = "")
+    utilisateur = Utilisateur(6, "gob_utilisateur", mot_de_passe = "")
     utilisateurdao = EclaireurDAO(id_utilisateur = 4)
-    print(utilisateurdao.ajouter_eclaireur("tib_utilisateur"))
+    print(utilisateurdao.ajouter_eclaireur("poupou1"))
         
-#test ajout eclairuer non existant
+#test ajout eclaireur non existant
+if __name__ == "__main__":
+    print(utilisateurdao.ajouter_eclaireur("pépé2"))
+
+#test ajout éclaireur qu'on suit déjà/erreur
 
 #test supprimer eclaireur existant
 if __name__ == "__main__":
-    print(utilisateurdao.supprimer_eclaireur("tib_utilisateur"))
+    print(utilisateurdao.supprimer_eclaireur("poupou1"))
 
 
-#test 
+#test supprimer eclaireur non existant
+
+#test supprimer eclaireur auquel on n'est pas abonnés
