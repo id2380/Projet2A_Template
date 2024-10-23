@@ -76,7 +76,8 @@ class FilmDAO:
                         genre=res["genre"],
                         date_de_sortie=res["date_de_sortie"],
                         langue_originale=res["langue_originale"],
-                        synopsis=res["synopsis"],)
+                        synopsis=res["synopsis"],
+                        fiche_technique=None)
         return film
 
     def supprimer_film(self, id_film: int) -> bool:
@@ -108,3 +109,8 @@ class FilmDAO:
                     },
                 )
         return True
+if __name__ == "__main__":
+    # Pour charger les variables d'environnement contenues dans le fichier .env
+   
+
+    film_client = FilmDAO()
