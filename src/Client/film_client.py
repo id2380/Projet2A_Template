@@ -2,8 +2,8 @@ import os
 
 import requests
 
-from src.business_object.fiche_technique import FicheTechnique
-from src.business_object.film import Film
+from src.Model.film_complet import FilmComplet
+from src.Model.film import Film
 from src.utils.singleton import Singleton
 
 
@@ -36,8 +36,7 @@ class FilmClient(metaclass=Singleton):
                             genre="",
                             date_de_sortie=raw_film["release_date"],
                             langue_originale=raw_film["original_language"],
-                            synopsis=raw_film["overview"],
-                            fiche_technique = None)
+                            synopsis=raw_film["overview"])
 
                 if film:
                     films.append(film)
@@ -70,8 +69,7 @@ class FilmClient(metaclass=Singleton):
                             genre="",
                             date_de_sortie=raw_film["release_date"],
                             langue_originale=raw_film["original_language"],
-                            synopsis=raw_film["overview"],
-                            fiche_technique = None)
+                            synopsis=raw_film["overview"])
 
                 if film:
                     films.append(film)
@@ -89,20 +87,17 @@ class FilmClient(metaclass=Singleton):
         film = None
         if req.status_code == 200:
             proposition = req.json()
-            fiche_technique = FicheTechnique(budget=proposition["budget"],
-                                             pays_origine=proposition["origin_country"][0],
-                                             societe_prod=proposition["production_companies"][0]["name"],
-                                             duree=proposition["runtime"],
-                                             revenue=proposition["revenue"],
-                                             note_moyenne=None,
-                                             avis=None)
-            film = Film(id_film=proposition["id"],
-                        titre=proposition["title"],
-                        genre="",
-                        date_de_sortie=proposition["release_date"],
-                        langue_originale=proposition["original_language"],
-                        synopsis=proposition["overview"],
-                        fiche_technique = fiche_technique)
+            film = FilmComplet(id_film=proposition["id"],
+                               titre=proposition["title"],
+                               genre="",
+                               date_de_sortie=proposition["release_date"],
+                               langue_originale=proposition["original_language"],
+                               synopsis=proposition["overview"],
+                               budget=proposition["budget"],
+                               pays_origine=proposition["origin_country"][0],
+                               societe_prod=proposition["production_companies"][0]["name"],
+                               duree=proposition["runtime"],
+                               revenue=proposition["revenue"])
         return film
 
     def obtenir_films_similaires(self, id_film: int, language: str = "en-US",
@@ -121,8 +116,7 @@ class FilmClient(metaclass=Singleton):
                             genre="",
                             date_de_sortie=raw_film["release_date"],
                             langue_originale=raw_film["original_language"],
-                            synopsis=raw_film["overview"],
-                            fiche_technique=None)
+                            synopsis=raw_film["overview"])
 
                 if film:
                     films.append(film)
@@ -139,4 +133,6 @@ if __name__ == "__main__":
 
     film_client = FilmClient()
 
-    print(film_client.recherche_film_id(1184918).fiche_technique)
+    film = film_client.recherche_film_id(1184918)
+    film.note_moyenne = 0
+    print(film.note_moyenne)
