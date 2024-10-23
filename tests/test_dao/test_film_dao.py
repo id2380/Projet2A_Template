@@ -2,6 +2,7 @@ from datetime import datetime
 
 from src.business_object.film import Film
 from src.dao.film_dao import FilmDAO
+from src.data.db_connection import DBConnection
 
 
 class TestFilmDao:
@@ -9,12 +10,13 @@ class TestFilmDao:
         # GIVEN
         film_dao = FilmDAO()
         film = Film(
-            id_film=100,
+            id_film=300,
             titre="Test",
             genre="Test",
             date_de_sortie=datetime(2024, 10, 21),
             langue_originale="Français",
             synopsis="Ceci est un test.",
+            fiche_technique=None
         )
         # WHEN
         boolean = film_dao.creer_film(film)
@@ -25,12 +27,13 @@ class TestFilmDao:
         # GIVEN
         film_dao = FilmDAO()
         film = Film(
-            id_film=100,
+            id_film=300,
             titre="Test",
             genre="Test",
             date_de_sortie=datetime(2024, 10, 21),
             langue_originale="Français",
             synopsis="Ceci est un test.",
+            fiche_technique=None
         )
         # WHEN
         boolean = film_dao.creer_film(film)
@@ -41,7 +44,7 @@ class TestFilmDao:
         # GIVEN
         film_dao = FilmDAO()
         # WHEN
-        film = film_dao.lire_film(100)
+        film = film_dao.lire_film(300)
         # THEN
         assert film is not None
 
@@ -53,11 +56,11 @@ class TestFilmDao:
         # THEN
         assert film is None
 
-    def test_supprimer_film_existant(self, id_movie=100):
+    def test_supprimer_film_existant(self):
         # GIVEN
         film_dao = FilmDAO()
         # WHEN
-        boolean = film_dao.supprimer_film(100)
+        boolean = film_dao.supprimer_film(300)
         # THEN
         assert boolean is True
 
@@ -65,7 +68,7 @@ class TestFilmDao:
         # GIVEN
         film_dao = FilmDAO()
         # WHEN
-        boolean = film_dao.supprimer_film(100)
+        boolean = film_dao.supprimer_film(300)
         # THEN
         assert boolean is False
 
