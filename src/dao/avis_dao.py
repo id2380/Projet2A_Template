@@ -1,24 +1,29 @@
 from src.business_object.avis import Avis
 from src.dao.film_dao import FilmDAO
 from src.data.db_connection import DBConnection
+from src.Model.utilisateur import Utilisateur
+from src.Service.film_service import FilmService
 
 
 class AvisDAO:
-
     def creer_avis(self, avis: Avis) -> bool:
         try:
+            film_service = FilmService()  # Supposons que vous ayez déjà instancié le film_service ici
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    # verif si le film existe dans la bdd via l'id_film fourni
+                    # Vérification si le film existe dans la base de données via l'id_film fourni
                     cursor.execute("SELECT id_film FROM film WHERE id_film = %s;", (avis.id_film,))
-                    if not cursor.fetchone():
+                    film_exist = cursor.fetchone()
+
+                    if not film_exist:
                         print(f"Le film avec l'ID '{avis.id_film}' n'a pas été trouvé dans la base. Création en cours via l'API TMDB...")
-                        if not self.film_service.creer_film(avis.id_film):
+                        film_created = film_service.creer_film(avis.id_film)
+                        if not film_created:
                             print(f"Impossible de créer le film avec l'ID '{avis.id_film}' via l'API TMDB.")
                             return False
                         print(f"Film avec l'ID '{avis.id_film}' créé avec succès.")
 
-                    # Insertion avis dans la bdd sans vérifier l'utilisateur
+                    # Insertion de l'avis dans la base de données
                     cursor.execute("""
                         INSERT INTO avis(id_film, utilisateur, note, commentaire)
                         VALUES (%s, %s, %s, %s) RETURNING id;
