@@ -2,14 +2,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-<<<<<<< HEAD
 from src.business_object.avis import Avis
 from src.dao.avis_dao import AvisDAO
-=======
-from src.business_object.Avis import Avis
-from src.dao.avis_dao import AvisDAO
-from src.dao.utilisateur_dao import UtilisateurDAO
->>>>>>> 01072fffffdc00791ef2eb57dbf9ca5514c8faed
 from src.Service.film_service import FilmService
 
 
@@ -93,12 +87,8 @@ def test_modifier_avis_inexistant(setup_avis_dao):
     # Le film existe, mais pas l'avis
 
     # WHEN: Tentative de modification de l'avis
-<<<<<<< HEAD
     avis = Avis(id_avis=1, id_film=1184918, utilisateur='Soukayna', note=4,
                 commentaire="Nouveau ")
-=======
-    avis = Avis(id_avis=3, id_film=1184918, utilisateur='Soukayna', note=4, commentaire="Nouveau ")
->>>>>>> 01072fffffdc00791ef2eb57dbf9ca5514c8faed
     resultat = avis_dao.modifier_avis(avis)
 
     # THEN: Vérifier que la modification a échoué car l'avis n'existe pas
