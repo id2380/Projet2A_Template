@@ -35,3 +35,11 @@ class FilmService:
     def obtenir_film_complet(self, id_film : int):
         film_complet = FilmClient().recherche_film_id(id_film)
         return film_complet
+
+if __name__ == "__main__":
+    import dotenv
+    dotenv.load_dotenv(override=True)
+
+    film_service = FilmService()
+    print(film_service.creer_film(1184918))
+

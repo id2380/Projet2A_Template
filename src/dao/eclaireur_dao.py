@@ -34,15 +34,17 @@ class EclaireurDAO(metaclass=Singleton):
         if eclaireur is not None :
             try :
                 # Ajouter l'éclaireur en utilisant l'id_utilisateur récupéré
-                cursor.execute(
-                    """
-                    INSERT INTO abonne(id_utilisateur, id_eclaireur)
-                    VALUES (%(id_utilisateur)s, %(id_eclaireur)s)
-                    RETURNING id_utilisateur
-                    """,
-                    {'id_utilisateur': self.id_utilisateur,
-                        'id_eclaireur': eclaireur.id_utilisateur}
-                )
+                with DBConnection().connection as connection:
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            """
+                            INSERT INTO abonne(id_utilisateur, id_eclaireur)
+                            VALUES (%(id_utilisateur)s, %(id_eclaireur)s)
+                            RETURNING id_utilisateur
+                            """,
+                            {'id_utilisateur': self.id_utilisateur,
+                                'id_eclaireur': eclaireur.id_utilisateur}
+                        )
             except Exception as e:
                 print(f"Erreur lors de l'ajout de l'éclaireur : {e}")
                 return res
@@ -66,28 +68,28 @@ class EclaireurDAO(metaclass=Singleton):
            True s'il existe, + infos sur l'éclaireur ?
         """
         # Récupérer l'id_utilisateur à partir du pseudo
-        res = None
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        """
-                        SELECT pseudo, film FROM avis 
-                        JOIN utilisateur USING id_utilisateur
-                        WHERE pseudo = %(pseudo_eclaireur)s
-                        """,
-                        {'pseudo_eclaireur': pseudo_eclaireur}
-                    )
-                    id_eclaireur = cursor.fetchone()
-                    
-                    if id_eclaireur is None:
-                        print("Utilisateur non trouvé.")
-                        return False
-        
-        except Exception as e:
-            print(f"Erreur lors de l'ajout de l'éclaireur : {e}")
-            return False
-        pass
+        res = False
+        eclaireur = UtilisateurDAO().chercher_utilisateur_par_pseudo(pseudo_eclaireur)
+        if eclaireur is not None :
+            try :
+                # Ajouter l'éclaireur en utilisant l'id_utilisateur récupéré
+                with DBConnection().connection as connection:
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            """
+                            SELECT *
+                            FROM abonne
+                            WHERE id_utilisateur = %(id_utilisateur)s AND id_eclaireur =%(id_eclaireur)s
+                            """,
+                            {'id_utilisateur': self.id_utilisateur,
+                                'id_eclaireur': eclaireur.id_utilisateur}
+                        )
+                        return True
+            except Exception as e:
+                print(f"Erreur lors de la recherche de l'éclaireur : {e}")
+        return False
+            
+
 
     def supprimer_eclaireur(self, pseudo_eclaireur : str):
         res = None
@@ -136,15 +138,21 @@ class EclaireurDAO(metaclass=Singleton):
 #test ajout eclaireur existant
 if __name__ == "__main__":
     # Créer un utilisateur
-    utilisateur = Utilisateur(id_utilisateur=1, pseudo="gob_utilisateur", adresse_email="",mot_de_passe = "",sel="")
+    utilisateur = Utilisateur(pseudo="gob_utilisateur", adresse_email="",mot_de_passe = "",sel="")
     # Créer un éclaireur 
-    eclaireur = Utilisateur(id_utilisateur=2, pseudo="tib_utilisateur", adresse_email="", mot_de_passe = "",sel="")
+    eclaireur = Utilisateur(pseudo="tib_utilisateur", adresse_email="test", mot_de_passe = "",sel="")
     # Créer DAOs
-    eclaireur_dao = EclaireurDAO(utilisateur.id_utilisateur)
     utilisateur_dao = UtilisateurDAO()
     # Créer utilisateur dans la base
-    utilisateur_dao.creer(utilisateur)
-    utilisateur_dao.creer(eclaireur)
+    #utilisateur_dao.creer(utilisateur)
+    #utilisateur_dao.creer(eclaireur)
+
+    eclaireur_dao = EclaireurDAO(UtilisateurDAO().chercher_utilisateur_par_pseudo(utilisateur.pseudo).id_utilisateur)
+    utilisateur_dao = UtilisateurDAO()
+    
+
+    # eclaireur_dao.ajouter_eclaireur(eclaireur.pseudo)
+    print(eclaireur_dao.chercher_eclaireur_pseudo("test"))
 
 
     
