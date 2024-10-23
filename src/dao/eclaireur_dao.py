@@ -59,6 +59,7 @@ class EclaireurDAO(metaclass=Singleton):
                          'id_eclaireur': id_eclaireur["id_utilisateur"]}
                      )
                     res = cursor.fetchone()
+                    print(f"Vous suivez désormais {pseudo_eclaireur}")
                     return True
             
         except Exception as e:
@@ -123,10 +124,10 @@ class EclaireurDAO(metaclass=Singleton):
                         print("Utilisateur non trouvé.")
                         return False
 
-                           # supprimer le couple utilisateur/éclaireur
+                     # supprimer le couple utilisateur/éclaireur
                     cursor.execute(
                         """
-                        DELETE id_utilisateur, id_eclaireur FROM abonne
+                        DELETE FROM abonne
                         WHERE (id_eclaireur = %(id_eclaireur)s
                         AND id_utilisateur = %(id_utilisateur)s)
                         """,
@@ -134,6 +135,10 @@ class EclaireurDAO(metaclass=Singleton):
                          'id_eclaireur': id_eclaireur["id_utilisateur"]}
                      )
                     res = cursor.fetchone()
+
+                    if res is None:
+                        print("Vous n'êtes pas abonné.e à cet utilisateur")
+                        return False
                     return True
             
         except Exception as e:
@@ -142,15 +147,19 @@ class EclaireurDAO(metaclass=Singleton):
 
 #test ajout eclaireur existant
 if __name__ == "__main__":
-    utilisateur = Utilisateur(4, "gab_utilisateur", mot_de_passe = "")
+    utilisateur = Utilisateur(6, "gab_utilisateur", mot_de_passe = "")
     utilisateurdao = EclaireurDAO(id_utilisateur = 4)
-    print(utilisateurdao.ajouter_eclaireur("tib_utilisateur"))
+    print(utilisateurdao.ajouter_eclaireur("poupou1"))
         
 #test ajout eclairuer non existant
+
+#test ajout éclaireur qu'on suit déjà/erreur
 
 #test supprimer eclaireur existant
 if __name__ == "__main__":
     print(utilisateurdao.supprimer_eclaireur("tib_utilisateur"))
 
 
-#test 
+#test supprimer eclaireur non existant
+
+#test supprimer eclaireur auquel on n'est pas abonnés
