@@ -1,6 +1,6 @@
 import pytest
 
-from src.client.film_client import FilmClient
+from src.Client.film_client import FilmClient
 
 
 class TestFilmClient:
