@@ -2,14 +2,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-<<<<<<< HEAD
 from src.business_object.avis import Avis
 from src.dao.avis_dao import AvisDAO
-=======
-from src.business_object.Avis import Avis
-from src.dao.avis_dao import AvisDAO
 from src.dao.utilisateur_dao import UtilisateurDAO
->>>>>>> 01072fffffdc00791ef2eb57dbf9ca5514c8faed
 from src.Service.film_service import FilmService
 
 
@@ -93,12 +88,7 @@ def test_modifier_avis_inexistant(setup_avis_dao):
     # Le film existe, mais pas l'avis
 
     # WHEN: Tentative de modification de l'avis
-<<<<<<< HEAD
-    avis = Avis(id_avis=1, id_film=1184918, utilisateur='Soukayna', note=4,
-                commentaire="Nouveau ")
-=======
     avis = Avis(id_avis=3, id_film=1184918, utilisateur='Soukayna', note=4, commentaire="Nouveau ")
->>>>>>> 01072fffffdc00791ef2eb57dbf9ca5514c8faed
     resultat = avis_dao.modifier_avis(avis)
 
     # THEN: Vérifier que la modification a échoué car l'avis n'existe pas
@@ -128,8 +118,8 @@ def test_supprimer_avis_inexistant(setup_avis_dao):
     # Simuler que l'avis n'est pas trouvé
 
     # WHEN: Tentative de suppression de l'avis
-    resultat = avis_dao.supprimer_avis(avis_id=1, utilisateur="Alex",
-                                       id_film=1184918)
+    resultat = avis_dao.supprimer_avis(avis_id=5, utilisateur="lEA",
+                                       id_film=11918)
 
     # THEN: Vérifier que la suppression a échoué car l'avis n'existe pas
     assert resultat is False
@@ -143,7 +133,7 @@ def test_aucun_avis_trouve_pour_film(setup_avis_dao):
     mock_cursor.fetchall.return_value = []
 
     # WHEN: Tentative de lecture des avis pour ce film
-    resultat = avis_dao.lire_avis(id_film=1184918)
+    resultat = avis_dao.lire_avis(id_film=111918)
 
     # THEN: Vérifier que la méthode retourne un message indiquant
     # qu'il n'y a pas d'avis
@@ -182,12 +172,12 @@ def test_lire_tous_avis_pour_film(setup_avis_dao):
 
     # GIVEN: Plusieurs avis existent pour un film donné
     mock_cursor.fetchall.return_value = [
-        {'id': 1, 'id_film': 1184918, 'utilisateur': 'Soukayna', 'note': 5, 'commentaire': "Film incroyable"},
-        {'id': 2, 'id_film': 1184918, 'utilisateur': 'Yassine', 'note': 4, 'commentaire': "Très bon film"}
+        {'id': 1, 'id_film': 1184, 'utilisateur': 'Soukayna', 'note': 5, 'commentaire': "Film incroyable"},
+        {'id': 2, 'id_film': 1184, 'utilisateur': 'Yassine', 'note': 4, 'commentaire': "Très bon film"}
     ]
 
     # WHEN: Lecture de tous les avis pour ce film
-    avis_list = avis_dao.lire_avis(id_film=1184918)
+    avis_list = avis_dao.lire_avis(id_film=1184)
 
     # THEN: Vérifier que tous les avis pour le film sont récupérés
     assert len(avis_list) == 2

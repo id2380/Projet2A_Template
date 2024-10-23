@@ -8,7 +8,7 @@ class AvisService:
     def __init__(self, avis_dao: AvisDAO):
         self.avis_dao = avis_dao
 
-    def ajouter_avis(self, id_film: int, utilisateur_pseudo: str, commentaire: str, note: int) -> Avis:
+    def ajouter_avis(self, id_film: int, utilisateur: str, commentaire: str, note: int) -> Avis:
         """
         Ajoute un nouvel avis via le DAO.
         
@@ -28,7 +28,7 @@ class AvisService:
         Avis or None
             L'avis créé, ou None si l'ajout a échoué.
         """
-        nouvel_avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur_pseudo, note=note, commentaire=commentaire)
+        nouvel_avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur, note=note, commentaire=commentaire)
         return nouvel_avis if self.avis_dao.creer_avis(nouvel_avis) else None
 
     def obtenir_avis_par_film(self, id_film: int) -> list:
@@ -63,7 +63,7 @@ class AvisService:
         """
         return self.avis_dao.lire_avis(utilisateur=utilisateur_pseudo)
 
-    def modifier_avis(self, id_film: int, utilisateur_pseudo: str, commentaire: str, note: int) -> bool:
+    def modifier_avis(self, id_film: int, utilisateur: str, commentaire: str, note: int) -> bool:
         """
         Modifie un avis existant via le DAO.
         
