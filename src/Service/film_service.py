@@ -1,4 +1,4 @@
-from src.Client.film_client import FilmClient
+from src.client.film_client import FilmClient
 from src.dao.film_dao import FilmDAO
 
 
@@ -31,3 +31,7 @@ class FilmService:
     def recherche_films_similaires(self, id_film : int, language: str = "en-US", page: int = 1):
         films = FilmClient().obtenir_films_similaires(id_film, language, page)
         return films
+
+    def obtenir_film_complet(self, id_film : int):
+        film_complet = FilmClient().recherche_film_id(id_film)
+        return film_complet
