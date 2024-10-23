@@ -81,11 +81,12 @@ def test_modifier_avis_inexistant(setup_avis_dao):
     mock_cursor.fetchone.side_effect = [[1], None]  # Le film existe, mais pas l'avis
 
     # WHEN: Tentative de modification de l'avis
-    avis = Avis(id_avis=1, id_film=1184918, utilisateur='Soukayna', note=4, commentaire="Nouveau commentaire")
+    avis = Avis(id_avis=1, id_film=1184918, utilisateur='Soukayna', note=4, commentaire="Nouveau ")
     resultat = avis_dao.modifier_avis(avis)
 
     # THEN: Vérifier que la modification a échoué car l'avis n'existe pas
-    assert not resultat
+    assert resultat is False
+
 
 
 def test_supprimer_avis_existant(setup_avis_dao):
@@ -111,10 +112,11 @@ def test_supprimer_avis_inexistant(setup_avis_dao):
     mock_cursor.fetchone.return_value = None  # Simuler que l'avis n'est pas trouvé
 
     # WHEN: Tentative de suppression de l'avis
-    resultat = avis_dao.supprimer_avis(avis_id=1, utilisateur="Soukayna", id_film=1184918)
+    resultat = avis_dao.supprimer_avis(avis_id=1, utilisateur="Alex", id_film=1184918)
 
     # THEN: Vérifier que la suppression a échoué car l'avis n'existe pas
-    assert not resultat
+    assert  resultat is False
+
     # Test pour vérifier qu'aucun avis n'est trouvé pour un film donné
 def test_aucun_avis_trouve_pour_film(setup_avis_dao):
     avis_dao, _, mock_cursor = setup_avis_dao
@@ -128,7 +130,6 @@ def test_aucun_avis_trouve_pour_film(setup_avis_dao):
     # THEN: Vérifier que la méthode retourne un message indiquant qu'il n'y a pas d'avis
     assert resultat == "Aucun avis trouvé."
 
-# Test pour lire l'avis d'un utilisateur pour un film spécifique
 def test_lire_avis_par_utilisateur_pour_film(setup_avis_dao):
     avis_dao, _, mock_cursor = setup_avis_dao
 
@@ -140,6 +141,9 @@ def test_lire_avis_par_utilisateur_pour_film(setup_avis_dao):
     # WHEN: Lecture de l'avis de l'utilisateur pour ce film
     avis_list = avis_dao.lire_avis(id_film=1184918, utilisateur="Soukayna")
 
+    # Diagnostic : vérifier la liste des avis retournée
+    print(f"Liste des avis retournés : {avis_list}")
+
     # THEN: Vérifier que l'avis est bien celui de l'utilisateur pour le film
     assert len(avis_list) == 1
     avis = avis_list[0]
@@ -150,6 +154,8 @@ def test_lire_avis_par_utilisateur_pour_film(setup_avis_dao):
 
     # Vérification de la requête SQL
     mock_cursor.execute.assert_called_with("SELECT * FROM avis WHERE id_film = %s AND utilisateur = %s;", (1184918, "Soukayna"))
+
+    
 
 
 # Test pour lire tous les avis pour un film spécifique
