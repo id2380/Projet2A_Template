@@ -81,7 +81,7 @@ def test_modifier_avis_inexistant(setup_avis_dao):
     mock_cursor.fetchone.side_effect = [[1], None]  # Le film existe, mais pas l'avis
 
     # WHEN: Tentative de modification de l'avis
-    avis = Avis(id_avis=1, id_film=1184918, utilisateur='Soukayna', note=4, commentaire="Nouveau ")
+    avis = Avis(id_avis=3, id_film=1184918, utilisateur='Soukayna', note=4, commentaire="Nouveau ")
     resultat = avis_dao.modifier_avis(avis)
 
     # THEN: Vérifier que la modification a échoué car l'avis n'existe pas

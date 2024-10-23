@@ -1,6 +1,6 @@
 from src.business_object.avis import Avis
 from src.business_object.film import Film
-from src.Model.Utilisateur import Utilisateur
+from src.business_object.Utilisateur import Utilisateur
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
 from src.Service.film_service import FilmService
@@ -192,7 +192,7 @@ class AvisDAO:
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    if id_film and utilisateur::
+                    if id_film and utilisateur:
                         # L'utilisateur souhaite lire son propre avis pour un film spécifique
                         query = "SELECT * FROM avis WHERE id_film = %s AND utilisateur = %s;"
                         cursor.execute(query, (id_film, utilisateur))
