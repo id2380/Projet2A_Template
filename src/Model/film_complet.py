@@ -1,6 +1,7 @@
 from datetime import datetime
 from src.business_object.fiche_technique import FicheTechnique
 from src.Model.film import Film
+from typing import Optional
 
 
 class FilmComplet(Film):
@@ -44,10 +45,10 @@ class FilmComplet(Film):
         Les avis associés au film.
     """
 
-    budget: int = None
-    pays_origine: str = None
-    societe_prod: str = None
-    duree: int = None
-    revenue: int = None
-    note_moyenne: float = None
-    avis: list = None
+    budget: Optional[int] = None
+    pays_origine: Optional[str] = None
+    societe_prod: Optional[str] = None
+    duree: Optional[int] = None
+    revenue: Optional[int] = None
+    note_moyenne: Optional[float] = None
+    avis: Optional[list] = None

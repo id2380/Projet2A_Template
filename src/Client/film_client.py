@@ -1,5 +1,5 @@
 import os
-
+from datetime import datetime
 import requests
 
 from src.Model.film_complet import FilmComplet
@@ -34,10 +34,10 @@ class FilmClient(metaclass=Singleton):
                 film = Film(id_film=raw_film["id"],
                             titre=raw_film["title"],
                             genre="",
-                            date_de_sortie=raw_film["release_date"],
+                            date_de_sortie=self.parse_str(raw_film["release_date"]),
                             langue_originale=raw_film["original_language"],
                             synopsis=raw_film["overview"])
-
+            
                 if film:
                     films.append(film)
             return films
@@ -67,7 +67,7 @@ class FilmClient(metaclass=Singleton):
                 film = Film(id_film=raw_film["id"],
                             titre=raw_film["title"],
                             genre="",
-                            date_de_sortie=raw_film["release_date"],
+                            date_de_sortie=self.parse_str(raw_film["release_date"]),
                             langue_originale=raw_film["original_language"],
                             synopsis=raw_film["overview"])
 
@@ -90,7 +90,7 @@ class FilmClient(metaclass=Singleton):
             film = FilmComplet(id_film=proposition["id"],
                                titre=proposition["title"],
                                genre="",
-                               date_de_sortie=proposition["release_date"],
+                               date_de_sortie=self.parse_str(proposition["release_date"]),
                                langue_originale=proposition["original_language"],
                                synopsis=proposition["overview"],
                                budget=proposition["budget"],
@@ -114,15 +114,21 @@ class FilmClient(metaclass=Singleton):
                 film = Film(id_film=raw_film["id"],
                             titre=raw_film["title"],
                             genre="",
-                            date_de_sortie=raw_film["release_date"],
+                            date_de_sortie=self.parse_str(raw_film["release_date"]),
                             langue_originale=raw_film["original_language"],
                             synopsis=raw_film["overview"])
+
 
                 if film:
                     films.append(film)
             return films
         else:
             return None
+
+    def parse_str(self,date:str):
+        if date != '':
+            return datetime.strptime(date, "%Y-%m-%d")
+        return None
 
 
 # Pour tester, à supprimer par la suite
@@ -134,5 +140,6 @@ if __name__ == "__main__":
     film_client = FilmClient()
 
     film = film_client.recherche_film_id(1184918)
-    film.note_moyenne = 0
-    print(film.note_moyenne)
+
+    print(film.date_de_sortie)
+

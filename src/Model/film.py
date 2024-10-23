@@ -1,5 +1,7 @@
 from src.business_object.fiche_technique import FicheTechnique
 from pydantic import BaseModel
+from datetime import date
+from typing import Optional
 
 
 class Film(BaseModel):
@@ -31,7 +33,7 @@ class Film(BaseModel):
 
     id_film: int = None
     titre: str = None
-    genre: str = None
-    date_de_sortie: str = None
-    langue_originale: str = None
-    synopsis: str = None
+    genre: Optional[str] = None
+    date_de_sortie: Optional[date] = None
+    langue_originale: Optional[str] = None
+    synopsis: Optional[str] = None

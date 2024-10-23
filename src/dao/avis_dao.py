@@ -3,12 +3,11 @@ from src.business_object.film import Film
 from src.dao.film_dao import FilmDAO
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
-from src.Model.utilisateur import Utilisateur
+from src.Model.Utilisateur import Utilisateur
 from src.Service.film_service import FilmService
 
 
 class AvisDAO:
-
     
     def creer_avis(self, avis: Avis) -> bool:
         try:
