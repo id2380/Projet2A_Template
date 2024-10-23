@@ -28,7 +28,7 @@ class AvisService:
         Avis or None
             L'avis créé, ou None si l'ajout a échoué.
         """
-        nouvel_avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur, note=note, commentaire=commentaire)
+        nouvel_avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur.pseudo, note=note, commentaire=commentaire)
         return nouvel_avis if self.avis_dao.creer_avis(nouvel_avis) else None
 
     def obtenir_avis_par_film(self, id_film: int) -> list:
