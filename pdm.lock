@@ -5,15 +5,8 @@
 groups = ["default", "lint", "test", "typing"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-<<<<<<< HEAD
-content_hash = "sha256:f00da470e1f2036788ad391e466a9993d05d96a3bf76a1ae78e2026c8a8c1f7b"
-=======
-<<<<<<< HEAD
-content_hash = "sha256:6132e33764af5d87ab217d9a66b36d10e5aeb3d79db979d570597b5a016e405e"
-=======
+
 content_hash = "sha256:54eebae46f72cede5b703634c843f53c984223696122cf90c8ef88182ade778f"
->>>>>>> 9f052b616781bf271268ac6af338b8ebb4fe5a61
->>>>>>> efd5669d8e85f44ea39c456503a02957bbfc6b52
 
 [[metadata.targets]]
 requires_python = "==3.12.*"
