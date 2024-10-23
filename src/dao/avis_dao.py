@@ -1,14 +1,11 @@
 from src.business_object.avis import Avis
 from src.business_object.film import Film
-<<<<<<< HEAD
 from src.business_object.utilisateur import Utilisateur
-=======
-from src.Model.Utilisateur import Utilisateur
->>>>>>> 71565cea0018bd3011f48c09fae644688f5e4104
+from src.dao.film_dao import FilmDAO
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
 from src.Service.film_service import FilmService
-from src.dao.film_dao import FilmDAO
+
 
 class AvisDAO:
 
@@ -196,7 +193,7 @@ class AvisDAO:
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    if id_film and utilisateur::
+                    if id_film and utilisateur:
                         # L'utilisateur souhaite lire son propre avis pour un film spécifique
                         query = "SELECT * FROM avis WHERE id_film = %s AND utilisateur = %s;"
                         cursor.execute(query, (id_film, utilisateur))
