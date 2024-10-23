@@ -30,3 +30,7 @@ class FilmService:
             print(boolean)
             return boolean
         return False
+
+    def recherche_films_similaires(self, id_film : int, language: str = "en-US", page: int = 1):
+        films = FilmClient().obtenir_films_similaires(id_film, language, page)
+        return films

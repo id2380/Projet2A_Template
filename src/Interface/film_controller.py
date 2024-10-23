@@ -34,3 +34,17 @@ def recherche_films(title: str = None,
         return films
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
+
+@user_router.get("/recherche_films_similaires", status_code=status.HTTP_200_OK)
+def recherche_films_similaires(id_film : int, language: str = "en-US", page: int = 1):
+    import dotenv
+    dotenv.load_dotenv(override=True)
+    films = None
+    try:
+        films = FilmService().recherche_films_similaires(id_film, language, page)
+        # Vérification si l'avis a été créé avec succès
+        if films is None:
+            raise ValueError("Aucun film ne correspond à vos critères")
+        return films
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
