@@ -7,7 +7,6 @@ from src.Model.utilisateur import Utilisateur
 from src.Model.jwt_response import JWTResponse
 from src.Interface.init_app import jwt_service, utilisateur_service, utilisateur_dao
 from src.Interface.jwt_bearer import JWTBearer
-from src.Service.mot_de_passe_service import valider_nom_utilisateur_mot_de_passe
 from pydantic import BaseModel
 from src.Service.film_service import FilmService
 from src.Service.avis_service import AvisService

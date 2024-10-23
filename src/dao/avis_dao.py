@@ -1,6 +1,10 @@
 from src.business_object.avis import Avis
 from src.business_object.film import Film
+<<<<<<< HEAD
 from src.business_object.utilisateur import Utilisateur
+=======
+from src.Model.Utilisateur import Utilisateur
+>>>>>>> 71565cea0018bd3011f48c09fae644688f5e4104
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
 from src.Service.film_service import FilmService
@@ -8,10 +12,7 @@ from src.dao.film_dao import FilmDAO
 
 class AvisDAO:
 
-    """Classe contenant les méthodes pour créer, consulter, modifier et supprimer des avis dans la base de données."""
-    def __init__(self, film_service: FilmService, utilisateur_dao: UtilisateurDAO):
-        self.film_service = film_service
-        self.utilisateur_dao = utilisateur_dao
+    
     def creer_avis(self, avis: Avis) -> bool:
         try:
             with DBConnection().connection as connection:
@@ -189,22 +190,24 @@ class AvisDAO:
         Returns
         -------
         avis_list : list of Avis
-            Une liste des avis récupérés.
+            Une liste des avis récupérés. Si aucun avis n'est trouvé, retourne un message indiquant qu'il n'y a pas d'avis.
         """
         avis_list = []
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    if utilisateur:
+                    if id_film and utilisateur::
                         # L'utilisateur souhaite lire son propre avis pour un film spécifique
                         query = "SELECT * FROM avis WHERE id_film = %s AND utilisateur = %s;"
                         cursor.execute(query, (id_film, utilisateur))
-                    else:
-                        # L'utilisateur souhaite lire tous les avis pour un film spécifique
+                    elif id_film:
                         query = "SELECT * FROM avis WHERE id_film = %s;"
                         cursor.execute(query, (id_film,))
+                    else:
+                        return avis_list  # Pas de critère, retourne une liste vide
 
                     rows = cursor.fetchall()
+
                     for row in rows:
                         avis = Avis(
                             id_avis=row['id'],
