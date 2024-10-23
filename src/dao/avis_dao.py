@@ -1,6 +1,6 @@
 from src.business_object.avis import Avis
 from src.business_object.film import Film
-from src.business_object.Utilisateur import Utilisateur
+from src.Model.Utilisateur import Utilisateur
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
 from src.Service.film_service import FilmService
@@ -8,10 +8,7 @@ from src.dao.film_dao import FilmDAO
 
 class AvisDAO:
 
-    """Classe contenant les méthodes pour créer, consulter, modifier et supprimer des avis dans la base de données."""
-    def __init__(self, film_service: FilmService, utilisateur_dao: UtilisateurDAO):
-        self.film_service = film_service
-        self.utilisateur_dao = utilisateur_dao
+    
     def creer_avis(self, avis: Avis) -> bool:
         try:
             with DBConnection().connection as connection:
@@ -189,7 +186,7 @@ class AvisDAO:
         Returns
         -------
         avis_list : list of Avis
-            Une liste des avis récupérés.
+            Une liste des avis récupérés. Si aucun avis n'est trouvé, retourne un message indiquant qu'il n'y a pas d'avis.
         """
         avis_list = []
         try:
@@ -205,6 +202,11 @@ class AvisDAO:
                         cursor.execute(query, (id_film,))
 
                     rows = cursor.fetchall()
+                    if not rows:
+                        # Aucun avis trouvé
+                        print(f"Aucun avis trouvé pour le film avec l'ID {id_film}.")
+                        return "Aucun avis trouvé."
+
                     for row in rows:
                         avis = Avis(
                             id_avis=row['id'],
@@ -218,4 +220,4 @@ class AvisDAO:
                 return avis_list
         except Exception as e:
             print(f"Erreur lors de la lecture des avis : {e}")
-            return avis_list
+            return "Erreur lors de la lecture des avis."
