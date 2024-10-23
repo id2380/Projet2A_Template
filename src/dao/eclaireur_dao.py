@@ -1,4 +1,4 @@
-from src.business_object.utilisateur import Utilisateur
+from src.Model.utilisateur import Utilisateur
 # from src.service.utilisateur_service import UtilisateurService
 # importer IDENTIFIANT 
 from src.dao.utilisateur_dao import UtilisateurDAO
@@ -29,43 +29,28 @@ class EclaireurDAO(metaclass=Singleton):
            True si l'ajout a réussi, False sinon"""
         
         # Récupérer l'id_utilisateur à partir du pseudo
-        res = None
-        try:
-            with DBConnection().connection as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        """
-                        SELECT id_utilisateur FROM utilisateur 
-                        WHERE pseudo = %(pseudo_eclaireur)s
-                        """,
-                        {'pseudo_eclaireur': pseudo_eclaireur}
-                    )
-                    id_eclaireur = cursor.fetchone()
-                    print(self.id_utilisateur)
-                    if cursor.rowcount == 0:
-                        print("Utilisateur non trouvé.")
-                        return False
-                    elif:
-                    print(id_eclaireur["id_utilisateur"])
-        
-        # Ajouter l'éclaireur en utilisant l'id_utilisateur récupéré
-                    cursor.execute(
-                        """
-                        INSERT INTO abonne(id_utilisateur, id_eclaireur)
-                        VALUES (%(id_utilisateur)s, %(id_eclaireur)s)
-                        RETURNING id_utilisateur
-                        """,
-                        {'id_utilisateur': self.id_utilisateur,
-                         'id_eclaireur': id_eclaireur["id_utilisateur"]}
-                     )
-                    res = cursor.fetchone()
-                    print(f"Vous suivez désormais {pseudo_eclaireur}.")
-                    return True
-            
-        except Exception as e:
-            print(f"Erreur lors de l'ajout de l'éclaireur : {e}")
-            return False
+        res = False
+        eclaireur = UtilisateurDAO().chercher_utilisateur_par_pseudo(pseudo_eclaireur)
+        if eclaireur is not None :
+            try :
+                # Ajouter l'éclaireur en utilisant l'id_utilisateur récupéré
+                cursor.execute(
+                    """
+                    INSERT INTO abonne(id_utilisateur, id_eclaireur)
+                    VALUES (%(id_utilisateur)s, %(id_eclaireur)s)
+                    RETURNING id_utilisateur
+                    """,
+                    {'id_utilisateur': self.id_utilisateur,
+                        'id_eclaireur': eclaireur.id_utilisateur}
+                )
+            except Exception as e:
+                print(f"Erreur lors de l'ajout de l'éclaireur : {e}")
+                return res
+            print(f"Vous suivez maintenant : {eclaireur.pseudo}")
+            return True
 
+        print("Utilisateur non trouvé.")
+        return False
 
     def chercher_eclaireur_pseudo(self, pseudo_eclaireur : str): 
         """Recherche éclaireur par pseudo
@@ -150,10 +135,22 @@ class EclaireurDAO(metaclass=Singleton):
 
 #test ajout eclaireur existant
 if __name__ == "__main__":
-    utilisateur = Utilisateur(6, "gob_utilisateur", mot_de_passe = "")
-    utilisateurdao = EclaireurDAO(id_utilisateur = 4)
-    print(utilisateurdao.ajouter_eclaireur("poupou1"))
-        
+    # Créer un utilisateur
+    utilisateur = Utilisateur(id_utilisateur=1, pseudo="gob_utilisateur", adresse_email="",mot_de_passe = "",sel="")
+    # Créer un éclaireur 
+    eclaireur = Utilisateur(id_utilisateur=2, pseudo="tib_utilisateur", adresse_email="", mot_de_passe = "",sel="")
+    # Créer DAOs
+    eclaireur_dao = EclaireurDAO(utilisateur.id_utilisateur)
+    utilisateur_dao = UtilisateurDAO()
+    # Créer utilisateur dans la base
+    utilisateur_dao.creer(utilisateur)
+    utilisateur_dao.creer(eclaireur)
+
+
+    
+    #print(utilisateurdao.ajouter_eclaireur("poupou1"))
+
+"""      
 #test ajout eclaireur non existant
 if __name__ == "__main__":
     print(utilisateurdao.ajouter_eclaireur("pépé2"))
@@ -167,4 +164,4 @@ if __name__ == "__main__":
 
 #test supprimer eclaireur non existant
 
-#test supprimer eclaireur auquel on n'est pas abonnés
+#test supprimer eclaireur auquel on n'est pas abonnés"""
