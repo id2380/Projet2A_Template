@@ -1,13 +1,14 @@
-from src.dao.avis_dao import AvisDAO
 from src.business_object.avis import Avis
 from src.business_object.film import Film
+from src.dao.avis_dao import AvisDAO
 from src.Model.utilisateur import Utilisateur
+
 
 class AvisService:
     def __init__(self, avis_dao: AvisDAO):
         self.avis_dao = avis_dao
 
-    def ajouter_avis(self, id_film: int, utilisateur: pseudo, commentaire: str, note: int) -> Avis:
+    def ajouter_avis(self, id_film: int, utilisateur: Utilisateur, commentaire: str, note: int) -> Avis:
         """
         Ajoute un nouvel avis via le DAO.
         
