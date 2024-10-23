@@ -1,8 +1,5 @@
 from src.business_object.avis import Avis
-from src.business_object.film import Film
-from src.business_object.utilisateur import Utilisateur
 from src.dao.film_dao import FilmDAO
-from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
 from src.Model.utilisateur import Utilisateur
 from src.Service.film_service import FilmService
@@ -30,7 +27,8 @@ class AvisDAO:
                     cursor.execute("""
                         INSERT INTO avis(id_film, utilisateur, note, commentaire)
                         VALUES (%s, %s, %s, %s) RETURNING id;
-                    """, (avis.id_film, avis.utilisateur, avis.note, avis.commentaire))
+                    """, (avis.id_film, avis.utilisateur, avis.note,
+                          avis.commentaire))
 
                     avis.id_avis = cursor.fetchone()[0]
                     connection.commit()
@@ -40,20 +38,18 @@ class AvisDAO:
             print(f"Erreur lors de la création de l'avis : {e}")
         return False
 
-
-
-
-    
-
     def modifier_avis(self, avis: Avis) -> bool:
         """
-        Modification d'un avis existant pour un utilisateur spécifique et un film spécifique.
-        La fonction vérifie d'abord si le film et l'avis existent dans la base de données.
+        Modification d'un avis existant pour un utilisateur spécifique et
+        un film spécifique.
+        La fonction vérifie d'abord si le film et l'avis existent dans la base
+        de données.
 
         Parameters
         ----------
         avis : Avis
-            L'avis à modifier, qui inclut l'ID du film, le pseudo de l'utilisateur, la note et le commentaire.
+            L'avis à modifier, qui inclut l'ID du film, le pseudo de
+            l'utilisateur, la note et le commentaire.
 
         Returns
         -------
@@ -66,14 +62,14 @@ class AvisDAO:
                     # Vérification si le film existe dans la base de données
                     cursor.execute("SELECT id_film FROM film WHERE id_film = %s;", (avis.id_film,))
                     film_exist = cursor.fetchone()
-                
+
                     if not film_exist:
                         print(f"Le film avec l'ID '{avis.id_film}' n'existe pas dans la base de données.")
                         return False
 
                     # Vérification si l'utilisateur a déjà laissé un avis pour ce film
                     cursor.execute(
-                        "SELECT id FROM avis WHERE id_film = %s AND utilisateur = %s;", 
+                        "SELECT id FROM avis WHERE id_film = %s AND utilisateur = %s;",
                         (avis.id_film, avis.utilisateur)
                     )
                     avis_exist = cursor.fetchone()
@@ -110,10 +106,11 @@ class AvisDAO:
             print(f"Erreur lors de la modification de l'avis : {e}")
             return False
 
-
-    def supprimer_avis(self, avis_id: int, utilisateur: str, id_film: int) -> bool:
+    def supprimer_avis(self, avis_id: int, utilisateur: str,
+                       id_film: int) -> bool:
         """
-        Suppression d'un avis dans la base de données pour un utilisateur et un film spécifiques.
+        Suppression d'un avis dans la base de données pour un utilisateur et
+        un film spécifiques.
         Supprime également le film si plus aucun avis n'existe pour ce film.
 
         Parameters
@@ -133,7 +130,7 @@ class AvisDAO:
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    # Vérification si l'avis existe pour cet utilisateur et ce film
+                    # verif avis existe pour cet utilisateur et ce film
                     cursor.execute(
                         "SELECT id FROM avis WHERE id = %s AND utilisateur = %s AND id_film = %s;",
                         (avis_id, utilisateur, id_film)
@@ -174,37 +171,39 @@ class AvisDAO:
             print(f"Erreur lors de la suppression de l'avis : {e}")
             return False
 
-
-    
     def lire_avis(self, id_film: int, utilisateur: str = None):
         """
-        Lecture des avis dans la base de données basée sur l'ID du film, et éventuellement le pseudo de l'utilisateur.
+        Lecture des avis dans la base de données basée sur l'ID du film, et
+        éventuellement le pseudo de l'utilisateur.
 
         Parameters
         ----------
         id_film : int
             L'ID du film pour lequel consulter les avis.
         utilisateur : str, optional
-            Le nom de l'utilisateur pour lequel consulter son propre avis (facultatif).
+            Le nom de l'utilisateur pour lequel consulter son propre avis
+            (facultatif).
 
         Returns
         -------
         avis_list : list of Avis
-            Une liste des avis récupérés. Si aucun avis n'est trouvé, retourne un message indiquant qu'il n'y a pas d'avis.
+            Une liste des avis récupérés. Si aucun avis n'est trouvé, retourne
+            un message indiquant qu'il n'y a pas d'avis.
         """
         avis_list = []
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     if id_film and utilisateur:
-                        # L'utilisateur souhaite lire son propre avis pour un film spécifique
+                        # utilisateur souhaite lire son avis pour un film
                         query = "SELECT * FROM avis WHERE id_film = %s AND utilisateur = %s;"
                         cursor.execute(query, (id_film, utilisateur))
                     elif id_film:
                         query = "SELECT * FROM avis WHERE id_film = %s;"
                         cursor.execute(query, (id_film,))
                     else:
-                        return avis_list  # Pas de critère, retourne une liste vide
+                        return avis_list
+                        # Pas de critère, retourne une liste vide
 
                     rows = cursor.fetchall()
 

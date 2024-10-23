@@ -1,17 +1,20 @@
 from src.business_object.avis import Avis
-from src.business_object.film import Film
 from src.dao.avis_dao import AvisDAO
-from src.Model.utilisateur import Utilisateur
 
 
 class AvisService:
     def __init__(self, avis_dao: AvisDAO):
         self.avis_dao = avis_dao
 
+<<<<<<< HEAD
     def ajouter_avis(self, id_film: int, utilisateur: str, commentaire: str, note: int) -> Avis:
+=======
+    def ajouter_avis(self, id_film: int, utilisateur_pseudo: str,
+                     commentaire: str, note: int) -> Avis:
+>>>>>>> 4fb9a755b2c0e51597614ce73f7a3fa064b7eaf3
         """
         Ajoute un nouvel avis via le DAO.
-        
+
         Parameters
         ----------
         id_film : int
@@ -34,7 +37,7 @@ class AvisService:
     def obtenir_avis_par_film(self, id_film: int) -> list:
         """
         Obtient tous les avis pour un film donné.
-        
+
         Parameters
         ----------
         id_film : int
@@ -50,7 +53,7 @@ class AvisService:
     def obtenir_avis_par_utilisateur(self, utilisateur_pseudo: str) -> list:
         """
         Obtient tous les avis rédigés par un utilisateur donné.
-        
+
         Parameters
         ----------
         utilisateur_pseudo : str
@@ -66,7 +69,7 @@ class AvisService:
     def modifier_avis(self, id_film: int, utilisateur: str, commentaire: str, note: int) -> bool:
         """
         Modifie un avis existant via le DAO.
-        
+
         Parameters
         ----------
         id_film : int
@@ -83,12 +86,15 @@ class AvisService:
         bool
             True si la modification a réussi, False sinon.
         """
-        avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur_pseudo, commentaire=commentaire, note=note)
+        avis = Avis(id_avis=None, id_film=id_film,
+                    utilisateur=utilisateur_pseudo,
+                    commentaire=commentaire, note=note)
         return self.avis_dao.modifier_avis(avis)
 
     def supprimer_avis(self, id_film: int, utilisateur_pseudo: str) -> bool:
         """
-        Supprime un avis via le DAO et supprime le film si c'était le dernier avis.
+        Supprime un avis via le DAO et supprime le film si c'était
+        le dernier avis.
 
         Parameters
         ----------
@@ -102,12 +108,13 @@ class AvisService:
         bool
             True si la suppression a réussi, False sinon.
         """
-        return self.avis_dao.supprimer_avis(id_film=id_film, utilisateur=utilisateur_pseudo)
+        return self.avis_dao.supprimer_avis(id_film=id_film,
+                                            utilisateur=utilisateur_pseudo)
 
     def calculer_note_moyenne(self, id_film: int) -> float:
         """
         Calcule la note moyenne des avis pour un film spécifié.
-        
+
         Parameters
         ----------
         id_film : int
@@ -122,4 +129,5 @@ class AvisService:
         if not avis_list or avis_list == "Aucun avis trouvé.":
             return 0.0  # Retourne 0 si aucun avis n'est disponible
         total_notes = sum(avis.note for avis in avis_list)
+        return total_notes / len(avis_list)
         return total_notes / len(avis_list)
