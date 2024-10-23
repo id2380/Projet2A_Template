@@ -10,14 +10,14 @@ from src.Service.utilisateur_service import UtilisateurService
 class TestAjouterEclaireur(unittest.TestCase):
     def test_ajouter_eclaireur_utilisateur_existant(self, mock_db_connection):
         #créer un vrai utilisateur
-        gab_utilisateur = Utilisateur(pseudo = "gob", adresse_email = "gab@gab.fr", mot_de_passe = "mdp")
-        tib_eclaireur = Utilisateur(pseudo = "tob", adresse_email = "tib@tib.fr", mot_de_passe = "mdp")
+        gab_utilisateur = Utilisateur(pseudo="gob", adresse_email="gab@gab.fr",
+                                      mot_de_passe="mdp")
+        tib_eclaireur = Utilisateur(pseudo="tob", adresse_email="tib@tib.fr",
+                                    mot_de_passe="mdp")
         utilisateur_dao = UtilisateurDAO()
         utilisateur_dao.creer(tib_eclaireur)
         utilisateur_dao.creer(gab_utilisateur)
-        
 
-        #
         assert True
 
 

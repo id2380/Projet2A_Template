@@ -10,20 +10,28 @@ from src.Interface.jwt_bearer import JWTBearer
 from src.Model.api_utilisateur import APIUtilisateur
 from src.Model.jwt_response import JWTResponse
 from src.Model.utilisateur import Utilisateur
-from src.Service.mot_de_passe_service import \
-    valider_pseudo_utilisateur_mot_de_passe
+from src.Service.mot_de_passe_service import (
+    valider_pseudo_utilisateur_mot_de_passe, verifier_robustesse_mot_de_passe)
 
 if TYPE_CHECKING:
     from src.Model.utilisateur import Utilisateur
 
 user_router = APIRouter(prefix="/utilisateurs", tags=["Utilisateurs"])
 
+
+class CreationCompteRequete(BaseModel):
+    pseudo: str
+    adresse_email: str
+    mot_de_passe: str
+
+
 class APIReponseCreationCompte(BaseModel):
     utilisateur: APIUtilisateur
     message: str
 
+
 @user_router.post("/creer_compte", status_code=status.HTTP_201_CREATED, response_model=APIReponseCreationCompte)
-def creer_compte(requete: Utilisateur) -> APIReponseCreationCompte:
+def creer_compte(requete: CreationCompteRequete) -> APIReponseCreationCompte:
     """
     Crée un nouvel utilisateur et renvoie les informations (tronquées) de l'utilisateur 
     et un message de bienvenue.
@@ -31,6 +39,12 @@ def creer_compte(requete: Utilisateur) -> APIReponseCreationCompte:
     # Vérifier si le pseudo existe déjà
     if utilisateur_dao.chercher_utilisateur_par_pseudo(requete.pseudo):
         raise HTTPException(status_code=409, detail="Le pseudo existe déjà")
+
+    # Vérification de la robustesse du mot de passe
+    try:
+        verifier_robustesse_mot_de_passe(requete.mot_de_passe)
+    except Exception as error:
+        raise HTTPException(status_code=400, detail=str(error))
 
     try:
         # Création de l'utilisateur via le service
