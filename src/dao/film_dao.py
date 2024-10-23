@@ -1,4 +1,4 @@
-from src.business_object.film import Film
+from src.Model.film import Film
 from src.data.db_connection import DBConnection
 
 
@@ -76,8 +76,7 @@ class FilmDAO:
                         genre=res["genre"],
                         date_de_sortie=res["date_de_sortie"],
                         langue_originale=res["langue_originale"],
-                        synopsis=res["synopsis"],
-                        fiche_technique=None)
+                        synopsis=res["synopsis"])
         return film
 
     def supprimer_film(self, id_film: int) -> bool:
