@@ -54,16 +54,12 @@ def valider_pseudo_utilisateur_mot_de_passe(
     utilisateur_avec_pseudo: Optional[Utilisateur] = utilisateur_DAO.chercher_utilisateur_par_pseudo(pseudo=pseudo)
 
     if utilisateur_avec_pseudo is None:
-        print(f"Nom d'utilisateur {pseudo} non trouvé")
         raise Exception("Nom d'utilisateur incorrect")
 
     # Vérifier le hachage du mot de passe avec celui enregistré dans la base
-    mot_de_passe_hache = hacher_mot_de_passe(mot_de_passe, utilisateur_avec_pseudo.sel)  # Utiliser le sel de l'utilisateur
-    print(f"Mot de passe haché attendu : {utilisateur_avec_pseudo.mot_de_passe}, Mot de passe haché reçu : {mot_de_passe_hache}")
+    mot_de_passe_hache = hacher_mot_de_passe(mot_de_passe, utilisateur_avec_pseudo.sel) 
 
     if mot_de_passe_hache != utilisateur_avec_pseudo.mot_de_passe:
-        print(f"Mot de passe incorrect pour l'utilisateur {pseudo}")
         raise Exception("Mot de passe incorrect")
 
-    print(f"Authentification réussie pour l'utilisateur {pseudo}")
     return utilisateur_avec_pseudo

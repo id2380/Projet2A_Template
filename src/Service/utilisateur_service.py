@@ -31,5 +31,3 @@ class UtilisateurService:
         # Sauvegarde de l'utilisateur en base de données
         return nouvel_utilisateur if self.utilisateur_dao.creer(nouvel_utilisateur) else None
 
-
-

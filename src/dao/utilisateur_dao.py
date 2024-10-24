@@ -1,5 +1,5 @@
-from src.Model.utilisateur import Utilisateur
 from src.data.db_connection import DBConnection
+from src.Model.utilisateur import Utilisateur
 
 
 class UtilisateurDAO:
