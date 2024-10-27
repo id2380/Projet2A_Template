@@ -17,9 +17,7 @@ class EclaireurDAO(metaclass=Singleton):
                             'id_eclaireur': id_eclaireur}
                     )
         except Exception as e:
-            print(f"Erreur lors de l'ajout de l'éclaireur : {e}")
-            return False
-        return True
+            raise ValueError(f"Erreur lors de l'ajout de l'éclaireur : {e}")
 
     def est_eclaireur(self, id_utilisateur: int, id_eclaireur: int):
         try:
@@ -39,8 +37,7 @@ class EclaireurDAO(metaclass=Singleton):
                         return True
                     return False
         except Exception as e:
-            print(f"Erreur lors de la recherche de l'éclaireur : {e}")
-            return None
+            raise ValueError(f"Erreur lors de l'abonnement avec l'éclaireur : {e}")
 
     def liste_eclaireurs(self, id_utilisateur: int):
         try:
@@ -57,8 +54,7 @@ class EclaireurDAO(metaclass=Singleton):
                     res = cursor.fetchall()
                     return [d['id_eclaireur'] for d in res]
         except Exception as e:
-            print(f"Erreur lors de la recherche de l'éclaireur : {e}")
-            return []
+            raise ValueError(f"Erreur lors de la recherche des éclaireurs : {e}")
 
     def supprimer_eclaireur(self, id_utilisateur: int, id_eclaireur: int):
         try:
@@ -73,7 +69,5 @@ class EclaireurDAO(metaclass=Singleton):
                         {'id_utilisateur': id_utilisateur,
                          'id_eclaireur': id_eclaireur}
                     )
-                    return True
         except Exception as e:
-            print(f"Erreur lors de la recherche de l'éclaireur : {e}")
-            return False
+            raise ValueError(f"Erreur lors de la suppression de l'éclaireur : {e}")
