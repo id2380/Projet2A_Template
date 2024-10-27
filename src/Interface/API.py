@@ -16,7 +16,7 @@ def run_app():
 
     app.include_router(film_router)
 
-    app.include_router(avis_router)
+    #app.include_router(avis_router)
 
     #app.include_router(eclaireurs_router)
 

@@ -10,7 +10,7 @@ from src.Service.eclaireurs_service import EclaireurService
 eclaireurs_router = APIRouter(prefix="/Eclaireurs", tags=["Eclaireurs"])
 
 
-@eclaireurs_router.get("/ajouter_eclaireur_id", status_code=status.HTTP_201_OK)
+@eclaireurs_router.get("/ajouter_eclaireur_id", status_code=status.HTTP_200_OK)
 def ajouter_eclaireur_id(id_eclaireur: int,
                          credentials: HTTPAuthorizationCredentials = 
                          Depends(JWTBearer())):
@@ -26,7 +26,7 @@ def ajouter_eclaireur_id(id_eclaireur: int,
 
 
 @eclaireurs_router.get("/ajouter_eclaireur_pseudo",
-                       status_code=status.HTTP_201_OK)
+                       status_code=status.HTTP_200_OK)
 def ajouter_eclaireur_pseudo(pseudo_eclaireur: str,
                              credentials: HTTPAuthorizationCredentials =
                              Depends(JWTBearer())):
@@ -76,7 +76,7 @@ def est_eclaireur_pseudo(pseudo_eclaireur: str,
 
 
 @eclaireurs_router.get("/supprimer_eclaireur_id",
-                       status_code=status.HTTP_201_OK)
+                       status_code=status.HTTP_200_OK)
 def supprimer_eclaireur_id(id_eclaireur: int,
                            credentials: HTTPAuthorizationCredentials =
                            Depends(JWTBearer())):
@@ -92,7 +92,7 @@ def supprimer_eclaireur_id(id_eclaireur: int,
 
 
 @eclaireurs_router.get("/supprimer_eclaireur_pseudo",
-                       status_code=status.HTTP_201_OK)
+                       status_code=status.HTTP_200_OK)
 def supprimer_eclaireur_pseudo(pseudo_eclaireur: str,
                                credentials: HTTPAuthorizationCredentials =
                                Depends(JWTBearer())):
@@ -114,7 +114,7 @@ def liste_eclaireurs(credentials: HTTPAuthorizationCredentials =
     import dotenv
     dotenv.load_dotenv(override=True)
     try:
-        eclaireurs = EclaireurService().liste_eclaireurs(utilisateur.id_utilisateur):
+        eclaireurs = EclaireurService().liste_eclaireurs(utilisateur.id_utilisateur)
         return eclaireurs
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
