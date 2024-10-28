@@ -1,9 +1,11 @@
 from unittest import mock
 from unittest.mock import MagicMock
-from src.Service.avis_service import AvisService
-from src.dao.avis_dao import AvisDAO
+
 from src.business_object.avis import Avis
-from src.business_object.Utilisateur import Utilisateur
+from src.dao.avis_dao import AvisDAO
+from src.Model.utilisateur import Utilisateur
+from src.Service.avis_service import AvisService
+
 
 class TestAvisService:
 

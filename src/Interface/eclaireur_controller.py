@@ -5,27 +5,29 @@ from src.dao.utilisateur_dao import UtilisateurDAO
 from src.Interface.jwt_bearer import JWTBearer
 from src.Interface.user_controller import \
     obtenir_utilisateur_depuis_credentials
-from src.Service.eclaireurs_service import EclaireurService
+from src.Service.eclaireur_service import EclaireurService
 
-eclaireurs_router = APIRouter(prefix="/Eclaireurs", tags=["Eclaireurs"])
+eclaireur_router = APIRouter(prefix="/Eclaireurs", tags=["Eclaireurs"])
 
 
-@eclaireurs_router.get("/ajouter_eclaireur_id", status_code=status.HTTP_200_OK)
+@eclaireur_router.get("/ajouter_eclaireur_id", status_code=status.HTTP_200_OK)
 def ajouter_eclaireur_id(id_eclaireur: int,
                          credentials: HTTPAuthorizationCredentials = 
                          Depends(JWTBearer())):
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
     import dotenv
     dotenv.load_dotenv(override=True)
+    print(type(id_eclaireur))
+    print(utilisateur.id_utilisateur)
     try:
         EclaireurService().ajouter_eclaireur_id(utilisateur.id_utilisateur,
-                                                id_eclaireur, True)
+                                                id_eclaireur)
         print(f"{id_eclaireur} fait maintenant partie de vos éclaireurs")
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
 
 
-@eclaireurs_router.get("/ajouter_eclaireur_pseudo",
+@eclaireur_router.get("/ajouter_eclaireur_pseudo",
                        status_code=status.HTTP_200_OK)
 def ajouter_eclaireur_pseudo(pseudo_eclaireur: str,
                              credentials: HTTPAuthorizationCredentials =
@@ -41,7 +43,7 @@ def ajouter_eclaireur_pseudo(pseudo_eclaireur: str,
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
 
 
-@eclaireurs_router.get("/est_eclaireur_id", status_code=status.HTTP_200_OK)
+@eclaireur_router.get("/est_eclaireur_id", status_code=status.HTTP_200_OK)
 def est_eclaireur_id(id_eclaireur: int,
                      credentials: HTTPAuthorizationCredentials =
                      Depends(JWTBearer())):
@@ -58,7 +60,7 @@ def est_eclaireur_id(id_eclaireur: int,
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
 
 
-@eclaireurs_router.get("/est_eclaireur_pseudo", status_code=status.HTTP_200_OK)
+@eclaireur_router.get("/est_eclaireur_pseudo", status_code=status.HTTP_200_OK)
 def est_eclaireur_pseudo(pseudo_eclaireur: str,
                          credentials: HTTPAuthorizationCredentials =
                          Depends(JWTBearer())):
@@ -75,7 +77,7 @@ def est_eclaireur_pseudo(pseudo_eclaireur: str,
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
 
 
-@eclaireurs_router.get("/supprimer_eclaireur_id",
+@eclaireur_router.get("/supprimer_eclaireur_id",
                        status_code=status.HTTP_200_OK)
 def supprimer_eclaireur_id(id_eclaireur: int,
                            credentials: HTTPAuthorizationCredentials =
@@ -91,7 +93,7 @@ def supprimer_eclaireur_id(id_eclaireur: int,
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
 
 
-@eclaireurs_router.get("/supprimer_eclaireur_pseudo",
+@eclaireur_router.get("/supprimer_eclaireur_pseudo",
                        status_code=status.HTTP_200_OK)
 def supprimer_eclaireur_pseudo(pseudo_eclaireur: str,
                                credentials: HTTPAuthorizationCredentials =
@@ -107,7 +109,7 @@ def supprimer_eclaireur_pseudo(pseudo_eclaireur: str,
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
 
 
-@eclaireurs_router.get("/liste_eclaireurs", status_code=status.HTTP_200_OK)
+@eclaireur_router.get("/liste_eclaireurs", status_code=status.HTTP_200_OK)
 def liste_eclaireurs(credentials: HTTPAuthorizationCredentials =
                      Depends(JWTBearer())):
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)

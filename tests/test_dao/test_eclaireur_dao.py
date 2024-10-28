@@ -1,61 +1,93 @@
-import unittest
-from unittest.mock import MagicMock, patch
-
-from src.business_object.utilisateur import Utilisateur
 from src.dao.eclaireur_dao import EclaireurDAO
 from src.dao.utilisateur_dao import UtilisateurDAO
-from src.Service.utilisateur_service import UtilisateurService
+from src.Model.utilisateur import Utilisateur
 
 
-class TestAjouterEclaireur(unittest.TestCase):
-    def test_ajouter_eclaireur_utilisateur_existant(self, mock_db_connection):
-        #créer un vrai utilisateur
-        gab_utilisateur = Utilisateur(pseudo="gob", adresse_email="gab@gab.fr",
-                                      mot_de_passe="mdp")
-        tib_eclaireur = Utilisateur(pseudo="tob", adresse_email="tib@tib.fr",
-                                    mot_de_passe="mdp")
+class TestEclaireurDao:
+    def test_ajouter_eclaireur(self):
+        # GIVEN
         utilisateur_dao = UtilisateurDAO()
-        utilisateur_dao.creer(tib_eclaireur)
-        utilisateur_dao.creer(gab_utilisateur)
+        eclaireur_dao = EclaireurDAO()
+        utilisateur = Utilisateur(pseudo="utilisateur",
+                                  adresse_email="utilisateur@",
+                                  mot_de_passe="mdp_utilisateur",
+                                  sel="sel_utilisateur")
+        eclaireur = Utilisateur(pseudo="éclaireur",
+                                adresse_email="éclaireur@",
+                                mot_de_passe="mdp_éclaireur",
+                                sel="sel_eclaireur")
+        utilisateur_dao.creer(utilisateur)
+        utilisateur_dao.creer(eclaireur)
+        res = True
+        # WHEN
+        try:
+            eclaireur_dao.ajouter_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo(utilisateur.pseudo).id_utilisateur, utilisateur_dao.chercher_utilisateur_par_pseudo(eclaireur.pseudo).id_utilisateur)
+        except Exception:
+            res = False
+        # THEN
+        assert res
 
-        assert True
+    def test_est_eclaireur_true(self):
+        # GIVEN
+        utilisateur_dao = UtilisateurDAO()
+        eclaireur_dao = EclaireurDAO()
+        # WHEN
+        res = eclaireur_dao.est_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur,
+                                          utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur").id_utilisateur)
+        # THEN
+        assert res
+
+    def test_est_eclaireur_false(self):
+        # GIVEN
+        utilisateur_dao = UtilisateurDAO()
+        eclaireur_dao = EclaireurDAO()
+        eclaireur2 = Utilisateur(pseudo="éclaireur2",
+                                adresse_email="éclaireur2@",
+                                mot_de_passe="mdp_éclaireur2",
+                                sel="sel_eclaireur2")
+        utilisateur_dao.creer(eclaireur2)
+        # WHEN
+        res = eclaireur_dao.est_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur,
+                                          utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur2").id_utilisateur)
+        # THEN
+        assert res is False
+
+    def test_liste_eclaireurs_existant(self):
+        # GIVEN
+        utilisateur_dao = UtilisateurDAO()
+        eclaireur_dao = EclaireurDAO()
+        # GIVEN
+        res = eclaireur_dao.liste_eclaireurs(utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur)
+        # THEN
+        assert len(res) > 0
+
+    def test_liste_eclaireurs_inexistant(self):
+        # GIVEN
+        utilisateur_dao = UtilisateurDAO()
+        eclaireur_dao = EclaireurDAO()
+        # WHEN
+        res = eclaireur_dao.liste_eclaireurs(utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur").id_utilisateur)
+        # THEN
+        assert len(res) == 0
+
+    def test_supprimer_eclaireur(self):
+        # GIVEN
+        utilisateur_dao = UtilisateurDAO()
+        eclaireur_dao = EclaireurDAO()
+        res = False
+        # WHEN
+        try:
+            eclaireur_dao.supprimer_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur,
+                                              utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur").id_utilisateur)
+            res = True
+        except Exception:
+            res = False
+        # THEN
+        # Suppression des utilisateurs
+        assert res
 
 
-    @patch('db_connection.DBConnection')
-    def test_ajouter_eclaireur_utilisateur_non_existant(self, mock_db_connection):
-        # Configurer le mock pour simuler aucun utilisateur trouvé
-        mock_cursor = MagicMock()
-        mock_cursor.fetchone.return_value = None  # Aucun id_utilisateur trouvé
-        mock_db_connection.return_value.__enter__.return_value.cursor.return_value = mock_cursor
-        
-        # Créer une instance de votre classe
-        instance = YourClass()
-        
-        # Appeler la méthode
-        result = instance.ajouter_eclaireur("pseudo_inexistant")
-        
-        # Vérifier les résultats
-        self.assertFalse(result)
-        mock_cursor.execute.assert_called_once()  # Assurez-vous que la première requête a été exécutée
+if __name__ == "__main__":
+    import pytest
 
-    @patch('db_connection.DBConnection')
-    def test_ajouter_eclaireur_erreur_insertion(self, mock_db_connection):
-        # Configurer le mock pour simuler un utilisateur trouvé
-        mock_cursor = MagicMock()
-        mock_cursor.fetchone.return_value = [(1,)]  # id_utilisateur trouvé
-        mock_db_connection.return_value.__enter__.return_value.cursor.return_value = mock_cursor
-        
-        # Simuler une erreur lors de l'insertion
-        mock_cursor.execute.side_effect = [None, Exception("Erreur d'insertion")]
-
-        # Créer une instance de votre classe
-        instance = YourClass()
-        
-        # Appeler la méthode
-        result = instance.ajouter_eclaireur("pseudo_utilisateur")
-        
-        # Vérifier les résultats
-        self.assertFalse(result)
-
-if __name__ == '__main__':
-    unittest.main()
+    pytest.main([__file__])
