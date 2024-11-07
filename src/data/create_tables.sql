@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS film (
 );
 
 -- Table 'Avis' pour stocker les avis laissés par les utilisateurs sur les films
-CREATE TABLE avis (
+CREATE TABLE IF NOT EXISTS avis (
     id SERIAL PRIMARY KEY,
     id_film INTEGER NOT NULL REFERENCES film(id_film),
     utilisateur VARCHAR(255) NOT NULL REFERENCES utilisateur(pseudo),

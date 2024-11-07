@@ -1,7 +1,7 @@
 from unittest import mock
 from unittest.mock import MagicMock
 
-from src.Client.film_client import FilmClient
+from src.client.film_client import FilmClient
 from src.Service.film_service import FilmService
 
 

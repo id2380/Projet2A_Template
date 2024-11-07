@@ -1,9 +1,10 @@
 import os
 from datetime import datetime
+
 import requests
 
-from src.Model.film_complet import FilmComplet
 from src.Model.film import Film
+from src.Model.film_complet import FilmComplet
 from src.utils.singleton import Singleton
 
 
@@ -36,8 +37,7 @@ class FilmClient(metaclass=Singleton):
                             genre="",
                             date_de_sortie=self.parse_str(raw_film["release_date"]),
                             langue_originale=raw_film["original_language"],
-                            synopsis=raw_film["overview"])
-            
+                            synopsis=raw_film["overview"])   
                 if film:
                     films.append(film)
             return films
@@ -142,4 +142,3 @@ if __name__ == "__main__":
     film = film_client.recherche_film_id(1184918)
 
     print(film.date_de_sortie)
-

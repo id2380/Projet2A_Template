@@ -33,3 +33,7 @@ class Utilisateur(BaseModel):
     mot_de_passe: str
     date_creation: Optional[datetime] = None
     sel: Optional[str] = None
+
+    class Config:
+        """Rendre le modèle mutable après la création de l'objet."""
+        allow_mutation = True

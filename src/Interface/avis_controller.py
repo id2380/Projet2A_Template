@@ -8,8 +8,8 @@ from src.Model.utilisateur import Utilisateur
 from src.Model.jwt_response import JWTResponse
 from src.Interface.jwt_bearer import JWTBearer
 from pydantic import BaseModel
-from src.Service.film_service import FilmService
-from src.Service.avis_service import AvisService
+from src.service.film_service import FilmService
+from src.service.avis_service import AvisService
 from src.dao.avis_dao import AvisDAO
 if TYPE_CHECKING:
     from src.Model.avis import Avis

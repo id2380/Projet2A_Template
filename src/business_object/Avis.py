@@ -10,4 +10,4 @@ class Avis:
         self.commentaire = commentaire
 
     def __repr__(self):
-        return f"<Avis(id_avis={self.id_avis}, film={self.id_film}, utilisateur={self.utilisateur}, note={self.note})>"
+        return f"<Avis(id_avis={self.id_avis}, id_film={self.id_film}, utilisateur={self.utilisateur}, note={self.note})>"

@@ -3,6 +3,9 @@ from src.dao.avis_dao import AvisDAO
 
 
 class AvisService:
+    def __init__(self):
+        # Initialisation de l'objet AvisDAO
+        self.avis_dao = AvisDAO()
 
     def ajouter_avis(self, id_film: int, utilisateur: str, commentaire: str, note: int) -> Avis:
         """
@@ -24,9 +27,13 @@ class AvisService:
         Avis or None
             L'avis créé, ou None si l'ajout a échoué.
         """
-        avis_dao = AvisDAO
+        # Création d'un nouvel objet Avis
         nouvel_avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur, note=note, commentaire=commentaire)
-        return nouvel_avis if self.avis_dao.creer_avis(nouvel_avis) else None
+        
+        # Utilisation de l'AvisDAO pour créer l'avis dans la base de données
+        if self.avis_dao.creer_avis(nouvel_avis):
+            return nouvel_avis
+        return None
 
     def obtenir_avis_par_film(self, id_film: int) -> list:
         """
@@ -80,9 +87,10 @@ class AvisService:
         bool
             True si la modification a réussi, False sinon.
         """
-        avis = Avis(id_avis=None, id_film=id_film,
-                    utilisateur=utilisateur_pseudo,
-                    commentaire=commentaire, note=note)
+        # Création de l'avis à modifier
+        avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur, commentaire=commentaire, note=note)
+        
+        # Utilisation du DAO pour modifier l'avis
         return self.avis_dao.modifier_avis(avis)
 
     def supprimer_avis(self, id_film: int, utilisateur_pseudo: str) -> bool:
@@ -102,8 +110,7 @@ class AvisService:
         bool
             True si la suppression a réussi, False sinon.
         """
-        return self.avis_dao.supprimer_avis(id_film=id_film,
-                                            utilisateur=utilisateur_pseudo)
+        return self.avis_dao.supprimer_avis(id_film=id_film, utilisateur=utilisateur_pseudo)
 
     def calculer_note_moyenne(self, id_film: int) -> float:
         """
@@ -120,8 +127,13 @@ class AvisService:
             La note moyenne des avis pour ce film.
         """
         avis_list = self.avis_dao.lire_avis(id_film=id_film)
+
+        # Si aucun avis n'est trouvé, on retourne 0.0
         if not avis_list or avis_list == "Aucun avis trouvé.":
-            return 0.0  # Retourne 0 si aucun avis n'est disponible
+            return 0.0
+        
+        # Calcul de la somme des notes
         total_notes = sum(avis.note for avis in avis_list)
-        return total_notes / len(avis_list)
+
+        # Retour de la moyenne des notes
         return total_notes / len(avis_list)

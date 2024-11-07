@@ -10,7 +10,7 @@ from src.Interface.jwt_bearer import JWTBearer
 from src.Model.api_utilisateur import APIUtilisateur
 from src.Model.jwt_response import JWTResponse
 from src.Model.utilisateur import Utilisateur
-from src.Service.mot_de_passe_service import (
+from src.service.mot_de_passe_service import (
     valider_pseudo_utilisateur_mot_de_passe, verifier_robustesse_mot_de_passe)
 
 if TYPE_CHECKING:

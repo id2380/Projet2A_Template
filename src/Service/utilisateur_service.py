@@ -1,6 +1,6 @@
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.Model.utilisateur import Utilisateur
-from src.Service.mot_de_passe_service import (creer_sel, hacher_mot_de_passe,
+from src.service.mot_de_passe_service import (creer_sel, hacher_mot_de_passe,
                                               verifier_robustesse_mot_de_passe)
 
 
@@ -30,6 +30,4 @@ class UtilisateurService:
 
         # Sauvegarde de l'utilisateur en base de données
         return nouvel_utilisateur if self.utilisateur_dao.creer(nouvel_utilisateur) else None
-
-
 

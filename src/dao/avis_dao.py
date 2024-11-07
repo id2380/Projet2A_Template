@@ -2,7 +2,7 @@ from src.business_object.avis import Avis
 from src.dao.film_dao import FilmDAO
 from src.data.db_connection import DBConnection
 from src.Model.utilisateur import Utilisateur
-from src.Service.film_service import FilmService
+from src.service.film_service import FilmService
 
 
 class AvisDAO:
@@ -39,23 +39,6 @@ class AvisDAO:
         return False
 
     def modifier_avis(self, avis: Avis) -> bool:
-        """
-        Modification d'un avis existant pour un utilisateur spécifique et
-        un film spécifique.
-        La fonction vérifie d'abord si le film et l'avis existent dans la base
-        de données.
-
-        Parameters
-        ----------
-        avis : Avis
-            L'avis à modifier, qui inclut l'ID du film, le pseudo de
-            l'utilisateur, la note et le commentaire.
-
-        Returns
-        -------
-        updated : bool
-            True si la modification a réussi, False sinon
-        """
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -93,131 +76,76 @@ class AvisDAO:
                         }
                     )
 
-            connection.commit()
+                    # Vérifier si la mise à jour a affecté des lignes
+                    if cursor.rowcount == 0:
+                        print(f"Aucune modification effectuée pour l'avis du film {avis.id_film} par {avis.utilisateur}.")
+                        return False
 
-            if cursor.rowcount == 0:
-                print(f"Aucune modification effectuée pour l'avis du film {avis.id_film} par {avis.utilisateur}.")
-                return False
-
-            print(f"Avis modifié avec succès pour le film {avis.id_film} par l'utilisateur {avis.utilisateur}.")
-            return True
+                connection.commit()
+                print(f"Avis modifié avec succès pour le film {avis.id_film} par l'utilisateur {avis.utilisateur}.")
+                return True
 
         except Exception as e:
             print(f"Erreur lors de la modification de l'avis : {e}")
             return False
-
-    def supprimer_avis(self, avis_id: int, utilisateur: str,
-                       id_film: int) -> bool:
-        """
-        Suppression d'un avis dans la base de données pour un utilisateur et
-        un film spécifiques.
-        Supprime également le film si plus aucun avis n'existe pour ce film.
-
-        Parameters
-        ----------
-        avis_id : int
-            L'identifiant de l'avis à supprimer.
-        utilisateur : str
-            Le pseudo de l'utilisateur qui a posté l'avis.
-        id_film : int
-            L'identifiant du film auquel l'avis est associé.
-
-        Returns
-        -------
-        deleted : bool
-            True si la suppression a réussi, False sinon.
-        """
+    
+    def supprimer_avis(self, avis_id: int, utilisateur: str, id_film: int) -> bool:
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    # verif avis existe pour cet utilisateur et ce film
+                    # Vérifier si l'avis existe
                     cursor.execute(
-                        "SELECT id FROM avis WHERE id = %s AND utilisateur = %s AND id_film = %s;",
-                        (avis_id, utilisateur, id_film)
+                        "SELECT id FROM avis WHERE id = %s AND id_film = %s AND utilisateur = %s;",
+                        (avis_id, id_film, utilisateur)
                     )
-                    avis_exist = cursor.fetchone()
+                    avis = cursor.fetchone()
 
-                    if not avis_exist:
-                        print(f"Avis {avis_id} inexistant pour l'utilisateur {utilisateur} et le film {id_film}.")
+                    if cursor.fetchone() is None :
+                        print("Aucun avis trouvé.") 
                         return False
 
                     # Suppression de l'avis
                     cursor.execute(
-                        "DELETE FROM avis WHERE id = %(id)s AND utilisateur = %(utilisateur)s AND id_film = %(id_film)s;",
-                        {"id": avis_id, "utilisateur": utilisateur, "id_film": id_film}
+                        "DELETE FROM avis WHERE id = %s AND id_film = %s AND utilisateur = %s;",
+                        (avis_id, id_film, utilisateur)
                     )
 
+                    # Vérifier si la suppression a affecté une ligne
                     if cursor.rowcount == 0:
-                        print(f"Échec de la suppression de l'avis {avis_id}.")
-                        return False
-
-                    # Vérification s'il reste d'autres avis pour ce film
-                    cursor.execute("SELECT COUNT(*) FROM avis WHERE id_film = %s;", (id_film,))
-                    avis_restants = cursor.fetchone()[0]
-
-                    if avis_restants == 0:
-                        # Suppression du film s'il n'y a plus d'avis pour ce film
-                        film_dao = FilmDAO()
-                        film_deleted = film_dao.supprimer_film(id_film)
-                        if film_deleted:
-                            print(f"Film {id_film} supprimé car plus aucun avis n'existe.")
-                        else:
-                            print(f"Le film {id_film} n'a pas pu être supprimé.")
+                        print(f"Aucun avis supprimé pour l'utilisateur {utilisateur} sur le film {id_film}.")
+                        return False  # Aucune ligne supprimée, renvoyer False
 
                 connection.commit()
-                print(f"Avis {avis_id} supprimé avec succès pour l'utilisateur {utilisateur} et le film {id_film}.")
-                return True
+                print(f"Avis supprimé avec succès pour {utilisateur} sur le film {id_film}.")
+                return True  # Avis supprimé avec succès
+
         except Exception as e:
             print(f"Erreur lors de la suppression de l'avis : {e}")
-            return False
+        return False  # En cas d'erreur, renvoyer False
 
-    def lire_avis(self, id_film: int, utilisateur: str = None):
-        """
-        Lecture des avis dans la base de données basée sur l'ID du film, et
-        éventuellement le pseudo de l'utilisateur.
-
-        Parameters
-        ----------
-        id_film : int
-            L'ID du film pour lequel consulter les avis.
-        utilisateur : str, optional
-            Le nom de l'utilisateur pour lequel consulter son propre avis
-            (facultatif).
-
-        Returns
-        -------
-        avis_list : list of Avis
-            Une liste des avis récupérés. Si aucun avis n'est trouvé, retourne
-            un message indiquant qu'il n'y a pas d'avis.
-        """
-        avis_list = []
+    
+    def lire_avis(self, id_film: int, utilisateur: str = None) -> list:
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    if id_film and utilisateur:
-                        # utilisateur souhaite lire son avis pour un film
-                        query = "SELECT * FROM avis WHERE id_film = %s AND utilisateur = %s;"
-                        cursor.execute(query, (id_film, utilisateur))
-                    elif id_film:
-                        query = "SELECT * FROM avis WHERE id_film = %s;"
-                        cursor.execute(query, (id_film,))
+                    if utilisateur:
+                        cursor.execute("""
+                            SELECT * FROM avis WHERE id_film = %s AND utilisateur = %s;
+                        """, (id_film, utilisateur))
                     else:
-                        return avis_list
-                        # Pas de critère, retourne une liste vide
+                        cursor.execute("""
+                            SELECT * FROM avis WHERE id_film = %s;
+                    """, (id_film,))
 
-                    rows = cursor.fetchall()
+                    result = cursor.fetchall()
 
-                    for row in rows:
-                        avis = Avis(
-                            id_avis=row['id'],
-                            id_film=row['id_film'],
-                            utilisateur=row['utilisateur'],
-                            note=row['note'],
-                            commentaire=row['commentaire']
-                        )
-                        avis_list.append(avis)
+                    # Si aucun résultat n'est trouvé, renvoyer un message explicite
+                    if not result:
+                        return "Aucun avis trouvé."
 
-                return avis_list
+                    # Si des avis sont trouvés, les transformer en objets Avis
+                    return [Avis(*row) for row in result]
+                
         except Exception as e:
             print(f"Erreur lors de la lecture des avis : {e}")
-            return avis_list
+            return []  # Retourner une liste vide en cas d'erreur
