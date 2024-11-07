@@ -24,11 +24,7 @@ def creer_avis(id_film: int, utilisateur: str, commentaire: str, note: int):
     dotenv.load_dotenv(override=True)
     avis= None
     try:
-        # Créez une instance d'AvisDAO
-        avis_dao = AvisDAO()
-
-        # Instanciez le service AvisService avec le DAO
-        avis_service = AvisService(avis_dao)
+        avis_service = AvisService()
         # Création de l'avis avec l'ID du film fourni par l'utilisateur
         avis = avis_service.ajouter_avis(
             id_film=id_film,  # Utilisation de l'ID du film fourni en paramètre

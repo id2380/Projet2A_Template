@@ -3,15 +3,8 @@ from src.dao.avis_dao import AvisDAO
 
 
 class AvisService:
-    def __init__(self, avis_dao: AvisDAO):
-        self.avis_dao = avis_dao
 
-<<<<<<< HEAD
     def ajouter_avis(self, id_film: int, utilisateur: str, commentaire: str, note: int) -> Avis:
-=======
-    def ajouter_avis(self, id_film: int, utilisateur_pseudo: str,
-                     commentaire: str, note: int) -> Avis:
->>>>>>> 4fb9a755b2c0e51597614ce73f7a3fa064b7eaf3
         """
         Ajoute un nouvel avis via le DAO.
 
@@ -31,6 +24,7 @@ class AvisService:
         Avis or None
             L'avis créé, ou None si l'ajout a échoué.
         """
+        avis_dao = AvisDAO
         nouvel_avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur, note=note, commentaire=commentaire)
         return nouvel_avis if self.avis_dao.creer_avis(nouvel_avis) else None
 
