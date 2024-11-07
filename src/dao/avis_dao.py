@@ -141,10 +141,10 @@ class AvisDAO:
 
                     # Si aucun résultat n'est trouvé, renvoyer un message explicite
                     if not result:
-                        return "Aucun avis trouvé."
+                        return []
 
                     # Si des avis sont trouvés, les transformer en objets Avis
-                    return [Avis(*row) for row in result]
+                    return [Avis(*row.values()) for row in result]
                 
         except Exception as e:
             print(f"Erreur lors de la lecture des avis : {e}")

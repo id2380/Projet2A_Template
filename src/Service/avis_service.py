@@ -137,3 +137,5 @@ class AvisService:
 
         # Retour de la moyenne des notes
         return total_notes / len(avis_list)
+
+

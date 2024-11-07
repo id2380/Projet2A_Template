@@ -1,71 +1,61 @@
-from typing import TYPE_CHECKING, Annotated
-from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel
-from fastapi.security import HTTPAuthorizationCredentials
-from src.Interface.init_app import jwt_service, utilisateur_service, utilisateur_dao
-from src.Model.api_utilisateur import APIUtilisateur
-from src.Model.utilisateur import Utilisateur
-from src.Model.jwt_response import JWTResponse
-from src.Interface.jwt_bearer import JWTBearer
-from pydantic import BaseModel
-from src.service.film_service import FilmService
+from fastapi import APIRouter, HTTPException, status, Query
 from src.service.avis_service import AvisService
-from src.dao.avis_dao import AvisDAO
-if TYPE_CHECKING:
-    from src.Model.avis import Avis
+from pydantic import BaseModel
 
-# Création du routeur pour l'API Avis
+class AvisRequest(BaseModel):
+    id_film: int
+    utilisateur: str
+    commentaire: str
+    note: int
+
+class AvisResponse(BaseModel):  # Modèle de réponse pour refléter les données retournées
+    id_avis: int
+    id_film: int
+    utilisateur: str
+    commentaire: str
+    note: int
+
 avis_router = APIRouter(prefix="/avis", tags=["Avis"])
 
+@avis_router.post("/", response_model=AvisResponse, status_code=status.HTTP_201_CREATED)
+def creer_avis(avis: AvisRequest):
+    avis_service = AvisService()
+    result = avis_service.ajouter_avis(avis.id_film, avis.utilisateur, avis.commentaire, avis.note)
+    if result:
+        return result
+    else:
+        raise HTTPException(status_code=400, detail="La création de l'avis a échoué.")
 
-@avis_router.get("/creer_avis", status_code=status.HTTP_201_CREATED)
-def creer_avis(id_film: int, utilisateur: str, commentaire: str, note: int):
-    import dotenv
-    dotenv.load_dotenv(override=True)
-    avis= None
-    try:
-        avis_service = AvisService()
-        # Création de l'avis avec l'ID du film fourni par l'utilisateur
-        avis = avis_service.ajouter_avis(
-            id_film=id_film,  # Utilisation de l'ID du film fourni en paramètre
-            utilisateur=utilisateur,
-            note=note,
-            commentaire=commentaire
-        )
+@avis_router.put("/{id_avis}", response_model=AvisResponse, status_code=status.HTTP_200_OK)
+def modifier_avis(id_avis: int, avis: AvisRequest):
+    avis_service = AvisService()
+    if avis_service.modifier_avis(avis.id_film, avis.utilisateur, avis.commentaire, avis.note):
+        return avis
+    else:
+        raise HTTPException(status_code=404, detail="La modification de l'avis a échoué.")
 
-        # Vérification si l'avis a été créé avec succès
-        if avis:
-            return {"message": "Votre avis a été créé avec succès."}
-        else:
-            raise ValueError("La création de l'avis a échoué.")
-    
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Erreur lors de la création de l'avis : {str(e)}")
+@avis_router.delete("/{id_avis}", status_code=status.HTTP_204_NO_CONTENT)
+def supprimer_avis(id_avis: int, utilisateur: str):
+    avis_service = AvisService()
+    if avis_service.supprimer_avis(id_avis, utilisateur):
+        return {"message": "Avis supprimé avec succès"}
+    else:
+        raise HTTPException(status_code=404, detail="La suppression de l'avis a échoué.")
 
-@avis_router.get("/modifier_avis", status_code=status.HTTP_200_OK)
-def modifier_avis(id_film: int, utilisateur: str, commentaire: str, note: int):
-    import dotenv
-    dotenv.load_dotenv(override=True)
-    avis= None
-    try:
-        # Créez une instance d'AvisDAO
-        avis_dao = AvisDAO()
+@avis_router.get("/film/{id_film}", response_model=list[AvisResponse], status_code=status.HTTP_200_OK)
+def get_avis_par_film(id_film: int):
+    avis_service = AvisService()
+    avis = avis_service.obtenir_avis_par_film(id_film)
+    if avis:
+        return avis
+    else:
+        raise HTTPException(status_code=404, detail="Aucun avis trouvé pour ce film.")
 
-        # Instanciez le service AvisService avec le DAO
-        avis_service = AvisService(avis_dao)
-        # Création de l'avis avec l'ID du film fourni par l'utilisateur
-        avis = avis_service.ajouter_avis(
-            id_film=id_film,  # Utilisation de l'ID du film fourni en paramètre
-            utilisateur=utilisateur,
-            note=note,
-            commentaire=commentaire
-        )
-
-        # Vérification si l'avis a été créé avec succès
-        if avis:
-            return {"message": "Votre avis a été créé avec succès."}
-        else:
-            raise ValueError("La création de l'avis a échoué.")
-    
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Erreur lors de la création de l'avis : {str(e)}")
+@avis_router.get("/utilisateur/", response_model=list[AvisResponse], status_code=status.HTTP_200_OK)
+def get_avis_par_utilisateur(utilisateur: str = Query(None, alias="username")):
+    avis_service = AvisService()
+    avis = avis_service.obtenir_avis_par_utilisateur(utilisateur)
+    if avis:
+        return avis
+    else:
+        raise HTTPException(status_code=404, detail="Aucun avis trouvé pour cet utilisateur.")

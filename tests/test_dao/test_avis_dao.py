@@ -130,8 +130,9 @@ def test_lire_avis_par_utilisateur_pour_film(setup_avis_dao):
 
     # GIVEN: Un avis existe pour cet utilisateur et ce film
     mock_cursor.fetchall.return_value = [
-        { 4,  1184918, 'Soukayna', 5,  "Film incroyable"}
-    ]
+    {'id_avis': 4, 'id_film': 1184918, 'utilisateur': 'Soukayna', 'note': 5, 'commentaire': "Film incroyable"}
+]
+
 
     # WHEN: Lecture de l'avis de l'utilisateur pour ce film
     avis_list = avis_dao.lire_avis(id_film=1184918, utilisateur='Soukayna')
