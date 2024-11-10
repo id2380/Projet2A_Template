@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS utilisateur (
     id_utilisateur SERIAL PRIMARY KEY,                -- Identifiant unique, généré automatiquement
     pseudo VARCHAR(50) UNIQUE NOT NULL,               -- Nom d'utilisateur unique
-    adresse_email VARCHAR(100) UNIQUE NOT NULL,       -- Email unique
+    adresse_email VARCHAR(100) NOT NULL,              -- Email
     mot_de_passe TEXT NOT NULL,                       -- Mot de passe hashé
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,-- Date de création
     sel TEXT NOT NULL                                 -- Sel pour le hachage du mot de passe

@@ -10,7 +10,7 @@ def hacher_mot_de_passe(mot_de_passe: str, sel: Optional[str] = None) -> str:
     """Hache le mot de passe avec un sel optionnel."""
     if sel is None:
         sel = secrets.token_hex(16)  # Générer un sel aléatoire si non fourni
-    mot_de_passe_bytes = mot_de_passe.encode('utf-8') + sel.encode('utf-8')
+    mot_de_passe_bytes = mot_de_passe.encode("utf-8") + sel.encode("utf-8")
     hash_object = hashlib.sha256(mot_de_passe_bytes)
     return hash_object.hexdigest()
 
@@ -27,11 +27,11 @@ def verifier_robustesse_mot_de_passe(mot_de_passe: str):
 
 
 def valider_pseudo_utilisateur_mot_de_passe(
-        pseudo: str, mot_de_passe: str, utilisateur_DAO: UtilisateurDAO
-    ) -> Utilisateur:
+    pseudo: str, mot_de_passe: str, utilisateur_DAO: UtilisateurDAO
+) -> Utilisateur:
     """
     Valide les informations d'authentification fournies par l'utilisateur.
-    
+
     Parameters
     ----------
     pseudo : str
@@ -39,13 +39,13 @@ def valider_pseudo_utilisateur_mot_de_passe(
     mot_de_passe : str
         Le mot de passe fourni par l'utilisateur.
     utilisateur_DAO: UtilisateurDAO
-        La classe permettant d'accéder à la base de données et de gérer les utilisateurs.
+        L'instance de classe permettant d'accéder à la base de données et de gérer les utilisateurs.
 
     Returns
     -------
     Utilisateur
         L'utilisateur correspondant si l'authentification réussit.
-    
+
     Raises
     ------
     Exception
@@ -57,7 +57,7 @@ def valider_pseudo_utilisateur_mot_de_passe(
         raise Exception("Nom d'utilisateur incorrect")
 
     # Vérifier le hachage du mot de passe avec celui enregistré dans la base
-    mot_de_passe_hache = hacher_mot_de_passe(mot_de_passe, utilisateur_avec_pseudo.sel) 
+    mot_de_passe_hache = hacher_mot_de_passe(mot_de_passe, utilisateur_avec_pseudo.sel)
 
     if mot_de_passe_hache != utilisateur_avec_pseudo.mot_de_passe:
         raise Exception("Mot de passe incorrect")

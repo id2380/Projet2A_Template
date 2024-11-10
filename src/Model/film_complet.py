@@ -5,7 +5,6 @@ from typing import Optional
 
 
 class FilmComplet(Film):
-
     """
     Une classe qui représente un film complet.
     """

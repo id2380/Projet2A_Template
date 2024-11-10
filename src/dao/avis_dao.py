@@ -16,7 +16,9 @@ class AvisDAO:
                     film_exist = cursor.fetchone()
 
                     if not film_exist:
-                        print(f"Le film avec l'ID '{avis.id_film}' n'a pas été trouvé dans la base. Création en cours via l'API TMDB...")
+                        print(
+                            f"Le film avec l'ID '{avis.id_film}' n'a pas été trouvé dans la base. Création en cours via l'API TMDB..."
+                        )
                         film_created = film_service.creer_film(avis.id_film)
                         if not film_created:
                             print(f"Impossible de créer le film avec l'ID '{avis.id_film}' via l'API TMDB.")
@@ -24,15 +26,19 @@ class AvisDAO:
                         print(f"Film avec l'ID '{avis.id_film}' créé avec succès.")
 
                     # Insertion de l'avis dans la base de données
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                         INSERT INTO avis(id_film, utilisateur, note, commentaire)
                         VALUES (%s, %s, %s, %s) RETURNING id;
-                    """, (avis.id_film, avis.utilisateur, avis.note,
-                          avis.commentaire))
+                    """,
+                        (avis.id_film, avis.utilisateur, avis.note, avis.commentaire),
+                    )
 
                     avis.id_avis = cursor.fetchone()[0]
                     connection.commit()
-                    print(f"Avis créé avec succès pour le film avec l'ID '{avis.id_film}' par l'utilisateur '{avis.utilisateur}'.")
+                    print(
+                        f"Avis créé avec succès pour le film avec l'ID '{avis.id_film}' par l'utilisateur '{avis.utilisateur}'."
+                    )
                     return True
         except Exception as e:
             print(f"Erreur lors de la création de l'avis : {e}")
@@ -52,8 +58,7 @@ class AvisDAO:
 
                     # Vérification si l'utilisateur a déjà laissé un avis pour ce film
                     cursor.execute(
-                        "SELECT id FROM avis WHERE id_film = %s AND utilisateur = %s;",
-                        (avis.id_film, avis.utilisateur)
+                        "SELECT id FROM avis WHERE id_film = %s AND utilisateur = %s;", (avis.id_film, avis.utilisateur)
                     )
                     avis_exist = cursor.fetchone()
 
@@ -72,13 +77,15 @@ class AvisDAO:
                             "id_film": avis.id_film,
                             "utilisateur": avis.utilisateur,
                             "note": avis.note,
-                            "commentaire": avis.commentaire
-                        }
+                            "commentaire": avis.commentaire,
+                        },
                     )
 
                     # Vérifier si la mise à jour a affecté des lignes
                     if cursor.rowcount == 0:
-                        print(f"Aucune modification effectuée pour l'avis du film {avis.id_film} par {avis.utilisateur}.")
+                        print(
+                            f"Aucune modification effectuée pour l'avis du film {avis.id_film} par {avis.utilisateur}."
+                        )
                         return False
 
                 connection.commit()
@@ -88,7 +95,7 @@ class AvisDAO:
         except Exception as e:
             print(f"Erreur lors de la modification de l'avis : {e}")
             return False
-    
+
     def supprimer_avis(self, avis_id: int, utilisateur: str, id_film: int) -> bool:
         try:
             with DBConnection().connection as connection:
@@ -96,18 +103,18 @@ class AvisDAO:
                     # Vérifier si l'avis existe
                     cursor.execute(
                         "SELECT id FROM avis WHERE id = %s AND id_film = %s AND utilisateur = %s;",
-                        (avis_id, id_film, utilisateur)
+                        (avis_id, id_film, utilisateur),
                     )
                     avis = cursor.fetchone()
 
-                    if cursor.fetchone() is None :
-                        print("Aucun avis trouvé.") 
+                    if cursor.fetchone() is None:
+                        print("Aucun avis trouvé.")
                         return False
 
                     # Suppression de l'avis
                     cursor.execute(
                         "DELETE FROM avis WHERE id = %s AND id_film = %s AND utilisateur = %s;",
-                        (avis_id, id_film, utilisateur)
+                        (avis_id, id_film, utilisateur),
                     )
 
                     # Vérifier si la suppression a affecté une ligne
@@ -123,19 +130,24 @@ class AvisDAO:
             print(f"Erreur lors de la suppression de l'avis : {e}")
         return False  # En cas d'erreur, renvoyer False
 
-    
     def lire_avis(self, id_film: int, utilisateur: str = None) -> list:
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     if utilisateur:
-                        cursor.execute("""
+                        cursor.execute(
+                            """
                             SELECT * FROM avis WHERE id_film = %s AND utilisateur = %s;
-                        """, (id_film, utilisateur))
+                        """,
+                            (id_film, utilisateur),
+                        )
                     else:
-                        cursor.execute("""
+                        cursor.execute(
+                            """
                             SELECT * FROM avis WHERE id_film = %s;
-                    """, (id_film,))
+                    """,
+                            (id_film,),
+                        )
 
                     result = cursor.fetchall()
 
@@ -145,7 +157,7 @@ class AvisDAO:
 
                     # Si des avis sont trouvés, les transformer en objets Avis
                     return [Avis(*row.values()) for row in result]
-                
+
         except Exception as e:
             print(f"Erreur lors de la lecture des avis : {e}")
             return []  # Retourner une liste vide en cas d'erreur

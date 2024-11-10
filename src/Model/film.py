@@ -5,7 +5,6 @@ from typing import Optional
 
 
 class Film(BaseModel):
-
     """
     Une classe qui représente un film.
     """

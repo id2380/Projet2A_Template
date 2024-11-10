@@ -16,7 +16,7 @@ class TestFilmDao:
             date_de_sortie=datetime(2024, 10, 21),
             langue_originale="Français",
             synopsis="Ceci est un test.",
-            fiche_technique=None
+            fiche_technique=None,
         )
         # WHEN
         boolean = film_dao.creer_film(film)
@@ -33,7 +33,7 @@ class TestFilmDao:
             date_de_sortie=datetime(2024, 10, 21),
             langue_originale="Français",
             synopsis="Ceci est un test.",
-            fiche_technique=None
+            fiche_technique=None,
         )
         # WHEN
         boolean = film_dao.creer_film(film)

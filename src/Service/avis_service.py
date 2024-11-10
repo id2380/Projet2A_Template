@@ -29,7 +29,7 @@ class AvisService:
         """
         # Création d'un nouvel objet Avis
         nouvel_avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur, note=note, commentaire=commentaire)
-        
+
         # Utilisation de l'AvisDAO pour créer l'avis dans la base de données
         if self.avis_dao.creer_avis(nouvel_avis):
             return nouvel_avis
@@ -89,7 +89,7 @@ class AvisService:
         """
         # Création de l'avis à modifier
         avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur, commentaire=commentaire, note=note)
-        
+
         # Utilisation du DAO pour modifier l'avis
         return self.avis_dao.modifier_avis(avis)
 
@@ -131,11 +131,9 @@ class AvisService:
         # Si aucun avis n'est trouvé, on retourne 0.0
         if not avis_list or avis_list == "Aucun avis trouvé.":
             return 0.0
-        
+
         # Calcul de la somme des notes
         total_notes = sum(avis.note for avis in avis_list)
 
         # Retour de la moyenne des notes
         return total_notes / len(avis_list)
-
-

@@ -72,16 +72,18 @@ class FilmDAO:
                 )
                 res = cursor.fetchone()
         if res:
-            film = Film(id_film=id_film,
-                        titre=res["titre"],
-                        genre=res["genre"],
-                        date_de_sortie=res["date_de_sortie"],
-                        langue_originale=res["langue_originale"],
-                        synopsis=res["synopsis"])
+            film = Film(
+                id_film=id_film,
+                titre=res["titre"],
+                genre=res["genre"],
+                date_de_sortie=res["date_de_sortie"],
+                langue_originale=res["langue_originale"],
+                synopsis=res["synopsis"],
+            )
         return film
 
-    def parse_str(self,date:str):
-        if date != '':
+    def parse_str(self, date: str):
+        if date != "":
             return datetime.strptime(date, "%Y-%m-%d")
         return None
 
@@ -114,18 +116,14 @@ class FilmDAO:
                     },
                 )
         return True
+
+
 if __name__ == "__main__":
     # Pour charger les variables d'environnement contenues dans le fichier .env
-   
 
     film_client = FilmDAO()
-    film = Film(id_film=1,
-                titre="Test",
-                genre="",
-                date_de_sortie=None,
-                langue_originale="",
-                synopsis="")
-    
+    film = Film(id_film=1, titre="Test", genre="", date_de_sortie=None, langue_originale="", synopsis="")
+
     # boolean = film_client.creer_film(film)
     boolean = film_client.supprimer_film(1)
     print(boolean)

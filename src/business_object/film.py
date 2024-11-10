@@ -2,8 +2,7 @@ from datetime import datetime
 from src.business_object.fiche_technique import FicheTechnique
 
 
-class Film():
-
+class Film:
     """
     Une classe qui représente un film.
     """
@@ -31,9 +30,7 @@ class Film():
         La fiche technique associée au film.
     """
 
-    def __init__(self, id_film, titre, genre, date_de_sortie, langue_originale,
-                 synopsis, fiche_technique = None) -> None:
-
+    def __init__(self, id_film, titre, genre, date_de_sortie, langue_originale, synopsis, fiche_technique=None) -> None:
         # -----------------------------
         # Attributs
         # -----------------------------
@@ -54,12 +51,14 @@ class Film():
         """
         Retourne un string représentant un objet Film.
         """
-        return (f"Id_film: {self.id_film}\n"
-                f"Titre: {self.titre}\n"
-                f"Genre: {self.genre}\n"
-                f"Date de sortie: {self.date_de_sortie}\n"
-                f"Langue originale: {self.langue_originale}\n"
-                f"Synopsis : {self.synopsis}")
+        return (
+            f"Id_film: {self.id_film}\n"
+            f"Titre: {self.titre}\n"
+            f"Genre: {self.genre}\n"
+            f"Date de sortie: {self.date_de_sortie}\n"
+            f"Langue originale: {self.langue_originale}\n"
+            f"Synopsis : {self.synopsis}"
+        )
 
     # -------------------------------------------------------------------------
     # Getters et Setters
@@ -112,7 +111,7 @@ class Film():
     @synopsis.setter
     def synopsis(self, value: str):
         self._synopsis = value
-    
+
     @property
     def fiche_technique(self):
         return self._fiche_technique

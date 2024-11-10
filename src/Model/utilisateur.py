@@ -36,4 +36,5 @@ class Utilisateur(BaseModel):
 
     class Config:
         """Rendre le modèle mutable après la création de l'objet."""
+
         allow_mutation = True

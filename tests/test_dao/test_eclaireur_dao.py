@@ -8,20 +8,21 @@ class TestEclaireurDao:
         # GIVEN
         utilisateur_dao = UtilisateurDAO()
         eclaireur_dao = EclaireurDAO()
-        utilisateur = Utilisateur(pseudo="utilisateur",
-                                  adresse_email="utilisateur@",
-                                  mot_de_passe="mdp_utilisateur",
-                                  sel="sel_utilisateur")
-        eclaireur = Utilisateur(pseudo="éclaireur",
-                                adresse_email="éclaireur@",
-                                mot_de_passe="mdp_éclaireur",
-                                sel="sel_eclaireur")
+        utilisateur = Utilisateur(
+            pseudo="utilisateur", adresse_email="utilisateur@", mot_de_passe="mdp_utilisateur", sel="sel_utilisateur"
+        )
+        eclaireur = Utilisateur(
+            pseudo="éclaireur", adresse_email="éclaireur@", mot_de_passe="mdp_éclaireur", sel="sel_eclaireur"
+        )
         utilisateur_dao.creer(utilisateur)
         utilisateur_dao.creer(eclaireur)
         res = True
         # WHEN
         try:
-            eclaireur_dao.ajouter_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo(utilisateur.pseudo).id_utilisateur, utilisateur_dao.chercher_utilisateur_par_pseudo(eclaireur.pseudo).id_utilisateur)
+            eclaireur_dao.ajouter_eclaireur(
+                utilisateur_dao.chercher_utilisateur_par_pseudo(utilisateur.pseudo).id_utilisateur,
+                utilisateur_dao.chercher_utilisateur_par_pseudo(eclaireur.pseudo).id_utilisateur,
+            )
         except Exception:
             res = False
         # THEN
@@ -32,8 +33,10 @@ class TestEclaireurDao:
         utilisateur_dao = UtilisateurDAO()
         eclaireur_dao = EclaireurDAO()
         # WHEN
-        res = eclaireur_dao.est_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur,
-                                          utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur").id_utilisateur)
+        res = eclaireur_dao.est_eclaireur(
+            utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur,
+            utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur").id_utilisateur,
+        )
         # THEN
         assert res
 
@@ -41,14 +44,15 @@ class TestEclaireurDao:
         # GIVEN
         utilisateur_dao = UtilisateurDAO()
         eclaireur_dao = EclaireurDAO()
-        eclaireur2 = Utilisateur(pseudo="éclaireur2",
-                                adresse_email="éclaireur2@",
-                                mot_de_passe="mdp_éclaireur2",
-                                sel="sel_eclaireur2")
+        eclaireur2 = Utilisateur(
+            pseudo="éclaireur2", adresse_email="éclaireur2@", mot_de_passe="mdp_éclaireur2", sel="sel_eclaireur2"
+        )
         utilisateur_dao.creer(eclaireur2)
         # WHEN
-        res = eclaireur_dao.est_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur,
-                                          utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur2").id_utilisateur)
+        res = eclaireur_dao.est_eclaireur(
+            utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur,
+            utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur2").id_utilisateur,
+        )
         # THEN
         assert res is False
 
@@ -57,7 +61,9 @@ class TestEclaireurDao:
         utilisateur_dao = UtilisateurDAO()
         eclaireur_dao = EclaireurDAO()
         # GIVEN
-        res = eclaireur_dao.liste_eclaireurs(utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur)
+        res = eclaireur_dao.liste_eclaireurs(
+            utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur
+        )
         # THEN
         assert len(res) > 0
 
@@ -66,7 +72,9 @@ class TestEclaireurDao:
         utilisateur_dao = UtilisateurDAO()
         eclaireur_dao = EclaireurDAO()
         # WHEN
-        res = eclaireur_dao.liste_eclaireurs(utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur").id_utilisateur)
+        res = eclaireur_dao.liste_eclaireurs(
+            utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur").id_utilisateur
+        )
         # THEN
         assert len(res) == 0
 
@@ -77,8 +85,10 @@ class TestEclaireurDao:
         res = False
         # WHEN
         try:
-            eclaireur_dao.supprimer_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur,
-                                              utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur").id_utilisateur)
+            eclaireur_dao.supprimer_eclaireur(
+                utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur,
+                utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur").id_utilisateur,
+            )
             res = True
         except Exception:
             res = False

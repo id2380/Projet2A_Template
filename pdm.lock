@@ -5,7 +5,7 @@
 groups = ["default", "lint", "test", "typing"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:097cdceeeb547ad901dc1b4d3592243650bbb6d5281abc131c4f0e7ba395d52f"
+content_hash = "sha256:dfa58b63c18da0fbde37c1f04b1bfdaef1de912c7bc15a6d4b36b035be46bab3"
 
 [[metadata.targets]]
 requires_python = "==3.12.*"
@@ -134,15 +134,6 @@ files = [
     {file = "coverage-7.6.4-cp312-cp312-win32.whl", hash = "sha256:7bb92c539a624cf86296dd0c68cd5cc286c9eef2d0c3b8b192b604ce9de20a17"},
     {file = "coverage-7.6.4-cp312-cp312-win_amd64.whl", hash = "sha256:1032e178b76a4e2b5b32e19d0fd0abbce4b58e77a1ca695820d10e491fa32b08"},
     {file = "coverage-7.6.4.tar.gz", hash = "sha256:29fc0f17b1d3fea332f8001d4558f8214af7f1d87a345f3a133c901d60347c73"},
-]
-
-[[package]]
-name = "dotenv"
-version = "0.0.5"
-summary = "Handle .env files"
-groups = ["default"]
-files = [
-    {file = "dotenv-0.0.5.tar.gz", hash = "sha256:b58d2ab3f83dbd4f8a362b21158a606bee87317a9444485566b3c8f0af847091"},
 ]
 
 [[package]]

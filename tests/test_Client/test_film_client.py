@@ -1,10 +1,11 @@
 import pytest
 
-from src.Client.film_client import FilmClient
+from src.client.film_client import FilmClient
 
 
 class TestFilmClient:
     import dotenv
+
     dotenv.load_dotenv(override=True)
 
     # methode recherche_films

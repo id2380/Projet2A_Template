@@ -15,8 +15,7 @@ class EclaireurDAO(metaclass=Singleton):
                         VALUES (%(id_utilisateur)s, %(id_eclaireur)s)
                         RETURNING id_utilisateur
                         """,
-                        {'id_utilisateur': id_utilisateur,
-                            'id_eclaireur': id_eclaireur}
+                        {"id_utilisateur": id_utilisateur, "id_eclaireur": id_eclaireur},
                     )
         except Exception as e:
             raise ValueError(f"Erreur lors de l'ajout de l'éclaireur : {e}")
@@ -32,8 +31,7 @@ class EclaireurDAO(metaclass=Singleton):
                         WHERE id_utilisateur = %(id_utilisateur)s AND
                         id_eclaireur =%(id_eclaireur)s
                         """,
-                        {'id_utilisateur': id_utilisateur,
-                            'id_eclaireur': id_eclaireur}
+                        {"id_utilisateur": id_utilisateur, "id_eclaireur": id_eclaireur},
                     )
                     if cursor.fetchone()["count"] == 1:
                         return True
@@ -51,10 +49,10 @@ class EclaireurDAO(metaclass=Singleton):
                         FROM abonne
                         WHERE id_utilisateur = %(id_utilisateur)s
                         """,
-                        {'id_utilisateur': id_utilisateur}
+                        {"id_utilisateur": id_utilisateur},
                     )
                     res = cursor.fetchall()
-                    return [d['id_eclaireur'] for d in res]
+                    return [d["id_eclaireur"] for d in res]
         except Exception as e:
             raise ValueError(f"Erreur lors de la recherche des éclaireurs : {e}")
 
@@ -68,8 +66,7 @@ class EclaireurDAO(metaclass=Singleton):
                         WHERE id_utilisateur = %(id_utilisateur)s
                         AND id_eclaireur = %(id_eclaireur)s
                         """,
-                        {'id_utilisateur': id_utilisateur,
-                         'id_eclaireur': id_eclaireur}
+                        {"id_utilisateur": id_utilisateur, "id_eclaireur": id_eclaireur},
                     )
         except Exception as e:
             raise ValueError(f"Erreur lors de la suppression de l'éclaireur : {e}")
@@ -77,22 +74,10 @@ class EclaireurDAO(metaclass=Singleton):
 
 if __name__ == "__main__":
     # Initialisation d'un utilisateur et d'un éclaireur
-    utilisateur = Utilisateur(pseudo="Jules",
-                              adresse_email="jules@",
-                              mot_de_passe="mdp",
-                              sel="sel")
-    eclaireur = Utilisateur(pseudo="Eclaireur",
-                            adresse_email="éclaireur@",
-                            mot_de_passe="mdp",
-                            sel="sel")
-    eclaireur2 = Utilisateur(pseudo="Eclaireur2",
-                             adresse_email="éclaireur2@",
-                             mot_de_passe="mdp",
-                             sel="sel")
-    eclaireur3 = Utilisateur(pseudo="Eclaireur3",
-                             adresse_email="éclaireur3@",
-                             mot_de_passe="mdp",
-                             sel="sel")
+    utilisateur = Utilisateur(pseudo="Jules", adresse_email="jules@", mot_de_passe="mdp", sel="sel")
+    eclaireur = Utilisateur(pseudo="Eclaireur", adresse_email="éclaireur@", mot_de_passe="mdp", sel="sel")
+    eclaireur2 = Utilisateur(pseudo="Eclaireur2", adresse_email="éclaireur2@", mot_de_passe="mdp", sel="sel")
+    eclaireur3 = Utilisateur(pseudo="Eclaireur3", adresse_email="éclaireur3@", mot_de_passe="mdp", sel="sel")
     # Création en base des utilisateurs
     utilisateur_dao = UtilisateurDAO()
     # utilisateur_dao.creer(utilisateur)
@@ -121,5 +106,3 @@ if __name__ == "__main__":
                                       utilisateur_dao.chercher_utilisateur_par_pseudo(eclaireur3.pseudo).id_utilisateur)
     
     """
-
-    

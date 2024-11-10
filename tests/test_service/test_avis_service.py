@@ -7,8 +7,7 @@ from src.Model.utilisateur import Utilisateur
 
 
 class TestAvisService:
-
-    @mock.patch('src.dao.avis_dao.AvisDAO.creer_avis')
+    @mock.patch("src.dao.avis_dao.AvisDAO.creer_avis")
     def test_ajouter_avis_success(self, mock_creer_avis):
         # GIVEN
         mock_creer_avis.return_value = True
@@ -25,7 +24,7 @@ class TestAvisService:
         assert avis.commentaire == "Film incroyable"
         assert avis.note == 5
 
-    @mock.patch('src.dao.avis_dao.AvisDAO.creer_avis')
+    @mock.patch("src.dao.avis_dao.AvisDAO.creer_avis")
     def test_ajouter_avis_failure(self, mock_creer_avis):
         # GIVEN
         mock_creer_avis.return_value = False
@@ -38,12 +37,12 @@ class TestAvisService:
         # THEN
         assert avis is None
 
-    @mock.patch('src.dao.avis_dao.AvisDAO.lire_avis')
+    @mock.patch("src.dao.avis_dao.AvisDAO.lire_avis")
     def test_obtenir_avis_par_film(self, mock_lire_avis):
         # GIVEN
         mock_lire_avis.return_value = [
             Avis(id_avis=1, id_film=1184918, utilisateur="Soukayna", note=5, commentaire="Film incroyable"),
-            Avis(id_avis=2, id_film=1184918, utilisateur="Yassine", note=4, commentaire="Bon film")
+            Avis(id_avis=2, id_film=1184918, utilisateur="Yassine", note=4, commentaire="Bon film"),
         ]
         avis_service = AvisService()
 
@@ -55,7 +54,7 @@ class TestAvisService:
         assert avis_list[0].utilisateur == "Soukayna"
         assert avis_list[1].utilisateur == "Yassine"
 
-    @mock.patch('src.dao.avis_dao.AvisDAO.lire_avis')
+    @mock.patch("src.dao.avis_dao.AvisDAO.lire_avis")
     def test_obtenir_avis_par_utilisateur(self, mock_lire_avis):
         # GIVEN
         mock_lire_avis.return_value = [
@@ -70,31 +69,35 @@ class TestAvisService:
         assert len(avis_list) == 1
         assert avis_list[0].utilisateur == "Soukayna"
 
-    @mock.patch('src.dao.avis_dao.AvisDAO.modifier_avis')
+    @mock.patch("src.dao.avis_dao.AvisDAO.modifier_avis")
     def test_modifier_avis_success(self, mock_modifier_avis):
         # GIVEN
         mock_modifier_avis.return_value = True
         avis_service = AvisService()
 
         # WHEN
-        resultat = avis_service.modifier_avis(id_film=1184918, utilisateur="Soukayna", commentaire="Très bon film", note=4)
+        resultat = avis_service.modifier_avis(
+            id_film=1184918, utilisateur="Soukayna", commentaire="Très bon film", note=4
+        )
 
         # THEN
         assert resultat is True
 
-    @mock.patch('src.dao.avis_dao.AvisDAO.modifier_avis')
+    @mock.patch("src.dao.avis_dao.AvisDAO.modifier_avis")
     def test_modifier_avis_failure(self, mock_modifier_avis):
         # GIVEN
         mock_modifier_avis.return_value = False
         avis_service = AvisService()
 
         # WHEN
-        resultat = avis_service.modifier_avis(id_film=1184918, utilisateur="Soukayna", commentaire="Très bon film", note=4)
+        resultat = avis_service.modifier_avis(
+            id_film=1184918, utilisateur="Soukayna", commentaire="Très bon film", note=4
+        )
 
         # THEN
         assert resultat is False
 
-    @mock.patch('src.dao.avis_dao.AvisDAO.supprimer_avis')
+    @mock.patch("src.dao.avis_dao.AvisDAO.supprimer_avis")
     def test_supprimer_avis_success(self, mock_supprimer_avis):
         # GIVEN
         mock_supprimer_avis.return_value = True
@@ -106,7 +109,7 @@ class TestAvisService:
         # THEN
         assert resultat is True
 
-    @mock.patch('src.dao.avis_dao.AvisDAO.supprimer_avis')
+    @mock.patch("src.dao.avis_dao.AvisDAO.supprimer_avis")
     def test_supprimer_avis_failure(self, mock_supprimer_avis):
         # GIVEN
         mock_supprimer_avis.return_value = False
@@ -118,12 +121,12 @@ class TestAvisService:
         # THEN
         assert resultat is False
 
-    @mock.patch('src.dao.avis_dao.AvisDAO.lire_avis')
+    @mock.patch("src.dao.avis_dao.AvisDAO.lire_avis")
     def test_calculer_note_moyenne(self, mock_lire_avis):
         # GIVEN
         mock_lire_avis.return_value = [
             Avis(id_avis=1, id_film=1184918, utilisateur="Soukayna", note=5, commentaire="Film incroyable"),
-            Avis(id_avis=2, id_film=1184918, utilisateur="Yassine", note=4, commentaire="Bon film")
+            Avis(id_avis=2, id_film=1184918, utilisateur="Yassine", note=4, commentaire="Bon film"),
         ]
         avis_service = AvisService()
 
@@ -133,7 +136,7 @@ class TestAvisService:
         # THEN
         assert note_moyenne == 4.5
 
-    @mock.patch('src.dao.avis_dao.AvisDAO.lire_avis')
+    @mock.patch("src.dao.avis_dao.AvisDAO.lire_avis")
     def test_calculer_note_moyenne_sans_avis(self, mock_lire_avis):
         # GIVEN
         mock_lire_avis.return_value = "Aucun avis trouvé."
@@ -148,4 +151,5 @@ class TestAvisService:
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__])

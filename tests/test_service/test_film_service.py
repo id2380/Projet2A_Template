@@ -2,11 +2,12 @@ from unittest import mock
 from unittest.mock import MagicMock
 
 from src.client.film_client import FilmClient
-from src.Service.film_service import FilmService
+from src.service.film_service import FilmService
 
 
 class TestFilmService:
     import dotenv
+
     dotenv.load_dotenv(override=True)
 
     def test_recherche_films_titre(self):
@@ -36,8 +37,8 @@ class TestFilmService:
         # THEN
         assert films is None
 
-    @mock.patch('src.dao.film_dao.FilmDAO.creer_film')
-    @mock.patch('src.Client.film_client.FilmClient.recherche_film_id')
+    @mock.patch("src.dao.film_dao.FilmDAO.creer_film")
+    @mock.patch("src.Client.film_client.FilmClient.recherche_film_id")
     def test_creer_film_ok(self, mock_recherche_film_id, mock_creer_film):
         # GIVEN
         mock_recherche_film_id.return_value = []
@@ -48,7 +49,7 @@ class TestFilmService:
         # THEN
         assert boolean
 
-    @mock.patch('src.Client.film_client.FilmClient.recherche_film_id')
+    @mock.patch("src.Client.film_client.FilmClient.recherche_film_id")
     def test_creer_film_inexistant(self, mock_recherche_film_id):
         # GIVEN
         mock_recherche_film_id.return_value = None
@@ -58,8 +59,8 @@ class TestFilmService:
         # THEN
         assert boolean is False
 
-    @mock.patch('src.dao.film_dao.FilmDAO.creer_film')
-    @mock.patch('src.Client.film_client.FilmClient.recherche_film_id')
+    @mock.patch("src.dao.film_dao.FilmDAO.creer_film")
+    @mock.patch("src.Client.film_client.FilmClient.recherche_film_id")
     def test_creer_film_erreur(self, mock_recherche_film_id, mock_creer_film):
         # GIVEN
         mock_recherche_film_id.return_value = []
@@ -73,4 +74,5 @@ class TestFilmService:
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__])

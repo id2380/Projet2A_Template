@@ -1,8 +1,7 @@
 from datetime import datetime
 
 
-class FicheTechnique():
-
+class FicheTechnique:
     """
     Une classe qui représente les informations techniques d'un film.
     """
@@ -31,7 +30,6 @@ class FicheTechnique():
     """
 
     def __init__(self, budget, pays_origine, societe_prod, duree, revenue, note_moyenne, avis) -> None:
-
         # -----------------------------
         # Attributs
         # -----------------------------
@@ -52,11 +50,13 @@ class FicheTechnique():
         """
         Retourne un string représentant un objet FicheTechnique.
         """
-        return (f"Budget: {self.budget}\n"
-                f"Pays d'origine: {self.pays_origine}\n"
-                f"Société de production : {self.societe_prod}\n"
-                f"Durée : {self.duree}\n"
-                f"Revenue : {self.revenue}\n")
+        return (
+            f"Budget: {self.budget}\n"
+            f"Pays d'origine: {self.pays_origine}\n"
+            f"Société de production : {self.societe_prod}\n"
+            f"Durée : {self.duree}\n"
+            f"Revenue : {self.revenue}\n"
+        )
 
     # -------------------------------------------------------------------------
     # Getters et Setters
@@ -101,7 +101,7 @@ class FicheTechnique():
     @revenue.setter
     def revenue(self, value: int):
         self._revenue = value
-    
+
     @property
     def note_moyenne(self):
         return self._note_moyenne
@@ -109,4 +109,3 @@ class FicheTechnique():
     @note_moyenne.setter
     def note_moyenne(self, value: float):
         self._note_moyenne = value
-    
