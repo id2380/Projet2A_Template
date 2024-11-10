@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, status, Query, Depends
-from src.service.avis_service import AvisService
-from pydantic import BaseModel
-from src.Interface.jwt_bearer import JWTBearer
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials
+from pydantic import BaseModel
+
+from src.Interface.jwt_bearer import JWTBearer
+from src.service.avis_service import AvisService
 
 
 class AvisRequest(BaseModel):
@@ -11,12 +12,8 @@ class AvisRequest(BaseModel):
     commentaire: str
     note: int
 
-<<<<<<< HEAD
 
 class AvisResponse(BaseModel):  # Modèle de réponse pour refléter les données retournées
-=======
-class AvisResponse(BaseModel):
->>>>>>> aebf4a064f89d12db3d51752885718086ee1af6d
     id_avis: int
     id_film: int
     utilisateur: str
