@@ -5,6 +5,33 @@ from src.utils.singleton import Singleton
 
 
 class EclaireurDAO(metaclass=Singleton):
+    """
+    Une classe qui permet de manipuler les éclaireurs dans la base de données.
+    """
+
+    # -------------------------------------------------------------------------
+    # Méthodes
+    # -------------------------------------------------------------------------
+
+    """
+        Permet à un utiliseur de s'abonner à un autre utilisateur. En cas de
+        problème, une erreur est rendue.
+
+        Paramètres
+        ----------
+        id_utilisateur : int
+            L'identifiant unique qui correspond à l'utilisateur qui souhaite
+            s'abonner à l'autre utilisateur.
+        id_eclaireur : int
+            L'identifiant unique qui correspond à l'utilisateur auquel l'autre
+            utilisateur souhaite s'abonner.
+
+        Retour
+        ----------
+        None : l'utilisateur a correctement été ajouté
+        ValueError : erreur si problème pendant l'ajout
+
+        """
     def ajouter_eclaireur(self, id_utilisateur: int, id_eclaireur: int):
         try:
             with DBConnection().connection as connection:
@@ -15,11 +42,29 @@ class EclaireurDAO(metaclass=Singleton):
                         VALUES (%(id_utilisateur)s, %(id_eclaireur)s)
                         RETURNING id_utilisateur
                         """,
-                        {"id_utilisateur": id_utilisateur, "id_eclaireur": id_eclaireur},
+                        {"id_utilisateur": id_utilisateur, "id_eclaireur":
+                         id_eclaireur},
                     )
         except Exception as e:
             raise ValueError(f"Erreur lors de l'ajout de l'éclaireur : {e}")
 
+    """
+        Permet de savoir si un utilisateur est abonné à un autre.
+
+        Paramètres
+        ----------
+        id_utilisateur : int
+            L'identifiant unique qui correspond à l'utilisateur qui est supposé
+            abonné à l'autre utilisateur.
+        id_eclaireur : int
+            L'identifiant unique qui correspond à l'utilisateur auquel l'autre
+            utilisateur est supposé abonné.
+
+        Retour
+        ----------
+        boolean : indique si l'utilisateur est abonné à l'autre
+        ValueError : erreur si problème pendant la vérification
+        """
     def est_eclaireur(self, id_utilisateur: int, id_eclaireur: int):
         try:
             with DBConnection().connection as connection:
@@ -31,13 +76,14 @@ class EclaireurDAO(metaclass=Singleton):
                         WHERE id_utilisateur = %(id_utilisateur)s AND
                         id_eclaireur =%(id_eclaireur)s
                         """,
-                        {"id_utilisateur": id_utilisateur, "id_eclaireur": id_eclaireur},
+                        {"id_utilisateur": id_utilisateur, "id_eclaireur":
+                         id_eclaireur},
                     )
                     if cursor.fetchone()["count"] == 1:
                         return True
                     return False
         except Exception as e:
-            raise ValueError(f"Erreur lors de l'abonnement avec l'éclaireur : {e}")
+            raise ValueError(f"Erreur lors de la vérification de l'abonnement : {e}")
 
     def liste_eclaireurs(self, id_utilisateur: int):
         try:
@@ -71,38 +117,3 @@ class EclaireurDAO(metaclass=Singleton):
         except Exception as e:
             raise ValueError(f"Erreur lors de la suppression de l'éclaireur : {e}")
 
-
-if __name__ == "__main__":
-    # Initialisation d'un utilisateur et d'un éclaireur
-    utilisateur = Utilisateur(pseudo="Jules", adresse_email="jules@", mot_de_passe="mdp", sel="sel")
-    eclaireur = Utilisateur(pseudo="Eclaireur", adresse_email="éclaireur@", mot_de_passe="mdp", sel="sel")
-    eclaireur2 = Utilisateur(pseudo="Eclaireur2", adresse_email="éclaireur2@", mot_de_passe="mdp", sel="sel")
-    eclaireur3 = Utilisateur(pseudo="Eclaireur3", adresse_email="éclaireur3@", mot_de_passe="mdp", sel="sel")
-    # Création en base des utilisateurs
-    utilisateur_dao = UtilisateurDAO()
-    # utilisateur_dao.creer(utilisateur)
-    # utilisateur_dao.creer(eclaireur)
-    # utilisateur_dao.creer(eclaireur2)
-    # utilisateur_dao.creer(eclaireur3)
-    # Création de la DAo éclaireur
-    eclaireur_dao = EclaireurDAO()
-    """
-    eclaireur_dao.ajouter_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo(utilisateur.pseudo).id_utilisateur,
-                                    utilisateur_dao.chercher_utilisateur_par_pseudo(eclaireur.pseudo).id_utilisateur)
-    eclaireur_dao.ajouter_eclaireur(12,
-                                    utilisateur_dao.chercher_utilisateur_par_pseudo(eclaireur.pseudo).id_utilisateur)
-    
-    eclaireur_dao.ajouter_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo(utilisateur.pseudo).id_utilisateur,
-                                    utilisateur_dao.chercher_utilisateur_par_pseudo(eclaireur2.pseudo).id_utilisateur)
-    
-    print(eclaireur_dao.est_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo(utilisateur.pseudo).id_utilisateur,
-                                      utilisateur_dao.chercher_utilisateur_par_pseudo(eclaireur.pseudo).id_utilisateur))
-    print(eclaireur_dao.est_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo(utilisateur.pseudo).id_utilisateur,
-                                      utilisateur_dao.chercher_utilisateur_par_pseudo(eclaireur3.pseudo).id_utilisateur))
-    print(eclaireur_dao.liste_eclaireurs(utilisateur_dao.chercher_utilisateur_par_pseudo(utilisateur.pseudo).id_utilisateur))
-    eclaireur_dao.ajouter_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo(utilisateur.pseudo).id_utilisateur,
-                                    utilisateur_dao.chercher_utilisateur_par_pseudo(eclaireur3.pseudo).id_utilisateur)
-    eclaireur_dao.supprimer_eclaireur(utilisateur_dao.chercher_utilisateur_par_pseudo(utilisateur.pseudo).id_utilisateur,
-                                      utilisateur_dao.chercher_utilisateur_par_pseudo(eclaireur3.pseudo).id_utilisateur)
-    
-    """
