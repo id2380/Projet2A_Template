@@ -1,22 +1,21 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 
-from src.dao.utilisateur_dao import UtilisateurDAO
 from src.Interface.jwt_bearer import JWTBearer
-from src.Interface.user_controller import obtenir_utilisateur_depuis_credentials
+from src.Interface.user_controller import \
+    obtenir_utilisateur_depuis_credentials
 from src.service.eclaireur_service import EclaireurService
 
 eclaireur_router = APIRouter(prefix="/Eclaireurs", tags=["Eclaireurs"])
-
 
 @eclaireur_router.post("/ajouter_eclaireur_id", status_code=status.HTTP_200_OK)
 def ajouter_eclaireur_id(id_eclaireur: int, credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())):
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
     import dotenv
-
     dotenv.load_dotenv(override=True)
     try:
-        EclaireurService().ajouter_eclaireur_id(utilisateur.id_utilisateur, id_eclaireur)
+        EclaireurService().ajouter_eclaireur_id(utilisateur.id_utilisateur,
+                                                id_eclaireur)
         return f"{id_eclaireur} fait maintenant partie de vos éclaireurs"
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")

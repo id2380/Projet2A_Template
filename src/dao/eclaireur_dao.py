@@ -1,6 +1,4 @@
-from src.dao.utilisateur_dao import UtilisateurDAO
 from src.data.db_connection import DBConnection
-from src.Model.utilisateur import Utilisateur
 from src.utils.singleton import Singleton
 
 
@@ -14,24 +12,21 @@ class EclaireurDAO(metaclass=Singleton):
     # -------------------------------------------------------------------------
 
     """
-        Permet à un utiliseur de s'abonner à un autre utilisateur. En cas de
-        problème, une erreur est rendue.
+    Permet à un utilisateur de s'abonner à un éclaireur. En cas de problème,
+    une exception est levée.
 
-        Paramètres
-        ----------
-        id_utilisateur : int
-            L'identifiant unique qui correspond à l'utilisateur qui souhaite
-            s'abonner à l'autre utilisateur.
-        id_eclaireur : int
-            L'identifiant unique qui correspond à l'utilisateur auquel l'autre
-            utilisateur souhaite s'abonner.
+    Paramètres
+    ----------
+    id_utilisateur : int
+        L'identifiant unique de l'utilisateur qui souhaite s'abonner.
+    id_eclaireur : int
+        L'identifiant unique de l'utilisateur auquel on souhaite s'abonner.
 
-        Retour
-        ----------
-        None : l'utilisateur a correctement été ajouté
-        ValueError : erreur si problème pendant l'ajout
-
-        """
+    Retour
+    ----------
+    None : si l'abonnement a été ajouté avec succès.
+    ValueError : si une erreur survient lors de l'ajout de l'abonnement.
+    """
     def ajouter_eclaireur(self, id_utilisateur: int, id_eclaireur: int):
         try:
             with DBConnection().connection as connection:
@@ -49,22 +44,22 @@ class EclaireurDAO(metaclass=Singleton):
             raise ValueError(f"Erreur lors de l'ajout de l'éclaireur : {e}")
 
     """
-        Permet de savoir si un utilisateur est abonné à un autre.
+    Vérifie si un utilisateur est abonné à un éclaireur.
 
-        Paramètres
-        ----------
-        id_utilisateur : int
-            L'identifiant unique qui correspond à l'utilisateur qui est supposé
-            abonné à l'autre utilisateur.
-        id_eclaireur : int
-            L'identifiant unique qui correspond à l'utilisateur auquel l'autre
-            utilisateur est supposé abonné.
+    Paramètres
+    ----------
+    id_utilisateur : int
+        L'identifiant unique de l'utilisateur pour lequel l'abonnement est
+        vérifié.
+    id_eclaireur : int
+        L'identifiant unique de l'utilisateur qui est supposé être suivi par
+        l'utilisateur.
 
-        Retour
-        ----------
-        boolean : indique si l'utilisateur est abonné à l'autre
-        ValueError : erreur si problème pendant la vérification
-        """
+    Retour
+    ----------
+    bool : True si l'utilisateur est abonné à l'éclaireur, False sinon.
+    ValueError : si une erreur survient lors de la vérification.
+    """
     def est_eclaireur(self, id_utilisateur: int, id_eclaireur: int):
         try:
             with DBConnection().connection as connection:
@@ -85,6 +80,21 @@ class EclaireurDAO(metaclass=Singleton):
         except Exception as e:
             raise ValueError(f"Erreur lors de la vérification de l'abonnement : {e}")
 
+    """
+    Renvoie la liste des éclaireurs auxquels un utilisateur est abonné.
+
+    Paramètres
+    ----------
+    id_utilisateur : int
+        L'identifiant unique de l'utilisateur pour lequel on souhaite obtenir
+        la liste de ses éclaireurs.
+
+    Retour
+    ----------
+    list : liste des identifiants des éclaireurs associés à l'utilisateur.
+    ValueError : si une erreur survient lors de la récupération des
+    identifiants.
+    """
     def liste_eclaireurs(self, id_utilisateur: int):
         try:
             with DBConnection().connection as connection:
@@ -102,6 +112,23 @@ class EclaireurDAO(metaclass=Singleton):
         except Exception as e:
             raise ValueError(f"Erreur lors de la recherche des éclaireurs : {e}")
 
+    """
+    Supprime l'abonnement d'un utilisateur à un éclaireur.
+
+    Paramètres
+    ----------
+    id_utilisateur : int
+        L'identifiant unique de l'utilisateur pour lequel on souhaite
+        supprimer l'abonnement.
+    id_eclaireur : int
+        L'identifiant unique de l'éclaireur dont on souhaite supprimer
+        l'abonnement.
+
+    Retour
+    ----------
+    None : si la suppression a réussi.
+    ValueError : si une erreur survient lors de la suppression.
+    """
     def supprimer_eclaireur(self, id_utilisateur: int, id_eclaireur: int):
         try:
             with DBConnection().connection as connection:
@@ -112,8 +139,8 @@ class EclaireurDAO(metaclass=Singleton):
                         WHERE id_utilisateur = %(id_utilisateur)s
                         AND id_eclaireur = %(id_eclaireur)s
                         """,
-                        {"id_utilisateur": id_utilisateur, "id_eclaireur": id_eclaireur},
+                        {"id_utilisateur": id_utilisateur, "id_eclaireur":
+                         id_eclaireur},
                     )
         except Exception as e:
             raise ValueError(f"Erreur lors de la suppression de l'éclaireur : {e}")
-
