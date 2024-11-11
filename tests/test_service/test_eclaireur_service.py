@@ -406,6 +406,10 @@ class TestEclaireurService:
         except Exception:
             res = False
         # THEN
+        utilisateur_dao.supprimer_utilisateur(utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur").id_utilisateur)
+        utilisateur_dao.supprimer_utilisateur(utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur").id_utilisateur)
+        utilisateur_dao.supprimer_utilisateur(utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur3").id_utilisateur)
+        utilisateur_dao.supprimer_utilisateur(utilisateur_dao.chercher_utilisateur_par_pseudo("éclaireur3").id_utilisateur)
         assert res is False
 
 

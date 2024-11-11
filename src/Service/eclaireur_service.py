@@ -1,5 +1,6 @@
 from src.dao.eclaireur_dao import EclaireurDAO
 from src.dao.utilisateur_dao import UtilisateurDAO
+from src.Model.api_utilisateur import APIUtilisateur
 
 
 class EclaireurService:
@@ -175,9 +176,13 @@ class EclaireurService:
 
     Retour
     ----------
-    list : liste des identifiants des éclaireurs associés à l'utilisateur.
+    list : liste des éclaireurs associés à l'utilisateur.
     ValueError : si une erreur survient lors de la récupération des
     identifiants.
     """
     def liste_eclaireurs(self, id_utilisateur: int):
-        return EclaireurDAO().liste_eclaireurs(id_utilisateur)
+        liste = []
+        for id in EclaireurDAO().liste_eclaireurs(id_utilisateur):
+            utilisateur = UtilisateurDAO().chercher_utilisateur_par_id(id)
+            liste += [APIUtilisateur(id_utilisateur=utilisateur.id_utilisateur, pseudo=utilisateur.pseudo)]
+        return liste
