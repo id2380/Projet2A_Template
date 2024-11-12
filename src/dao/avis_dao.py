@@ -8,14 +8,10 @@ from src.service.film_service import FilmService
 class AvisDAO:
     def creer_avis(self, avis: Avis) -> bool:
         try :
-            film_service = FilmService()  # Supposons que vous ayez déjà instancié le film_service ici
+            film_service = FilmService()  
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    # Vérification si le film existe dans la base de données via l'id_film fourni
-                    cursor.execute("SELECT id_film FROM film WHERE id_film = %s;", (avis.id_film,))
-                    film_exist = cursor.fetchone()
-
-                    if not film_exist:
+                    if not film_service.existe_film(avis.id_film):
                         print(
                             f"Le film avec l'ID '{avis.id_film}' n'a pas été trouvé dans la base. Création en cours via l'API TMDB..."
                         )
@@ -45,13 +41,10 @@ class AvisDAO:
 
     def modifier_avis(self, avis: Avis) -> bool:
         try:
+            film_service = FilmService()  
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    # Vérification si le film existe dans la base de données
-                    cursor.execute("SELECT id_film FROM film WHERE id_film = %s;", (avis.id_film,))
-                    film_exist = cursor.fetchone()
-
-                    if not film_exist:
+                    if not film_service.existe_film(avis.id_film):
                         print(f"Le film avec l'ID '{avis.id_film}' n'existe pas dans la base de données.")
                         return False
 
@@ -80,7 +73,6 @@ class AvisDAO:
                         },
                     )
 
-                    # Vérifier si la mise à jour a affecté des lignes
                     if cursor.rowcount == 0:
                         print(
                             f"Aucune modification effectuée pour l'avis du film {avis.id_film} par {avis.utilisateur}."
@@ -97,6 +89,7 @@ class AvisDAO:
 
     def supprimer_avis(self, avis_id: int, utilisateur: str, id_film: int) -> bool:
         try:
+            film_service = FilmService()  
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     # Vérifier si l'avis existe
@@ -129,33 +122,37 @@ class AvisDAO:
             print(f"Erreur lors de la suppression de l'avis : {e}")
         return False  # En cas d'erreur, renvoyer False
 
-    def lire_avis(self, id_film: int, utilisateur: str = None) -> list:
+    def lire_avis(self, id_film=None, utilisateur=None, id_utilisateur=None) -> list:
         try:
+            film_service = FilmService()  
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    if utilisateur:
-                        cursor.execute(
-                            """
-                            SELECT * FROM avis WHERE id_film = %s AND utilisateur = %s;
-                        """,
-                            (id_film, utilisateur),
-                        )
-                    else:
-                        cursor.execute(
-                            """
-                            SELECT * FROM avis WHERE id_film = %s;
-                    """,
-                            (id_film,),
-                        )
+                    query = "SELECT * FROM avis"
+                    conditions = []
+                    params = []
 
+                    if id_film is not None:
+                        conditions.append("id_film = %s")
+                        params.append(id_film)
+                    if utilisateur is not None:
+                        conditions.append("utilisateur = %s")
+                        params.append(utilisateur)
+                    if id_utilisateur is not None:
+                        conditions.append("id_utilisateur = %s")
+                        params.append(id_utilisateur)
+                
+                    if conditions:
+                        query += " WHERE " + " AND ".join(conditions)
+                
+                    cursor.execute(query, tuple(params))
                     result = cursor.fetchall()
 
-                    # Si aucun résultat n'est trouvé, renvoyer un message explicite
+                    # Si aucun résultat n'est trouvé, renvoyer une liste vide
                     if not result:
                         return []
 
                     # Si des avis sont trouvés, les transformer en objets Avis
-                    return [Avis(*row.values()) for row in result]
+                    return [Avis(*row) for row in result]  # Assurez-vous que le constructeur Avis peut prendre un tuple directement
 
         except Exception as e:
             print(f"Erreur lors de la lecture des avis : {e}")

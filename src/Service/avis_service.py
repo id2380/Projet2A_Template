@@ -66,7 +66,22 @@ class AvisService:
             Liste des avis rédigés par cet utilisateur.
         """
         return self.avis_dao.lire_avis(utilisateur=utilisateur_pseudo)
+    def obtenir_avis_par_utilisateur_identifiant(self, id_utilisateur:int)->list : 
+        """
+        Obtient tous les avis rédigés par l'identifiant d'un utilisateur donné.
 
+        Parameters
+        ----------
+        id_utilisateur : int
+            l'identifiant de l'utilisateur dont on souhaite récupérer les avis.
+
+        Returns
+        -------
+        list
+            Liste des avis rédigés par cet utilisateur.
+        """
+        return self.avis_dao.lire_avis(id_utilisateur=id_utilisateur)
+        
     def modifier_avis(self, id_film: int, utilisateur: str, commentaire: str, note: int) -> bool:
         """
         Modifie un avis existant via le DAO.
