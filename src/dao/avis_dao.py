@@ -7,7 +7,7 @@ from src.service.film_service import FilmService
 
 class AvisDAO:
     def creer_avis(self, avis: Avis) -> bool:
-        try:
+        try :
             film_service = FilmService()  # Supposons que vous ayez déjà instancié le film_service ici
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
@@ -33,7 +33,6 @@ class AvisDAO:
                     """,
                         (avis.id_film, avis.utilisateur, avis.note, avis.commentaire),
                     )
-
                     avis.id_avis = cursor.fetchone()[0]
                     connection.commit()
                     print(

@@ -85,11 +85,8 @@ class FilmService:
 
     def creer_film(self, id_film: int):
         film_dao = FilmDAO()
-        if film_dao.existe_film(id_film):
-            raise ValueError("Le film existe déjà.")
-        else:
-            film = FilmClient().recherche_film_id(id_film)
-            film_dao.creer_film(film)
+        film = FilmClient().recherche_film_id(id_film)
+        film_dao.creer_film(film)
 
     def supprimer_film(self, id_film: int):
         film_dao = FilmDAO()
@@ -97,3 +94,4 @@ class FilmService:
             raise ValueError("Le film n'existe pas.")
         else:
             film_dao.supprimer_film(id_film)
+            

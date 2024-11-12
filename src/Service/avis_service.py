@@ -7,7 +7,7 @@ class AvisService:
         # Initialisation de l'objet AvisDAO
         self.avis_dao = AvisDAO()
 
-    def ajouter_avis(self, id_film: int, utilisateur: str, commentaire: str, note: int) -> Avis:
+    def ajouter_avis(self, id_film: int, utilisateur: str, commentaire: str,note: int,) -> Avis:
         """
         Ajoute un nouvel avis via le DAO.
 
@@ -28,7 +28,7 @@ class AvisService:
             L'avis créé, ou None si l'ajout a échoué.
         """
         # Création d'un nouvel objet Avis
-        nouvel_avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur, note=note, commentaire=commentaire)
+        nouvel_avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur,  commentaire=commentaire,note=note)
 
         # Utilisation de l'AvisDAO pour créer l'avis dans la base de données
         if self.avis_dao.creer_avis(nouvel_avis):
@@ -137,3 +137,4 @@ class AvisService:
 
         # Retour de la moyenne des notes
         return total_notes / len(avis_list)
+

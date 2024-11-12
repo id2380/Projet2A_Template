@@ -9,8 +9,9 @@ from src.service.avis_service import AvisService
 class AvisRequest(BaseModel):
     id_film: int
     utilisateur: str
-    commentaire: str
     note: int
+    commentaire: str
+    
 
 
 class AvisResponse(BaseModel):  # Modèle de réponse pour refléter les données retournées
@@ -27,7 +28,7 @@ avis_router = APIRouter(prefix="/avis", tags=["Avis"])
 @avis_router.post("/", response_model=AvisResponse, status_code=status.HTTP_201_CREATED)
 def creer_avis(avis: AvisRequest, credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())):
     avis_service = AvisService()
-    result = avis_service.ajouter_avis(avis.id_film, avis.utilisateur, avis.commentaire, avis.note)
+    result = avis_service.ajouter_avis(avis.id_film, avis.utilisateur, avis.note, avis.commentaire,)
     if result:
         return result
     else:

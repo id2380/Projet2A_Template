@@ -11,5 +11,5 @@ class Avis:
 
     def __repr__(self):
         return (
-            f"<Avis(id_avis={self.id_avis}, id_film={self.id_film}, utilisateur={self.utilisateur}, note={self.note})>"
+            f"<Avis(id_avis={self.id_avis}, id_film={self.id_film}, utilisateur={self.utilisateur}, note={self.note},commentaire={self.commentaire})>"
         )
