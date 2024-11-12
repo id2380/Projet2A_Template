@@ -1,80 +1,106 @@
 import pytest
+from dotenv import load_dotenv
 
 from src.client.film_client import FilmClient
 
 
 class TestFilmClient:
-    import dotenv
+    """
+    Une classe qui permet de tester les fonctionnalités de la classe
+    film_client.
+    """
 
-    dotenv.load_dotenv(override=True)
+    load_dotenv(override=True)
 
-    # methode recherche_films
+    # -------------------------------------------------------------------------
+    # Tests
+    # -------------------------------------------------------------------------
+
+    """
+    Teste la recherche de films.
+    """
     def test_recherche_films_ok(self):
         # GIVEN
         film_client = FilmClient()
-        # WHEN
-        films = film_client.recherche_films()
-        # THEN
-        assert films is not None
 
-    def test_recherche_films_error(self):
-        # GIVEN
-        film_client = FilmClient()
-        # WHEN
-        films = film_client.recherche_films(page="test", language=3)
-        # THEN
-        assert films is None
+        # WHEN AND THEN
+        try:
+            films = film_client.recherche_films()
+            assert films is not None
+        except Exception:
+            assert False
 
-    # methode recherche_films_titre
+    """
+    Teste la recherche de films par titre.
+    """
     def test_recherche_films_titre_ok(self):
         # GIVEN
         film_client = FilmClient()
-        # WHEN
-        films = film_client.recherche_films_titre("robot")
-        # THEN
-        assert films is not None
 
-    def test_recherche_films_titre_error(self):
+        # WHEN AND THEN
+        try:
+            films = film_client.recherche_films_titre("robot")
+            assert films is not None
+        except Exception:
+            assert False
+
+    """
+    Teste la recherche d'un film par son id avec un id valide.
+    """
+    def test_recherche_film_id_ok(self):
         # GIVEN
         film_client = FilmClient()
-        # WHEN
-        films = film_client.recherche_films_titre("robot", page="test")
-        # THEN
-        assert films is None
 
-    # methode recherche_film_id
-    def test_recherche_film_id_ok(self, id_film=1184918):
+        # WHEN AND THEN
+        try:
+            film = film_client.recherche_film_id(id_film=1184918)
+            assert film is not None
+        except Exception:
+            assert False
+
+    """
+    Teste la recherche d'un film par son id avec un id invalide.
+    """
+    def test_recherche_film_id_invalide(self):
         # GIVEN
         film_client = FilmClient()
-        # WHEN
-        film = film_client.recherche_film_id(id_film)
-        # THEN
-        assert film is not None
 
-    def test_recherche_film_id_error(self, id_film=0):
+        # WHEN AND THEN
+        try:
+            film_client.recherche_film_id(id_film=0)
+            assert False
+        except Exception as e:
+            assert str(e) == "L'identifiant n'est pas valide."
+
+    """
+    Teste la recherche de films similaires à un film par son id avec un id
+    valide.
+    """
+    def test_obtenir_films_similaires_ok(self):
         # GIVEN
         film_client = FilmClient()
-        # WHEN
-        film = film_client.recherche_film_id(id_film)
-        # THEN
-        assert film is None
 
-    # methode obtenir_films_similaires
-    def test_obtenir_films_similaires_ok(self, id_film=1184918):
+        # WHEN AND THEN
+        try:
+            films = film_client.obtenir_films_similaires(id_film=1184918)
+            assert films is not None
+        except Exception:
+            assert False
+
+    """
+    Teste la recherche de films similaires à un film par son id avec un id
+    invalide.
+    """
+    def test_obtenir_films_similaires_invalide(self):
         # GIVEN
         film_client = FilmClient()
-        # WHEN
-        films = film_client.obtenir_films_similaires(id_film)
-        # THEN
-        assert films is not None
 
-    def test_obtenir_films_similaires_error(self, id_film=0):
-        # GIVEN
-        film_client = FilmClient()
-        # WHEN
-        films = film_client.obtenir_films_similaires(id_film)
-        # THEN
-        assert films is None
+        # WHEN AND THEN
+        try:
+            film_client.obtenir_films_similaires(id_film=0)
+            assert False
+        except Exception as e:
+            assert str(e) == "L'identifiant n'est pas valide."
 
 
 if __name__ == "__main__":

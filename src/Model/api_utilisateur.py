@@ -1,16 +1,18 @@
-from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
+
+from pydantic import BaseModel
 
 
 class APIUtilisateur(BaseModel):
     """
-    Classe représentant un utilisateur dans l'application, héritant de BaseModel pour validation des données.
+    Classe représentant un utilisateur dans l'application, héritant de
+    BaseModel pour validation des données.
 
     Attributes
     ----------
     id_utilisateur : Optional[int]
-        L'identifiant unique de l'utilisateur, généré automatiquement par la base de données.
+        L'identifiant unique de l'utilisateur, généré automatiquement par la
+        base de données.
     pseudo : str
         Le pseudo de l'utilisateur, unique et non nul.
     """

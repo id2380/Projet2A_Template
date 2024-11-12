@@ -1,7 +1,9 @@
-from src.business_object.fiche_technique import FicheTechnique
-from pydantic import BaseModel
 from datetime import date
 from typing import Optional
+
+from pydantic import BaseModel
+
+from src.business_object.fiche_technique import FicheTechnique
 
 
 class Film(BaseModel):
@@ -36,3 +38,8 @@ class Film(BaseModel):
     date_de_sortie: Optional[date] = None
     langue_originale: Optional[str] = None
     synopsis: Optional[str] = None
+
+    class Config:
+        """Rendre le modèle mutable après la création de l'objet."""
+
+        allow_mutation = True

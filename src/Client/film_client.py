@@ -1,22 +1,71 @@
 import os
-from datetime import datetime
 
 import requests
+from dotenv import load_dotenv
 
 from src.Model.film import Film
 from src.Model.film_complet import FilmComplet
+from src.utils.date import parse_str
 from src.utils.singleton import Singleton
 
 
 class FilmClient(metaclass=Singleton):
-    def __init__(self) -> None:
-        self.__HOST = os.environ["WEBSERVICE_HOST"]
-        self._headers = {"accept": "application/json", "Authorization": os.environ["WEBSERVICE_TOKEN"]}
+    """
+    Une classe qui permet de communiquer avec l'API Tmdb.
+    """
 
+    # -------------------------------------------------------------------------
+    # Constructeur
+    # -------------------------------------------------------------------------
+
+    """
+    Attributs
+    ----------
+    _HOST : str
+        URL de l'API Tmdb.
+    _headers : dict
+        Les en-têtes HTTP.
+    """
+    def __init__(self) -> None:
+        load_dotenv()
+        self.__HOST = os.environ["WEBSERVICE_HOST"]
+        self._headers = {"accept": "application/json",
+                         "Authorization": os.environ["WEBSERVICE_TOKEN"]}
+
+    # -------------------------------------------------------------------------
+    # Méthodes
+    # -------------------------------------------------------------------------
+
+    """
+    Permet d'obtenir une liste de films actuellement populaires sur TMDb, avec
+    leurs informations de base.
+
+    Paramètres
+    ----------
+    page : int
+        Le nombre de pages de films à charger dans l'API.
+    language : str
+        La langue utilisée dans l'API, par défaut c'est le français.
+    primary_release_year : int
+        L'année de première sortie du film.
+    region : str
+        La région où le film doit être disponible.
+    year : int
+        L'année de production du film.
+
+    Retour
+    ----------
+    list[Film] : Liste de films populaires remplissant les caractéristiques en
+    paramètres.
+
+    Exception
+    ----------
+    valueError : erreur de communication avec l'API.
+    """
     def recherche_films(
         self,
         page: int = 1,
-        language: str = "en-US",
+        language: str = "fr",
         primary_release_year: int = None,
         region: str = None,
         year: int = None,
@@ -33,7 +82,6 @@ class FilmClient(metaclass=Singleton):
             "year": year,
         }
         req = requests.get(url, headers=self._headers, params=params)
-        # GENRE A COMPLETER !!!!!!
         films = []
         if req.status_code == 200:
             raw_films = req.json()["results"]
@@ -42,21 +90,48 @@ class FilmClient(metaclass=Singleton):
                     id_film=raw_film["id"],
                     titre=raw_film["title"],
                     genre="",
-                    date_de_sortie=self.parse_str(raw_film["release_date"]),
+                    date_de_sortie=parse_str(raw_film["release_date"]),
                     langue_originale=raw_film["original_language"],
                     synopsis=raw_film["overview"],
                 )
                 if film:
                     films.append(film)
             return films
-        else:
-            return None
+        raise ValueError("Problème de communication avec l'API Tmdb.")
 
+    """
+    Permet d'obtenir une liste de films avec leurs informations de base les
+    caractérisant et qui possèdent dans leur titre l'attribut titre.
+
+    Paramètres
+    ----------
+    titre : str
+        La chaîne de caractères qui doit être contenue dans le titre.
+    page : int
+        Le nombre de pages de films à charger dans l'API.
+    language : str
+        La langue utilisée dans l'API, par défaut c'est le français.
+    primary_release_year : int
+        L'année de première sortie du film.
+    region : str
+        La région où le film doit être disponible.
+    year : int
+        L'année de production du film.
+
+    Retour
+    ----------
+    list[Film] : liste de films populaires remplissant les caractéristiques
+    en paramètres.
+
+    Exception
+    ----------
+    valueError : erreur de communication avec l'API.
+    """
     def recherche_films_titre(
         self,
         titre: str,
         page: int = 1,
-        language: str = "en-US",
+        language: str = "fr",
         primary_release_year: int = None,
         region: str = None,
         year: int = None,
@@ -74,7 +149,6 @@ class FilmClient(metaclass=Singleton):
             "year": year,
         }
         req = requests.get(url, headers=self._headers, params=params)
-        # GENRE A COMPLETER !!!!!!
         films = []
         if req.status_code == 200:
             raw_films = req.json()["results"]
@@ -83,7 +157,7 @@ class FilmClient(metaclass=Singleton):
                     id_film=raw_film["id"],
                     titre=raw_film["title"],
                     genre="",
-                    date_de_sortie=self.parse_str(raw_film["release_date"]),
+                    date_de_sortie=parse_str(raw_film["release_date"]),
                     langue_originale=raw_film["original_language"],
                     synopsis=raw_film["overview"],
                 )
@@ -91,22 +165,39 @@ class FilmClient(metaclass=Singleton):
                 if film:
                     films.append(film)
             return films
-        else:
-            return None
+        raise ValueError("Problème de communication avec l'API Tmdb.")
 
-    def recherche_film_id(self, id_film: int, language: str = "en-US"):
+    """
+    Permet d'obtenir les informations techniques d'un film ayant l'identifiant
+    passé en paramètre.
+
+    Paramètres
+    ----------
+    id_film : int
+        L'identifiant du film recherché.
+    language : str
+        La langue utilisée dans l'API, par défaut c'est le français.
+
+    Retour
+    ----------
+    FilmComplet : film recherché.
+
+    Exception
+    ----------
+    valueError : erreur de communication avec l'API.
+    valueError : identifiant du film non valide.
+    """
+    def recherche_film_id(self, id_film: int, language: str = "fr"):
         url = f"{self.__HOST}/movie/{id_film}"
         params = {"movie_id": id_film, "language": language}
         req = requests.get(url, headers=self._headers, params=params)
-        # GENRE A COMPLETER !!!!!!
-        film = None
         if req.status_code == 200:
             proposition = req.json()
             film = FilmComplet(
                 id_film=proposition["id"],
                 titre=proposition["title"],
                 genre="",
-                date_de_sortie=self.parse_str(proposition["release_date"]),
+                date_de_sortie=parse_str(proposition["release_date"]),
                 langue_originale=proposition["original_language"],
                 synopsis=proposition["overview"],
                 budget=proposition["budget"],
@@ -115,13 +206,40 @@ class FilmClient(metaclass=Singleton):
                 duree=proposition["runtime"],
                 revenue=proposition["revenue"],
             )
-        return film
+            return film
+        elif req.status_code == 404:
+            raise ValueError("L'identifiant n'est pas valide.")
+        else:
+            raise ValueError("Problème de communication avec l'API Tmdb.")
 
-    def obtenir_films_similaires(self, id_film: int, language: str = "en-US", page: int = 1):
+    """
+    Permet d'obtenir une liste de films avec leurs informations de base les
+    caractérisant et sont similaires avec le film dont l'identifiant est passé
+    en paramètre.
+
+    Paramètres
+    ----------
+    id_film : int
+        L'identifiant du film.
+    language : str
+        La langue utilisée dans l'API, par défaut c'est le français.
+    page : int
+        Le nombre de pages de films à charger dans l'API.
+
+    Retour
+    ----------
+    list[Film] : liste de films similaires au film passé en paramètre.
+
+    Exception
+    ----------
+    valueError : erreur de communication avec l'API.
+    valueError : identifiant du film non valide.
+    """
+    def obtenir_films_similaires(self, id_film: int, language: str = "fr",
+                                 page: int = 1):
         url = f"{self.__HOST}/movie/{id_film}/similar"
         params = {"language": language, "page": page}
         req = requests.get(url, headers=self._headers, params=params)
-
         films = []
         if req.status_code == 200:
             raw_films = req.json()["results"]
@@ -130,7 +248,7 @@ class FilmClient(metaclass=Singleton):
                     id_film=raw_film["id"],
                     titre=raw_film["title"],
                     genre="",
-                    date_de_sortie=self.parse_str(raw_film["release_date"]),
+                    date_de_sortie=parse_str(raw_film["release_date"]),
                     langue_originale=raw_film["original_language"],
                     synopsis=raw_film["overview"],
                 )
@@ -138,24 +256,7 @@ class FilmClient(metaclass=Singleton):
                 if film:
                     films.append(film)
             return films
+        elif req.status_code == 404:
+            raise ValueError("L'identifiant n'est pas valide.")
         else:
-            return None
-
-    def parse_str(self, date: str):
-        if date != "":
-            return datetime.strptime(date, "%Y-%m-%d")
-        return None
-
-
-# Pour tester, à supprimer par la suite
-if __name__ == "__main__":
-    # Pour charger les variables d'environnement contenues dans le fichier .env
-    import dotenv
-
-    dotenv.load_dotenv(override=True)
-
-    film_client = FilmClient()
-
-    film = film_client.recherche_film_id(1184918)
-
-    print(film.date_de_sortie)
+            raise ValueError("Problème de communication avec l'API Tmdb.")

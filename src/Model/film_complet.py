@@ -1,7 +1,8 @@
 from datetime import datetime
+from typing import Optional
+
 from src.business_object.fiche_technique import FicheTechnique
 from src.Model.film import Film
-from typing import Optional
 
 
 class FilmComplet(Film):
@@ -51,3 +52,8 @@ class FilmComplet(Film):
     revenue: Optional[int] = None
     note_moyenne: Optional[float] = None
     avis: Optional[list] = None
+
+    class Config:
+        """Rendre le modèle mutable après la création de l'objet."""
+
+        allow_mutation = True
