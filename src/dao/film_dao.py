@@ -1,129 +1,206 @@
-from src.Model.film import Film
 from src.data.db_connection import DBConnection
-from datetime import datetime
+from src.Model.film import Film
 
 
 class FilmDAO:
     """Classe contenant les méthodes pour créer,
     accéder et gérer les films dans la base de données"""
 
-    def creer_film(self, film: Film) -> bool:
-        """Création d'un film dans la base de données
+    # -------------------------------------------------------------------------
+    # Méthodes
+    # -------------------------------------------------------------------------
+
+    """Création d'un film dans la base de données
 
         Parameters
         ----------
         film : Film
             Le film à créer
 
-        Returns
+        Exception
         -------
-        bool
-            True si la création a réussi, False sinon
-        """
+        ValueError : erreur lors de la création du film dans la base.
+    """
+    def creer_film(self, film: Film):
         try:
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        INSERT INTO film(id_film,titre,genre,date_de_sortie,
+                        INSERT INTO film(id_film,titre,genres,date_de_sortie,
                         langue_originale,synopsis)
-                        VALUES (%(id_film)s, %(titre)s, %(genre)s,
-                        %(date_de_sortie)s, %(langue_originale)s, %(synopsis)s)
-                        RETURNING id_film;
+                        VALUES (%(id_film)s, %(titre)s, %(genres)s,
+                        %(date_de_sortie)s,%(langue_originale)s,
+                        %(synopsis)s);
                         """,
                         {
                             "id_film": film.id_film,
                             "titre": film.titre,
-                            "genre": film.genre,
+                            "genres": film.genres,
                             "date_de_sortie": film.date_de_sortie,
                             "langue_originale": film.langue_originale,
                             "synopsis": film.synopsis,
                         },
                     )
-        except Exception:
-            return False
-        return True
+        except Exception as e:
+            raise ValueError(f"Erreur de la création du film : {str(e)}")
 
+    """
+    Lire un film dans la base de données.
+
+    Parameters
+    ----------
+    id_film : int
+        L'identifiant du film.
+
+    Retour
+    -------
+    film : Film
+        Le film recherché.
+
+    Exception
+    -------
+    ValueError : erreur lors de la lecture du film dans la base.
+
+    """
     def lire_film(self, id_film: int) -> Film:
-        """Lecture d'un film dans la base de données
-
-        Parameters
-        ----------
-        id_film : int
-            Identifiant du film à lire
-
-        Returns
-        -------
-        Film
-            Film à lire
-        """
-        film = None
-        with DBConnection().connection as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    """
-                    SELECT *
-                    FROM film
-                    WHERE id_film=%(id_film)s;
-                    """,
-                    {
-                        "id_film": id_film,
-                    },
+        try:
+            film = None
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        SELECT *
+                        FROM film
+                        WHERE id_film=%(id_film)s;
+                        """,
+                        {
+                            "id_film": id_film,
+                        },
+                    )
+                    res = cursor.fetchone()
+            if res:
+                film = Film(
+                    id_film=id_film,
+                    titre=res["titre"],
+                    genres=res["genres"],
+                    date_de_sortie=res["date_de_sortie"],
+                    langue_originale=res["langue_originale"],
+                    synopsis=res["synopsis"],
                 )
-                res = cursor.fetchone()
-        if res:
-            film = Film(
-                id_film=id_film,
-                titre=res["titre"],
-                genre=res["genre"],
-                date_de_sortie=res["date_de_sortie"],
-                langue_originale=res["langue_originale"],
-                synopsis=res["synopsis"],
-            )
-        return film
+            return film
+        except Exception as e:
+            raise ValueError(f"Erreur de la lecture du film : {str(e)}")
 
-    def parse_str(self, date: str):
-        if date != "":
-            return datetime.strptime(date, "%Y-%m-%d")
-        return None
+    """
+    Supprimer un film dans la base de données.
 
-    def supprimer_film(self, id_film: int) -> bool:
-        """Suppression d'un film dans la base de données
+    Parameters
+    ----------
+    id_film : int
+        L'identifiant du film.
 
-        Parameters
-        ----------
-        id_film : int
-            Identifiant du film à supprimer
+    Exception
+    -------
+    ValueError : erreur lors de la suppression du film dans la base.
 
-        Returns
-        -------
-        bool
-            True si le film a bien été supprimé, False sinon
-        """
-        if self.lire_film(id_film) is None:  # film n'existe pas
-            return False
+    """
+    def supprimer_film(self, id_film: int):
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        DELETE
+                        FROM film
+                        WHERE id_film=%(id_film)s;
+                        """,
+                        {
+                            "id_film": id_film,
+                        },
+                    )
+        except Exception as e:
+            raise ValueError(f"Erreur de la suppression du film : {str(e)}")
 
-        with DBConnection().connection as connection:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    """
-                    DELETE
-                    FROM film
-                    WHERE id_film=%(id_film)s;
-                    """,
-                    {
-                        "id_film": id_film,
-                    },
-                )
-        return True
+    """
+    Teste si un film est présent dans la base de données.
 
+    Parameters
+    ----------
+    id_film : int
+        L'identifiant du film.
 
-if __name__ == "__main__":
-    # Pour charger les variables d'environnement contenues dans le fichier .env
+    Retour
+    ----------
+    bool : True si le film est présent, False sinon.
 
-    film_client = FilmDAO()
-    film = Film(id_film=1, titre="Test", genre="", date_de_sortie=None, langue_originale="", synopsis="")
+    Exception
+    -------
+    ValueError : erreur lors du test dans la base.
 
-    # boolean = film_client.creer_film(film)
-    boolean = film_client.supprimer_film(1)
-    print(boolean)
+    """
+    def existe_film(self, id_film: int):
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        SELECT COUNT(*)
+                        FROM film
+                        WHERE id_film=%(id_film)s;
+                        """,
+                        {
+                            "id_film": id_film,
+                        },
+                    )
+                    if cursor.fetchone()["count"] == 1:
+                        return True
+                    return False
+        except Exception as e:
+            raise ValueError(f"Erreur du test : {str(e)}")
+
+    """
+    Renvoie des films présents dans la base. Le nombre est contrôlé par un
+    paramètre "limite".
+
+    Parameters
+    ----------
+    limite : int
+        Le nombre de films maximum retournés.
+
+    Retour
+    ----------
+    films : list[Film]
+        La liste des films.
+
+    Exception
+    -------
+    ValueError : erreur lors de la lecture des films dans la base.
+
+    """
+    def liste_films(self, limite: int = 100):
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        SELECT *
+                        FROM film
+                        LIMIT %(limite)s;
+                        """,
+                        {
+                            "limite": limite,
+                        }
+                    )
+                    res = cursor.fetchall()
+                    films = []
+                    for film in res:
+                        films += [Film(id_film=film["id_film"],
+                                       titre=film["titre"],
+                                       genres=film["genres"],
+                                       date_de_sortie=film["date_de_sortie"],
+                                       langue_originale=film["langue_originale"],
+                                       synopsis=film["synopsis"])]
+                    return films
+        except Exception as e:
+            raise ValueError(f"Erreur lors de la lecture des films: {str(e)}")

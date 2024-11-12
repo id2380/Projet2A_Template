@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS abonne (
 
 -- Table 'Film' pour stocker les informations sur les films
 CREATE TABLE IF NOT EXISTS film (
-    id_film INTEGER PRIMARY KEY,               -- Identifiant unique du film, fourni par l'API
+    id_film INTEGER PRIMARY KEY,       -- Identifiant unique du film, fourni par l'API
     titre VARCHAR(200) NOT NULL,       -- Titre du film, requis
-    genre VARCHAR(100),                -- Genre du film (ex: Action, Comédie)
+    genres TEXT[] DEFAULT '{}',        -- Genres du film (ex: Action, Comédie)
     date_de_sortie DATE,               -- Date de sortie du film
     langue_originale VARCHAR(100),     -- Langue originale du film
     synopsis VARCHAR(500)              -- Résumé ou description du film

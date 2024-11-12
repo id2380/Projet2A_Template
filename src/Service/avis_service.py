@@ -51,7 +51,7 @@ class AvisService:
         """
         return self.avis_dao.lire_avis(id_film=id_film)
 
-    def obtenir_avis_par_utilisateur(self, utilisateur_pseudo: str) -> list:
+    def obtenir_avis_par_utilisateur_pseudo(self, utilisateur_pseudo: str) -> list:
         """
         Obtient tous les avis rédigés par un utilisateur donné.
 

@@ -1,5 +1,6 @@
 from src.client.film_client import FilmClient
 from src.dao.film_dao import FilmDAO
+from src.dao.utilisateur_dao import UtilisateurDAO
 
 
 class FilmService:
@@ -69,7 +70,7 @@ class FilmService:
 
     """
     Permet de rechercher une liste de films dans l'API Tmdb qui sont similaires
-    au film passé en paramètre. 
+    au film passé en paramètre.
 
     Paramètres
     ----------
@@ -88,18 +89,19 @@ class FilmService:
     ----------
     valueError : erreur de communication avec l'API.
     valueError : identifiant du film non valide.
+    valueError : Aucun film n'est similaire au film en paramètre.
     """
     def recherche_films_similaires(self,
                                    id_film: int,
                                    language: str = "fr",
                                    page: int = 1):
         films = FilmClient().obtenir_films_similaires(id_film, language, page)
+        if len(films) == 0:
+            raise ValueError("Aucun film n'est similaire au film.")
         return films
 
     """
-    Permet de rechercher un film à partir de son identifiant. Si il existe déjà
-    dans la base, les informations sont recherchées dans la base, sinon elles sont
-    recherchées sur l'API Tmdb.
+    Permet de rechercher un film à partir de son identifiant.
 
     Paramètres
     ----------
@@ -116,12 +118,7 @@ class FilmService:
     valueError : identifiant du film non valide.
     """
     def recherche_film_id(self, id_film: int):
-        film_dao = FilmDAO()
-        if film_dao.existe_film(id_film):
-            film = film_dao.lire_film(id_film)
-        else:
-            film = FilmClient().recherche_film_id(id_film)
-            film_dao.creer_film(film)
+        film = FilmClient().recherche_film_id(id_film)
         return film
 
     """
@@ -168,3 +165,44 @@ class FilmService:
             raise ValueError("Le film n'existe pas.")
         else:
             film_dao.supprimer_film(id_film)
+
+    """
+    Renvoie des films présents dans la base. Le nombre est contrôlé par un
+    paramètre "limite".
+
+    Parameters
+    ----------
+    limite : int
+        Le nombre de films maximum retournés.
+
+    Retour
+    ----------
+    films : list[Film]
+        La liste des films.
+
+    Exception
+    -------
+    ValueError : erreur lors de la lecture des films dans la base.
+    """
+    def liste_films(self, limite: int = 100):
+        return FilmDAO().liste_films(limite)
+
+    """
+    Teste si un film est présent dans la base de données.
+
+    Parameters
+    ----------
+    id_film : int
+        L'identifiant du film.
+
+    Retour
+    ----------
+    bool : True si le film est présent, False sinon.
+
+    Exception
+    -------
+    ValueError : erreur lors du test dans la base.
+
+    """
+    def existe_film(self, id_film: int):
+        return FilmDAO().existe_film(id_film)
