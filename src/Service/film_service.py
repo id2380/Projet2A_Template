@@ -7,16 +7,26 @@ class FilmService:
         self,
         title: str = None,
         page: int = 1,
-        language: str = "en-US",
+        language: str = "fr",
         primary_release_year: int = None,
         region: str = None,
         year: int = None,
     ):
-        films = None
         if title is None:
-            films = FilmClient().recherche_films(page, language, primary_release_year, region, year)
+            films = FilmClient().recherche_films(page,
+                                                    language,
+                                                    primary_release_year,
+                                                    region,
+                                                    year)
         else:
-            films = FilmClient().recherche_films_titre(title, page, language, primary_release_year, region, year)
+            films = FilmClient().recherche_films_titre(title,
+                                                        page,
+                                                        language,
+                                                        primary_release_year,
+                                                        region,
+                                                        year)
+        if len(films) == 0:
+            raise ValueError("Aucun film ne correspond à vos critères.")
         return films
 
     def creer_film(self, id_film: int):

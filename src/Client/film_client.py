@@ -3,6 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
+from src.client.genre_client import GenreClient
 from src.Model.film import Film
 from src.Model.film_complet import FilmComplet
 from src.utils.date import parse_str
@@ -70,6 +71,8 @@ class FilmClient(metaclass=Singleton):
         region: str = None,
         year: int = None,
     ):
+        genre_client = GenreClient(language=language)
+        genre_client.recherche_genres()
         url = f"{self.__HOST}/discover/movie"
         params = {
             "include_adult": False,
@@ -89,7 +92,7 @@ class FilmClient(metaclass=Singleton):
                 film = Film(
                     id_film=raw_film["id"],
                     titre=raw_film["title"],
-                    genre="",
+                    genres=genre_client.genres(raw_film["genre_ids"]),
                     date_de_sortie=parse_str(raw_film["release_date"]),
                     langue_originale=raw_film["original_language"],
                     synopsis=raw_film["overview"],
@@ -136,6 +139,8 @@ class FilmClient(metaclass=Singleton):
         region: str = None,
         year: int = None,
     ):
+        genre_client = GenreClient(language=language)
+        genre_client.recherche_genres()
         url = f"{self.__HOST}/search/movie"
         params = {
             "query": titre,
@@ -156,7 +161,7 @@ class FilmClient(metaclass=Singleton):
                 film = Film(
                     id_film=raw_film["id"],
                     titre=raw_film["title"],
-                    genre="",
+                    genres=genre_client.genres(raw_film["genre_ids"]),
                     date_de_sortie=parse_str(raw_film["release_date"]),
                     langue_originale=raw_film["original_language"],
                     synopsis=raw_film["overview"],
@@ -196,7 +201,7 @@ class FilmClient(metaclass=Singleton):
             film = FilmComplet(
                 id_film=proposition["id"],
                 titre=proposition["title"],
-                genre="",
+                genres=[genre["name"] for genre in proposition["genres"]],
                 date_de_sortie=parse_str(proposition["release_date"]),
                 langue_originale=proposition["original_language"],
                 synopsis=proposition["overview"],
@@ -237,6 +242,8 @@ class FilmClient(metaclass=Singleton):
     """
     def obtenir_films_similaires(self, id_film: int, language: str = "fr",
                                  page: int = 1):
+        genre_client = GenreClient(language=language)
+        genre_client.recherche_genres()
         url = f"{self.__HOST}/movie/{id_film}/similar"
         params = {"language": language, "page": page}
         req = requests.get(url, headers=self._headers, params=params)
@@ -247,7 +254,7 @@ class FilmClient(metaclass=Singleton):
                 film = Film(
                     id_film=raw_film["id"],
                     titre=raw_film["title"],
-                    genre="",
+                    genres=genre_client.genres(raw_film["genre_ids"]),
                     date_de_sortie=parse_str(raw_film["release_date"]),
                     langue_originale=raw_film["original_language"],
                     synopsis=raw_film["overview"],

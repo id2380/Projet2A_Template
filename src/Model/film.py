@@ -22,8 +22,8 @@ class Film(BaseModel):
         Un identifiant unique du film.
     titre : string
         Le titre du film.
-    genre : string
-        Le genre du film.
+    genres : list[string]
+        La liste des genres du film.
     date_de_sortie : datetime
         Le jour, le mois et l'année de sortie du film.
     langue_originale : str
@@ -34,7 +34,7 @@ class Film(BaseModel):
 
     id_film: int = None
     titre: str = None
-    genre: Optional[str] = None
+    genres: Optional[list] = None
     date_de_sortie: Optional[date] = None
     langue_originale: Optional[str] = None
     synopsis: Optional[str] = None

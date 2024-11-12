@@ -21,8 +21,8 @@ class FilmComplet(Film):
         Un identifiant unique du film.
     titre : string
         Le titre du film.
-    genre : string
-        Le genre du film.
+    genres : list[string]
+        La liste des genres du fil
     date_de_sortie : datetime
         Le jour, le mois et l'année de sortie du film.
     langue_originale : str
