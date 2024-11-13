@@ -204,12 +204,12 @@ class FilmClient(metaclass=Singleton):
                 genres=[genre["name"] for genre in proposition["genres"]],
                 date_de_sortie=parse_str(proposition["release_date"]),
                 langue_originale=proposition["original_language"],
-                synopsis=proposition["overview"],
-                budget=proposition["budget"],
-                pays_origine=proposition["origin_country"][0],
-                societe_prod=proposition["production_companies"][0]["name"],
-                duree=proposition["runtime"],
-                revenue=proposition["revenue"],
+                synopsis=proposition.get("overview", "Non spécifiée") ,
+                budget=int(proposition.get("budget", 0) if proposition.get("budget") is not None else 0), 
+                pays_origine=proposition.get("origin_country", ["Non spécifiée"])[0] ,
+                societe_prod=proposition["production_companies"][0]["name"] if proposition["production_companies"] else "Non spécifiée",
+                duree=proposition.get("runtime", "Non spécifiée"),
+                revenue=int(proposition.get("revenue", 0) if proposition.get("revenue") is not None else 0)
             )
             return film
         elif req.status_code == 404:

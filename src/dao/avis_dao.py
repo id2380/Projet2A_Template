@@ -98,35 +98,35 @@ class AvisDAO:
 
     def lire_avis(self, id_film=None, utilisateur=None, id_utilisateur=None) -> list:
         try:
-            film_service = FilmService()  
             with DBConnection().connection as connection:
                 with connection.cursor() as cursor:
-                    query = "SELECT * FROM avis"
+                    query = "SELECT a.id, a.id_film, a.utilisateur, a.note, a.commentaire FROM avis a "
                     conditions = []
                     params = []
 
                     if id_film is not None:
-                        conditions.append("id_film = %s")
+                        conditions.append("a.id_film = %s")
                         params.append(id_film)
+
                     if utilisateur is not None:
-                        conditions.append("utilisateur = %s")
+                        conditions.append("a.utilisateur = %s")
                         params.append(utilisateur)
+
                     if id_utilisateur is not None:
-                        conditions.append("id_utilisateur = %s")
+                        query += "JOIN utilisateur u ON u.pseudo = a.utilisateur "
+                        conditions.append("u.id_utilisateur = %s")
                         params.append(id_utilisateur)
-                
+            
                     if conditions:
                         query += " WHERE " + " AND ".join(conditions)
-                
+            
                     cursor.execute(query, tuple(params))
                     result = cursor.fetchall()
-
-                    # Si aucun résultat n'est trouvé, renvoyer une liste vide
                     if not result:
                         return []
 
-                    # Si des avis sont trouvés, les transformer en objets Avis
-                    return [Avis(*row) for row in result]  # Assurez-vous que le constructeur Avis peut prendre un tuple directement
+                    
+                    return result
 
         except Exception as e:
             print(f"Erreur lors de la lecture des avis : {e}")

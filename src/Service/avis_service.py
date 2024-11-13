@@ -36,7 +36,7 @@ class AvisService:
                             f"Le film avec l'ID '{nouvel_avis.id_film}' n'a pas été trouvé dans la base. Création en cours via l'API TMDB..."
                         )
                         film_created = film_service.creer_film(nouvel_avis.id_film)
-                        if not film_created :
+                        if not film_service.existe_film(nouvel_avis.id_film) :
                             print(f"Impossible de créer le film avec l'ID '{nouvel_avis.id_film}' via l'API TMDB.")
                             return False
                         print(f"Film avec l'ID '{nouvel_avis.id_film}' créé avec succès.")
@@ -45,52 +45,12 @@ class AvisService:
             return nouvel_avis
         return f"Erreur : Un avis existe déjà pour ce film par cet utilisateur."
 
-    def obtenir_avis_par_film(self, id_film: int) -> list:
+    def obtenir_avis(self, id_film=None, utilisateur=None, id_utilisateur=None):
         """
-        Obtient tous les avis pour un film donné.
-
-        Parameters
-        ----------
-        id_film : int
-            L'identifiant du film.
-
-        Returns
-        -------
-        list
-            Liste des avis pour ce film.
+        Obtient les avis selon les critères spécifiés.
         """
-        return self.avis_dao.lire_avis(id_film=id_film)
+        return self.avis_dao.lire_avis(id_film=id_film, utilisateur=utilisateur, id_utilisateur=id_utilisateur) 
 
-    def obtenir_avis_par_utilisateur_pseudo(self, utilisateur_pseudo: str) -> list:
-        """
-        Obtient tous les avis rédigés par un utilisateur donné.
-
-        Parameters
-        ----------
-        utilisateur_pseudo : str
-            Le pseudo de l'utilisateur dont on souhaite récupérer les avis.
-
-        Returns
-        -------
-        list
-            Liste des avis rédigés par cet utilisateur.
-        """
-        return self.avis_dao.lire_avis(utilisateur=utilisateur_pseudo)
-    def obtenir_avis_par_utilisateur_identifiant(self, id_utilisateur:int)->list : 
-        """
-        Obtient tous les avis rédigés par l'identifiant d'un utilisateur donné.
-
-        Parameters
-        ----------
-        id_utilisateur : int
-            l'identifiant de l'utilisateur dont on souhaite récupérer les avis.
-
-        Returns
-        -------
-        list
-            Liste des avis rédigés par cet utilisateur.
-        """
-        return self.avis_dao.lire_avis(id_utilisateur=id_utilisateur)
     def modifier_avis(self, id_film: int, utilisateur: str, commentaire: str, note: int) -> bool:
         """
         Modifie un avis existant via le DAO.
