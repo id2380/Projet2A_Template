@@ -3,8 +3,6 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.business_object.fiche_technique import FicheTechnique
-
 
 class Film(BaseModel):
     """
@@ -34,7 +32,7 @@ class Film(BaseModel):
 
     id_film: int = None
     titre: str = None
-    genres: Optional[list] = None
+    genres: Optional[list] = []
     date_de_sortie: Optional[date] = None
     langue_originale: Optional[str] = None
     synopsis: Optional[str] = None
