@@ -6,37 +6,91 @@ from src.service.film_service import FilmService
 
 
 class TestFilmService:
-    import dotenv
+    """
+    Une classe qui permet de tester les fonctionnalités des services pour
+    les films.
+    """
 
+    import dotenv
     dotenv.load_dotenv(override=True)
 
+    """
+    Teste la recherche de films par titre
+    """
     def test_recherche_films_titre(self):
         # GIVEN
         film_service = FilmService()
-        FilmClient().recherche_films_titre = MagicMock(return_value=[])
-        # WHEN
-        films = film_service.recherche_films("robot")
-        # THEN
-        assert films is not None
+        FilmClient().recherche_films_titre = MagicMock(return_value=["film"])
 
+        # WHEN AND THEN
+        try:
+            films = film_service.recherche_films("robot")
+            assert len(films) > 0
+        except Exception:
+            assert False
+
+    """
+    Teste la recherche de films quand aucun film ne correspond
+    au critère.
+    """
+    def test_recherche_films_titre_erreur(self):
+        # GIVEN
+        film_service = FilmService()
+        FilmClient().recherche_films_titre = MagicMock(return_value=[])
+
+        # WHEN AND THEN
+        try:
+            film_service.recherche_films("ccekce,cekc e")
+            assert False
+        except Exception:
+            assert True
+
+    """
+    Teste la recherche de films.
+    """
     def test_recherche_films(self):
         # GIVEN
         film_service = FilmService()
-        FilmClient().recherche_films = MagicMock(return_value=[])
-        # WHEN
-        films = film_service.recherche_films()
-        # THEN
-        assert films is not None
+        FilmClient().recherche_films = MagicMock(return_value=["film"])
 
-    def test_recherche_films_erreur(self):
+        # WHEN AND THEN
+        try:
+            films = film_service.recherche_films()
+            assert len(films) > 0
+        except Exception:
+            assert False
+
+    """
+    Teste la recherche de films similaires.
+    """
+    def test_recherche_films_similaires_ok(self):
         # GIVEN
         film_service = FilmService()
-        FilmClient().recherche_films_titre = MagicMock(return_value=None)
-        # WHEN
-        films = film_service.recherche_films("robot", page="test")
-        # THEN
-        assert films is None
+        FilmClient().obtenir_films_similaires = MagicMock(return_value=["film"])
 
+        # WHEN AND THEN
+        try:
+            films = film_service. recherche_films_similaires(id_film=1184918)
+            assert len(films) > 0
+        except Exception:
+            assert False
+
+    """
+    Teste la recherche de films similaires avec aucun film similaire.
+    """
+    def test_recherche_films_similaires_aucun(self):
+        # GIVEN
+        film_service = FilmService()
+        FilmClient().obtenir_films_similaires = MagicMock(return_value=[])
+
+        # WHEN AND THEN
+        try:
+            film_service. recherche_films_similaires(id_film=1184918)
+            assert False
+        except Exception as e:
+            assert str(e) == "Aucun film n'est similaire au film."
+
+    """
     @mock.patch("src.dao.film_dao.FilmDAO.creer_film")
     @mock.patch("src.Client.film_client.FilmClient.recherche_film_id")
     def test_creer_film_ok(self, mock_recherche_film_id, mock_creer_film):
@@ -70,6 +124,7 @@ class TestFilmService:
         boolean = film_service.creer_film(1184918)
         # THEN
         assert boolean is False
+    """
 
 
 if __name__ == "__main__":

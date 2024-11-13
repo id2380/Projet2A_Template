@@ -1,6 +1,5 @@
 from src.client.film_client import FilmClient
 from src.dao.film_dao import FilmDAO
-from src.dao.utilisateur_dao import UtilisateurDAO
 
 
 class FilmService:
