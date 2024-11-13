@@ -35,5 +35,6 @@ CREATE TABLE IF NOT EXISTS avis (
     utilisateur VARCHAR(255) NOT NULL REFERENCES utilisateur(pseudo),
     note INTEGER NOT NULL,
     commentaire TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(id_film, utilisateur)  
 );

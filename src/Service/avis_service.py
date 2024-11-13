@@ -1,13 +1,14 @@
 from src.business_object.avis import Avis
 from src.dao.avis_dao import AvisDAO
-
+from src.service.film_service import FilmService
+from typing import Optional
 
 class AvisService:
     def __init__(self):
         # Initialisation de l'objet AvisDAO
         self.avis_dao = AvisDAO()
 
-    def ajouter_avis(self, id_film: int, utilisateur: str, commentaire: str,note: int,) -> Avis:
+    def ajouter_avis(self, id_film: int, utilisateur: str, commentaire: str,note: int,) -> Optional[Avis]:
         """
         Ajoute un nouvel avis via le DAO.
 
@@ -28,12 +29,21 @@ class AvisService:
             L'avis créé, ou None si l'ajout a échoué.
         """
         # Création d'un nouvel objet Avis
+        film_service = FilmService() 
         nouvel_avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur,  commentaire=commentaire,note=note)
-
+        if not film_service.existe_film(nouvel_avis.id_film):
+                        print(
+                            f"Le film avec l'ID '{nouvel_avis.id_film}' n'a pas été trouvé dans la base. Création en cours via l'API TMDB..."
+                        )
+                        film_created = film_service.creer_film(nouvel_avis.id_film)
+                        if not film_created :
+                            print(f"Impossible de créer le film avec l'ID '{nouvel_avis.id_film}' via l'API TMDB.")
+                            return False
+                        print(f"Film avec l'ID '{nouvel_avis.id_film}' créé avec succès.")
         # Utilisation de l'AvisDAO pour créer l'avis dans la base de données
         if self.avis_dao.creer_avis(nouvel_avis):
             return nouvel_avis
-        return None
+        return f"Erreur : Un avis existe déjà pour ce film par cet utilisateur."
 
     def obtenir_avis_par_film(self, id_film: int) -> list:
         """
@@ -81,7 +91,6 @@ class AvisService:
             Liste des avis rédigés par cet utilisateur.
         """
         return self.avis_dao.lire_avis(id_utilisateur=id_utilisateur)
-        
     def modifier_avis(self, id_film: int, utilisateur: str, commentaire: str, note: int) -> bool:
         """
         Modifie un avis existant via le DAO.
@@ -102,13 +111,15 @@ class AvisService:
         bool
             True si la modification a réussi, False sinon.
         """
-        # Création de l'avis à modifier
+        film_service = FilmService()
         avis = Avis(id_avis=None, id_film=id_film, utilisateur=utilisateur, commentaire=commentaire, note=note)
-
+        if not film_service.existe_film(avis.id_film):
+                        print(f"Le film avec l'ID '{avis.id_film}' n'existe pas dans la base de données.")
+                        return False
         # Utilisation du DAO pour modifier l'avis
         return self.avis_dao.modifier_avis(avis)
-
-    def supprimer_avis(self, id_film: int, utilisateur_pseudo: str) -> bool:
+    
+    def supprimer_avis(self, id_film: int, utilisateur: str) -> bool:
         """
         Supprime un avis via le DAO et supprime le film si c'était
         le dernier avis.
@@ -125,7 +136,7 @@ class AvisService:
         bool
             True si la suppression a réussi, False sinon.
         """
-        return self.avis_dao.supprimer_avis(id_film=id_film, utilisateur=utilisateur_pseudo)
+        return self.avis_dao.supprimer_avis(id_film=id_film, utilisateur=utilisateur)
 
     def calculer_note_moyenne(self, id_film: int) -> float:
         """
