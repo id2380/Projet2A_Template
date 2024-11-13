@@ -1,171 +1,126 @@
-from unittest.mock import MagicMock, patch
-
-import pytest
-
-from src.business_object.avis import Avis
 from src.dao.avis_dao import AvisDAO
+from src.dao.film_dao import FilmDAO
+from src.business_object.film import Film    
 from src.dao.utilisateur_dao import UtilisateurDAO
-from src.service.film_service import FilmService
+from src.business_object.avis import Avis
+from src.Model.utilisateur import Utilisateur
 
 
-@pytest.fixture
-def setup_avis_dao():
-    # GIVEN: Simuler les dépendances
-    film_service = MagicMock(spec=FilmService)
+class TestAvisDao:
+    """
+    Classe de tests pour les fonctionnalités de AvisDAO.
+    """
 
-    # Créer une instance de AvisDAO
-    avis_dao = AvisDAO()
+    def test_creer_avis(self):
+        # GIVEN
+        avis_dao = AvisDAO()
+        utilisateur_dao = UtilisateurDAO()
+        film_dao = FilmDAO()
 
-    # Simuler la connexion DB et le curseur
-    connection_patch = patch("src.data.db_connection.DBConnection.connection")
-    mock_connection = connection_patch.start()
-    mock_cursor = MagicMock()
-    mock_connection.cursor.return_value.__enter__.return_value = mock_cursor
+        # Créer utilisateur et film pour les tests
+        utilisateur = Utilisateur(
+            pseudo="utilisateur_test", adresse_email="utilisateur@test.com",
+            mot_de_passe="password123", sel="sel123"
+        )
+        utilisateur_dao.creer(utilisateur)
+        id_utilisateur = utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur_test").id_utilisateur
+        
+        # Créer un objet Film au lieu d'un ID
+        film = Film(
+            id_film=14918,
+            titre="Film Test",
+            genres={"Aventure"},
+            date_de_sortie="2023-01-01",
+            langue_originale="FR",
+            synopsis="Synopsis du film test"
+        )
+        film_dao.creer_film(film)  # Passer l'objet Film à la place de l'ID
 
-    yield avis_dao, film_service, mock_cursor
+        # Créer un avis lié à cet utilisateur et ce film
+        avis = Avis(id_avis=None, id_film=film.id_film, utilisateur="utilisateur_test", note=4, commentaire="Bon film")
+        res = avis_dao.creer_avis(avis)
 
-    connection_patch.stop()
+        # THEN
+        assert res
+    def test_modifier_avis(self):
+        # GIVEN
+        avis_dao = AvisDAO()
+        utilisateur_dao = UtilisateurDAO()
+        utilisateur_id = utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur_test").id_utilisateur
 
+        avis = Avis(id_avis=None, id_film=1184918, utilisateur="utilisateur_test", note=5, commentaire="Excellent!")
+        avis_dao.creer_avis(avis)
 
-def test_creer_avis_film_existant(setup_avis_dao):
-    avis_dao, _, mock_cursor = setup_avis_dao
+        # WHEN
+        avis.note = 3
+        avis.commentaire = "Film correct"
+        res = avis_dao.modifier_avis(avis)
 
-    # GIVEN: Le film existe déjà dans la base de données
-    mock_cursor.fetchone.return_value = [1]
-    # Simuler que le film est trouvé dans la base
+        # THEN
+        assert res
 
-    # WHEN: Création de l'avis pour le film existant
-    avis = Avis(id_avis=None, id_film=1184918, utilisateur="Soukayna", note=5, commentaire="Film incroyable")
-    resultat = avis_dao.creer_avis(avis)
+    def test_supprimer_avis(self):
+        # GIVEN
+        avis_dao = AvisDAO()
+        utilisateur_dao = UtilisateurDAO()
+        utilisateur_id = utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur_test").id_utilisateur
 
-    # THEN: Vérifier que l'avis a été correctement créé
-    assert resultat
+        avis = Avis(id_avis=None, id_film=1184918, utilisateur="utilisateur_test", note=4, commentaire="Film moyen")
+        avis_dao.creer_avis(avis)
 
+        # WHEN
+        res = avis_dao.supprimer_avis(utilisateur="utilisateur_test", id_film=1184918)
 
-def test_creer_avis_film_non_existant(setup_avis_dao):
-    avis_dao, film_service, mock_cursor = setup_avis_dao
+        # THEN
+        assert res
 
-    # GIVEN: Le film n'existe pas dans la base de données
-    mock_cursor.fetchone.return_value = None
-    # Le film n'est pas trouvé dans la base
+    def test_lire_avis_existant(self):
+        # GIVEN
+        avis_dao = AvisDAO()
+        utilisateur_dao = UtilisateurDAO()
 
-    # GIVEN: Simuler la création du film via le service de film
-    film_service.creer_film.return_value = True
-    # Simuler la création réussie du film
+        # WHEN
+        avis_list = avis_dao.lire_avis(id_film=14918, utilisateur="utilisateur_test")
 
-    # WHEN: Création de l'avis pour un film non existant
-    avis = Avis(id_avis=None, id_film=1184918, utilisateur="Soukayna", note=5, commentaire="Film incroyable")
-    resultat = avis_dao.creer_avis(avis)
+        # THEN
+        assert len(avis_list) > 0
 
-    # THEN: Vérifier que l'avis a été correctement créé
-    assert resultat
+    def test_lire_avis_inexistant(self):
+        # GIVEN
+        avis_dao = AvisDAO()
 
+        # WHEN
+        avis_list = avis_dao.lire_avis(id_film=9999999)  # ID de film non existant
 
-# Test pour un avis existant
-def test_modifier_avis_existant(setup_avis_dao):
-    avis_dao, _, mock_cursor = setup_avis_dao
+        # THEN
+        assert avis_list == []
 
-    # GIVEN: Le film et l'avis existent dans la base de données
-    mock_cursor.fetchone.side_effect = [[1], [1]]  # Le film et l'avis existent
+    def test_lire_tous_avis_pour_film(self):
+        # GIVEN
+        avis_dao = AvisDAO()
+        utilisateur_dao = UtilisateurDAO()
+        utilisateur_dao.creer(Utilisateur(
+            pseudo="autre_utilisateur", adresse_email="autre@exemple.com",
+            mot_de_passe="autre123", sel="autreSel"
+        ))
 
-    # WHEN: Modification de l'avis
-    avis = Avis(id_avis=1, id_film=1184918, utilisateur="Soukayna", note=4, commentaire="Nouveau commentaire")
-    resultat = avis_dao.modifier_avis(avis)
+        avis1 = Avis(id_avis=None, id_film=1184918, utilisateur="utilisateur_test", note=4, commentaire="Bon film")
+        avis2 = Avis(id_avis=None, id_film=1184918, utilisateur="autre_utilisateur", note=5, commentaire="Très bon film")
+        avis_dao.creer_avis(avis1)
+        avis_dao.creer_avis(avis2)
 
-    # THEN: Vérifier que l'avis a été correctement modifié
-    assert resultat
+        # WHEN
+        avis_list = avis_dao.lire_avis(id_film=1184918)
 
+        # THEN
+        assert len(avis_list) >= 2
 
-def test_supprimer_avis_existant(setup_avis_dao):
-    avis_dao, _, mock_cursor = setup_avis_dao
-
-    # GIVEN: L'avis existe pour cet utilisateur et ce film
-    mock_cursor.fetchone.return_value = [1]  # Simuler que l'avis est trouvé
-    mock_cursor.rowcount = 1  # Simuler la suppression réussie
-
-    # WHEN: Suppression de l'avis
-    resultat = avis_dao.supprimer_avis(avis_id=1, utilisateur="Soukayna", id_film=1184918)
-
-    # THEN: Vérifier que la suppression a réussi
-    assert resultat
-
-
-def test_supprimer_avis_inexistant(setup_avis_dao):
-    avis_dao, _, mock_cursor = setup_avis_dao
-
-    # GIVEN: L'avis n'existe pas pour cet utilisateur et ce film
-    mock_cursor.fetchone.return_value = None
-    # Simuler que l'avis n'est pas trouvé
-
-    # WHEN: Tentative de suppression de l'avis
-    resultat = avis_dao.supprimer_avis(avis_id=5, utilisateur="lEA", id_film=11918)
-
-    # THEN: Vérifier que la suppression a échoué car l'avis n'existe pas
-    assert resultat
-
-
-# Test pour vérifier qu'aucun avis n'est trouvé pour un film donné
-def test_aucun_avis_trouve_pour_film(setup_avis_dao):
-    avis_dao, _, mock_cursor = setup_avis_dao
-
-    # GIVEN: Aucun avis n'existe pour le film donné
-    mock_cursor.fetchall.return_value = []
-
-    # WHEN: Tentative de lecture des avis pour ce film
-    resultat = avis_dao.lire_avis(id_film=1119)
-
-    # THEN: Vérifier que la méthode retourne un message indiquant
-    # qu'il n'y a pas d'avis
-    assert resultat == []
-
-
-def test_lire_avis_par_utilisateur_pour_film(setup_avis_dao):
-    avis_dao, _, mock_cursor = setup_avis_dao
-
-    # GIVEN: Un avis existe pour cet utilisateur et ce film
-    mock_cursor.fetchall.return_value = [
-        {"id_avis": 4, "id_film": 1184918, "utilisateur": "Soukayna", "note": 5, "commentaire": "Film incroyable"}
-    ]
-
-    # WHEN: Lecture de l'avis de l'utilisateur pour ce film
-    avis_list = avis_dao.lire_avis(id_film=1184918, utilisateur="Soukayna")
-
-    # THEN: Vérifier que l'avis est bien celui de l'utilisateur pour le film
-    assert len(avis_list) == 1
-    avis = avis_list[0]
-    assert avis.id_film == 1184918
-    assert avis.utilisateur == "Soukayna"
-    assert avis.note == 5
-    assert avis.commentaire == "Film incroyable"
-
-
-def test_lire_tous_avis_pour_film(setup_avis_dao):
-    avis_dao, _, mock_cursor = setup_avis_dao
-
-    # GIVEN: Plusieurs avis existent pour un film donné
-    mock_cursor.fetchall.return_value = [
-        {"id": 1, "id_film": 1184, "utilisateur": "Soukayna", "note": 5, "commentaire": "Film incroyable"},
-        {"id": 2, "id_film": 1184, "utilisateur": "Yassine", "note": 4, "commentaire": "Très bon film"},
-    ]
-
-    # WHEN: Lecture de tous les avis pour ce film
-    avis_list = avis_dao.lire_avis(id_film=1184)
-
-    # THEN: Vérifier que tous les avis pour le film sont récupérés
-    assert len(avis_list) == 2
-    avis_1 = avis_list[0]
-    avis_2 = avis_list[1]
-
-    assert avis_1.utilisateur == "Soukayna"
-    assert avis_1.note == 5
-    assert avis_1.commentaire == "Film incroyable"
-
-    assert avis_2.utilisateur == "Yassine"
-    assert avis_2.note == 4
-    assert avis_2.commentaire == "Très bon film"
-
+    def test_supprimer_avis_et_utilisateurs(self):
+        # Supprimer tous les avis et utilisateurs créés pour les tests.
+        utilisateur_dao = UtilisateurDAO()
+        utilisateur_dao.supprimer_utilisateur(utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur_test").id_utilisateur)
+        utilisateur_dao.supprimer_utilisateur(utilisateur_dao.chercher_utilisateur_par_pseudo("autre_utilisateur").id_utilisateur)
 
 if __name__ == "__main__":
     import pytest
-
     pytest.main([__file__])

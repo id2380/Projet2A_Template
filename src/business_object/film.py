@@ -30,14 +30,14 @@ class Film:
         La fiche technique associée au film.
     """
 
-    def __init__(self, id_film, titre, genre, date_de_sortie, langue_originale, synopsis, fiche_technique=None) -> None:
+    def __init__(self, id_film, titre, genres, date_de_sortie, langue_originale, synopsis, fiche_technique=None) -> None:
         # -----------------------------
         # Attributs
         # -----------------------------
 
         self._id_film: int = id_film
         self._titre: str = titre
-        self._genre: str = genre
+        self._genres: dict = genres
         self._date_de_sortie: datetime = date_de_sortie
         self._langue_originale: str = langue_originale
         self._synopsis: str = synopsis
@@ -54,7 +54,7 @@ class Film:
         return (
             f"Id_film: {self.id_film}\n"
             f"Titre: {self.titre}\n"
-            f"Genre: {self.genre}\n"
+            f"Genres: {self.genres}\n"
             f"Date de sortie: {self.date_de_sortie}\n"
             f"Langue originale: {self.langue_originale}\n"
             f"Synopsis : {self.synopsis}"
@@ -81,12 +81,12 @@ class Film:
         self._titre = value
 
     @property
-    def genre(self):
-        return self._genre
+    def genres(self):
+        return self._genres
 
-    @genre.setter
-    def genre(self, value: str):
-        self._genre = value
+    @genres.setter
+    def genres(self, value: dict):
+        self._genres = value
 
     @property
     def date_de_sortie(self):

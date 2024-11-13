@@ -18,9 +18,9 @@ classDiagram
         }
 
         class Avis {
-            +id : int
-            +film : Film
-            +Utilisateur: Utilisateur
+            +id_avis : int
+            +id_film : int
+            +utilisateur: str
             +note : int
             +commentaire : str
         }
@@ -33,11 +33,11 @@ classDiagram
             +supprimer_film(Film)
         }
 
-        class DAO_avis {
-            +créer_avis(Avis)
-            +Consulter_avis(Avis)
-            +Modifier_avis(Avis)
-            +supprimer_avis(avis)
+        class avis_dao {
+            +creer_avis(avis :Avis)
+            +lire_avis(id_film=None, utilisateur=None, id_utilisateur=None)
+            +Modifier_avis(avis:Avis)
+            +supprimer_avis(utilisateur: str, id_film: int)
         }
 
         class DAO_eclaireurs {
@@ -60,11 +60,11 @@ classDiagram
         }
 
         class AvisService {
-            +consulter_note_moyenne(film : Film)
-            +consulter_avis(film : Film)
-            +ajouter_avis(avis : Avis)
-            +modifier_avis(avis : Avis)
-            +supprimer_avis(avis : Avis)
+            +consulter_note_moyenne(id_film: int)
+            +obtenir_avis(id_film=None, utilisateur=None, id_utilisateur=None)
+            +ajouter_avis(id_film: int, utilisateur: str, commentaire: str,note: int)
+            +modifier_avis(id_film: int, utilisateur: str, commentaire: str, note: int)
+            +supprimer_avis(id_film: int, utilisateur: str)
         }
 
         class EclaireurService {

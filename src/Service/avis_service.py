@@ -8,7 +8,7 @@ class AvisService:
         # Initialisation de l'objet AvisDAO
         self.avis_dao = AvisDAO()
 
-    def ajouter_avis(self, id_film: int, utilisateur: str, commentaire: str,note: int,) -> Optional[Avis]:
+    def ajouter_avis(self, id_film: int, utilisateur: str, commentaire: str,note: int) -> Optional[Avis]:
         """
         Ajoute un nouvel avis via le DAO.
 
@@ -115,12 +115,14 @@ class AvisService:
         avis_list = self.avis_dao.lire_avis(id_film=id_film)
 
         # Si aucun avis n'est trouvé, on retourne 0.0
-        if not avis_list or avis_list == "Aucun avis trouvé.":
+        if not avis_list:
             return 0.0
 
-        # Calcul de la somme des notes
-        total_notes = sum(avis.note for avis in avis_list)
+        # Calcul de la somme des notes avec accès par clé
+        total_notes = sum(avis['note'] for avis in avis_list)
 
         # Retour de la moyenne des notes
         return total_notes / len(avis_list)
+
+        
 

@@ -36,7 +36,7 @@ class FilmDAO:
                         {
                             "id_film": film.id_film,
                             "titre": film.titre,
-                            "genres": film.genres,
+                            "genres": list(film.genres),
                             "date_de_sortie": film.date_de_sortie,
                             "langue_originale": film.langue_originale,
                             "synopsis": film.synopsis,
