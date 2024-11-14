@@ -40,10 +40,14 @@ class GenreClient(metaclass=Singleton):
     # Méthodes
     # -------------------------------------------------------------------------
 
-    """
-    Permet de rechercher dans l'API Tmdb les différents genre de films.
-    """
     def recherche_genres(self):
+        """
+        Permet de rechercher dans l'API Tmdb les différents genre de films.
+
+        Exception
+        ----------
+        valueError : erreur de communication avec l'API.
+        """
         url = f"{self.__HOST}/genre/movie/list"
         params = {
             "language": self._language
@@ -56,17 +60,18 @@ class GenreClient(metaclass=Singleton):
         else:
             raise ValueError("Problème de communication avec l'API Tmdb.")
 
-    """
-    Permet de transformer une liste d'identifiants de genres en une liste de genre.
-
-    Paramètres
-    ----------
-    liste_id : liste[int]
-        La liste des identifiants de genres.
-
-    Retour
-    ----------
-    list[string] : La lite des genres.
-    """
     def genres(self, liste_id):
+        """
+        Permet de transformer une liste d'identifiants de genres en une liste
+        de genre.
+
+        Paramètres
+        ----------
+        liste_id : liste[int]
+            La liste des identifiants de genres.
+
+        Retour
+        ----------
+        list[string] : La lite des genres.
+        """
         return [self._genres[id] for id in liste_id if id in self._genres]

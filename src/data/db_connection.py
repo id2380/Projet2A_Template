@@ -9,8 +9,8 @@ from src.utils.singleton import Singleton
 
 class DBConnection(metaclass=Singleton):
     """
-    Classe de connexion à la base de données
-    Elle permet de n'ouvrir qu'une seule et unique connexion
+    Classe de connexion à la base de données.
+    Elle permet de n'ouvrir qu'une seule et unique connexion.
     """
 
     def __init__(self):

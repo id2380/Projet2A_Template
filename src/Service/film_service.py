@@ -25,11 +25,6 @@ class FilmService:
     language : str
         La langue utilisée dans l'API, par défaut c'est le français.
     primary_release_year : int
-        L'année de première sortie du film.
-    region : str
-        La région où le film doit être disponible.
-    year : int
-        L'année de production du film.
 
     Retour
     ----------
@@ -47,22 +42,16 @@ class FilmService:
         page: int = 1,
         language: str = "fr",
         primary_release_year: int = None,
-        region: str = None,
-        year: int = None,
     ):
         if title is None:
             films = FilmClient().recherche_films(page,
                                                  language,
-                                                 primary_release_year,
-                                                 region,
-                                                 year)
+                                                 primary_release_year)
         else:
             films = FilmClient().recherche_films_titre(title,
                                                        page,
                                                        language,
-                                                       primary_release_year,
-                                                       region,
-                                                       year)
+                                                       primary_release_year)
         if len(films) == 0:
             raise ValueError("Aucun film ne correspond à vos critères.")
         return films
@@ -132,7 +121,7 @@ class FilmService:
     Exception
     ----------
     valueError : Erreur de communication avec l'API.
-    valueError : L'identifiant du film  est non valide.
+    valueError : L'identifiant du film est non valide.
     valueError : Le film existe déjà dans la base.
     """
     def creer_film(self, id_film: int):
@@ -157,10 +146,7 @@ class FilmService:
     """
     def supprimer_film(self, id_film: int):
         film_dao = FilmDAO()
-        if not film_dao.existe_film(id_film):
-            raise ValueError("Le film n'existe pas.")
-        else:
-            film_dao.supprimer_film(id_film)
+        film_dao.supprimer_film(id_film)
 
     """
     Renvoie des films présents dans la base. Le nombre est contrôlé par un

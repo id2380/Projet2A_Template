@@ -3,25 +3,31 @@ from src.Model.utilisateur import Utilisateur
 
 
 class UtilisateurDAO:
-    """Classe contenant les méthodes pour créer,
-    accéder et gérer les utilisateurs dans la base de données"""
+    """
+    Classe contenant les méthodes pour créer, accéder et gérer les
+    utilisateurs dans la base de données.
+    """
 
     def creer(self, utilisateur: Utilisateur) -> bool:
-        """Création d'un utilisateur dans la base de données
+        """
+        Création d'un utilisateur dans la base de données.
 
-        Note: Le mot de passe doit être déjà haché avant
-        d'appeler cette méthode.
-        C'est fait dans la classe de service.
+        Note: Le mot de passe doit être déjà haché avant d'appeler cette
+              méthode. C'est fait dans la classe de service.
 
         Parameters
         ----------
         utilisateur : Utilisateur
-            L'utilisateur à créer
+            L'utilisateur à créer.
 
         Returns
         -------
         bool
-            True si la création a réussi, False sinon
+            True si la création a réussi, False sinon.
+
+        Exception
+        -------
+        ValueError : erreur lors de la création de l'utilisateur dans la base.
         """
         res = None
         try:
@@ -29,8 +35,9 @@ class UtilisateurDAO:
                 with connection.cursor() as cursor:
                     cursor.execute(
                         """
-                        INSERT INTO utilisateur(pseudo, adresse_email, mot_de_passe, sel)
-                        VALUES (%(pseudo)s, %(adresse_email)s, %(mot_de_passe)s, %(sel)s)
+                        INSERT INTO utilisateur(pseudo, adresse_email,
+                        mot_de_passe, sel) VALUES (%(pseudo)s,
+                        %(adresse_email)s, %(mot_de_passe)s, %(sel)s)
                         RETURNING id_utilisateur, date_creation;
                         """,
                         {
@@ -45,7 +52,8 @@ class UtilisateurDAO:
             print(f"Erreur lors de la création de l'utilisateur : {e}")
             return False
 
-        # Si l'insertion est réussie, récupérer l'identifiant et la date de création
+        # Si l'insertion est réussie, récupérer l'identifiant et la date de
+        # création
         if res:
             utilisateur.id_utilisateur = res["id_utilisateur"]
             utilisateur.date_creation = res["date_creation"]
@@ -58,17 +66,22 @@ class UtilisateurDAO:
     def chercher_utilisateur_par_id(
         self, id_utilisateur: int
     ) -> Utilisateur | None:
-        """Cherche un utilisateur par son identifiant
+        """
+        Cherche un utilisateur par son identifiant.
 
         Parameters
         ----------
         id_utilisateur : int
-            L'identifiant de l'utilisateur à rechercher
+            L'identifiant de l'utilisateur à rechercher.
 
         Returns
         -------
         Utilisateur ou None
-            L'utilisateur correspondant ou None s'il n'existe pas
+            L'utilisateur correspondant ou None s'il n'existe pas.
+
+        Exception
+        -------
+        ValueError : erreur lors de la recherche dans la base.
         """
         utilisateur = None
         try:
@@ -92,17 +105,18 @@ class UtilisateurDAO:
     def chercher_utilisateur_par_pseudo(
         self, pseudo: str
     ) -> Utilisateur | None:
-        """Cherche un utilisateur par son pseudo
+        """
+        Cherche un utilisateur par son pseudo.
 
         Parameters
         ----------
         pseudo : str
-            Le pseudo de l'utilisateur à rechercher
+            Le pseudo de l'utilisateur à rechercher.
 
         Returns
         -------
         Utilisateur ou None
-            L'utilisateur correspondant ou None s'il n'existe pas
+            L'utilisateur correspondant ou None s'il n'existe pas.
         """
         utilisateur = None
         try:
@@ -172,7 +186,8 @@ class UtilisateurDAO:
         Parameters
         ----------
         id_utilisateur : int
-            L'identifiant de l'utilisateur dont l'adresse e-mail doit être modifiée.
+            L'identifiant de l'utilisateur dont l'adresse e-mail doit être
+            modifiée.
         nouvelle_adresse_email : str
             La nouvelle adresse e-mail à définir pour l'utilisateur.
 
@@ -207,13 +222,14 @@ class UtilisateurDAO:
         """
         Modifie le mot de passe d'un utilisateur.
 
-        Note: Le mot de passe doit être déjà haché avant d'appeler cette méthode.
-        C'est fait dans la classe de service.
+        Note: Le mot de passe doit être déjà haché avant d'appeler cette
+        méthode. C'est fait dans la classe de service.
 
         Parameters
         ----------
         id_utilisateur : int
-            L'identifiant de l'utilisateur dont le mot de passe doit être modifié.
+            L'identifiant de l'utilisateur dont le mot de passe doit être
+            modifié.
         nouveau_mot_de_passe : str
             Le nouveau mot de passe haché à définir pour l'utilisateur.
 
@@ -273,12 +289,13 @@ class UtilisateurDAO:
             return False
 
     def lister_tous_les_utilisateurs(self) -> list[Utilisateur]:
-        """Liste tous les utilisateurs de la base de données
+        """
+        Liste tous les utilisateurs de la base de données.
 
         Returns
         -------
         list[Utilisateur]
-            Liste de tous les utilisateurs
+            Liste de tous les utilisateurs.
         """
         try:
             with DBConnection().connection as connection:
@@ -289,7 +306,6 @@ class UtilisateurDAO:
             raise Exception(
                 "Erreur lors de la récupération des utilisateurs"
             ) from e
-
         liste_utilisateurs = []
         if res:
             for row in res:

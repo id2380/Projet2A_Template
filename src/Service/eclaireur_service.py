@@ -24,10 +24,11 @@ class EclaireurService:
     id_eclaireur : int
         L'identifiant unique de l'utilisateur auquel on souhaite s'abonner.
 
-    Retour
+    Exception
     ----------
-    None : si l'abonnement a été ajouté avec succès.
     ValueError : si une erreur survient lors de l'ajout de l'abonnement.
+    ValueError : si l'éclaireur n'existe pas.
+    ValueError : si déjà abonné à l'éclaireur.
     """
     def ajouter_eclaireur_id(self, id_utilisateur: int, id_eclaireur: int):
         eclaireur_dao = EclaireurDAO()
@@ -49,10 +50,11 @@ class EclaireurService:
     pseudo_eclaireur : pseudo
         Le pseudo unique de l'utilisateur auquel on souhaite s'abonner.
 
-    Retour
+    Exception
     ----------
-    None : si l'abonnement a été ajouté avec succès.
     ValueError : si une erreur survient lors de l'ajout de l'abonnement.
+    ValueError : si l'éclaireur n'existe pas.
+    ValueError : si déjà abonné à l'éclaireur.
     """
     def ajouter_eclaireur_pseudo(self, id_utilisateur: int, pseudo_eclaireur: str):
         eclaireur = UtilisateurDAO().chercher_utilisateur_par_pseudo(pseudo_eclaireur)
@@ -79,7 +81,11 @@ class EclaireurService:
     Retour
     ----------
     bool : True si l'utilisateur est abonné à l'éclaireur, False sinon.
+
+    Exception
+    ----------
     ValueError : si une erreur survient lors de la vérification.
+    ValueError : si l'éclaireur n'existe pas.
     """
     def est_eclaireur_id(self, id_utilisateur: int, id_eclaireur: int):
         if UtilisateurDAO().chercher_utilisateur_par_id(id_eclaireur) is None:
@@ -95,6 +101,7 @@ class EclaireurService:
     id_utilisateur : int
         L'identifiant unique de l'utilisateur pour lequel l'abonnement est
         vérifié.
+
     pseudo_eclaireur : str
         Le pseudo unique de l'utilisateur qui est supposé être suivi par
         l'utilisateur.
@@ -102,7 +109,11 @@ class EclaireurService:
     Retour
     ----------
     bool : True si l'utilisateur est abonné à l'éclaireur, False sinon.
+
+    Exception
+    ----------
     ValueError : si une erreur survient lors de la vérification.
+    ValueError : si l'éclaireur n'existe pas.
     """
     def est_eclaireur_pseudo(self, id_utilisateur: int, pseudo_eclaireur: str):
         eclaireur = UtilisateurDAO().chercher_utilisateur_par_pseudo(pseudo_eclaireur)
@@ -124,10 +135,11 @@ class EclaireurService:
         L'identifiant unique de l'éclaireur dont on souhaite supprimer
         l'abonnement.
 
-    Retour
+    Exception
     ----------
-    None : si la suppression a réussi.
     ValueError : si une erreur survient lors de la suppression.
+    ValueError : si l'éclaireur n'existe pas.
+    ValueError : si pas encore abonné à l'éclaireur.
     """
     def supprimer_eclaireur_id(self, id_utilisateur: int, id_eclaireur: int):
         eclaireur_dao = EclaireurDAO()
@@ -151,10 +163,11 @@ class EclaireurService:
         Le pseudo unique de l'éclaireur dont on souhaite supprimer
         l'abonnement.
 
-    Retour
+    Exception
     ----------
-    None : si la suppression a réussi.
     ValueError : si une erreur survient lors de la suppression.
+    ValueError : si l'éclaireur n'existe pas.
+    ValueError : si pas encore abonné à l'éclaireur.
     """
     def supprimer_eclaireur_pseudo(self, id_utilisateur: int, pseudo_eclaireur: str):
         eclaireur_dao = EclaireurDAO()
@@ -177,8 +190,10 @@ class EclaireurService:
     Retour
     ----------
     list : liste des éclaireurs associés à l'utilisateur.
-    ValueError : si une erreur survient lors de la récupération des
-    identifiants.
+
+    Exception
+    ----------
+    ValueError : si une erreur survient lors de récupération des id.
     """
     def liste_eclaireurs(self, id_utilisateur: int):
         liste = []

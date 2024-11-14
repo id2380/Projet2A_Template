@@ -30,11 +30,12 @@ CREATE TABLE IF NOT EXISTS film (
 
 -- Table 'Avis' pour stocker les avis laissés par les utilisateurs sur les films
 CREATE TABLE IF NOT EXISTS avis (
-    id SERIAL PRIMARY KEY,
-    id_film INTEGER NOT NULL REFERENCES film(id_film),
-    utilisateur VARCHAR(255) NOT NULL REFERENCES utilisateur(pseudo),
+    id_film INTEGER,
+    id_utilisateur INTEGER ,
     note INTEGER NOT NULL,
     commentaire TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(id_film, utilisateur)  
+    PRIMARY KEY (id_film, id_utilisateur), 
+    FOREIGN KEY (id_film) REFERENCES film(id_film) ON DELETE CASCADE,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateur(id_utilisateur) ON DELETE CASCADE 
 );
