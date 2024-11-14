@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Optional
 
-from src.business_object.fiche_technique import FicheTechnique
 from src.Model.film import Film
 
 
