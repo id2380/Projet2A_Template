@@ -17,8 +17,8 @@ def recherche_films(titre: str = None,
     import dotenv
     dotenv.load_dotenv(override=True)
     try:
-        if page <= 0:
-            raise ValueError("Le nombre de pages doit être supérieur à 0.")
+        if page <= 0 or page > 500:
+            raise ValueError("Le nombre de pages doit être entre 1 et 500.")
         films = FilmService().recherche_films(
             title=titre,
             language=language,
@@ -36,8 +36,8 @@ def recherche_films_similaires(id_film: int,
     import dotenv
     dotenv.load_dotenv(override=True)
     try:
-        if page <= 0:
-            raise ValueError("Le nombre de pages doit être supérieur à 0.")
+        if page <= 0 or page > 500:
+            raise ValueError("Le nombre de pages doit être entre 1 et 500.")
         films = FilmService().recherche_films_similaires(id_film=id_film,
                                                          language=language,
                                                          page=page)
