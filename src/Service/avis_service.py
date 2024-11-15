@@ -18,7 +18,7 @@ class AvisService:
                      id_film: int,
                      id_utilisateur: int,
                      note: int,
-                     commentaire: str):
+                     commentaire: str=None):
         """
         Ajoute un nouvel avis via la DAO.
 

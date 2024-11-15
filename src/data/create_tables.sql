@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS film (
     genres TEXT[] DEFAULT '{}',        -- Genres du film (ex: Action, Comédie)
     date_de_sortie DATE,               -- Date de sortie du film
     langue_originale VARCHAR(100),     -- Langue originale du film
-    synopsis VARCHAR(500)              -- Résumé ou description du film
+    synopsis VARCHAR(1500)              -- Résumé ou description du film
 );
 
 -- Table 'Avis' pour stocker les avis laissés par les utilisateurs sur les films
