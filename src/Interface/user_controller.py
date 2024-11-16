@@ -239,7 +239,7 @@ def recherche_par_pseudo(
     )
 ) -> List[APIUtilisateur]:
     """
-    Recherche des utilisateurs à partir d'un pseudo partielle. 
+    Recherche des utilisateurs à partir d'un pseudo partiel. 
     """
     utilisateurs = utilisateur_dao.chercher_utilisateurs_par_pseudo_partiel(pseudo_partiel)
 
