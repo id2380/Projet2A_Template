@@ -16,6 +16,14 @@ class JWTBearer(HTTPBearer):
 
         if not credentials.scheme == "Bearer":
             raise HTTPException(status_code=403, detail="Invalid authentication scheme.")
+
+        token = credentials.credentials
+
+        # Vérification : le jeton est-il dans la liste noire ?
+        if token in jwt_service.blacklist:
+            raise HTTPException(status_code=403, detail="Invalidated token.")
+
+        # Validation du jeton
         try:
             jwt_service.validate_user_jwt(credentials.credentials)
         except ExpiredSignatureError as e:

@@ -1,5 +1,6 @@
 import os
 import time
+from typing import Set
 
 import jwt
 from jwt import ExpiredSignatureError
@@ -18,6 +19,7 @@ class JwtService:
         else:
             self.secret = secret
         self.algorithm = algorithm
+        self.blacklist: Set[str] = set()  # Liste noire des jetons invalidés
 
     def encode_jwt(self, user_id: int) -> JWTResponse:
         """
@@ -37,9 +39,18 @@ class JwtService:
     def validate_user_jwt(self, token: str) -> str:
         """
         Returns the id of the user authenticated by the JWT
-        Throws in case of invalid or expired JWT
+        Throws in case of invalid or expired, or blacklisted JWT
         """
+        if token in self.blacklist:
+            raise ExpiredSignatureError("Token is blacklisted")
+
         decoded_jwt = self.decode_jwt(token)
         if decoded_jwt["expiry_timestamp"] < time.time():
             raise ExpiredSignatureError("Expired JWT")
         return decoded_jwt["user_id"]
+    
+    def add_to_blacklist(self, token: str):
+        """
+        Adds a token to the blacklist, invalidating it
+        """
+        self.blacklist.add(token)

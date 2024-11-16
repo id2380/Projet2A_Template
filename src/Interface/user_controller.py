@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Annotated, List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel
 
@@ -177,22 +177,79 @@ def supprimer_compte(
     credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
 ) -> APIReponseMessage:
     """
-    Supprime le compte de l'utilisateur authentifié.
+    Supprime le compte de l'utilisateur authentifié et invalide son jeton.
     """
+    token = credentials.credentials
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
+
+    # Supprime le compte de l'utilisateur
     compte_supprime = utilisateur_service.supprimer_compte(utilisateur.id_utilisateur)
     if not compte_supprime:
         raise HTTPException(status_code=400, detail="La suppression du compte a échoué")
+    
+    # Ajouter le jeton à la blacklist
+    jwt_service.blacklist.add(token)
+    
     return APIReponseMessage(message=f"Le compte de l'utilisateur {utilisateur.pseudo} a été supprimé avec succès.")
 
-@user_router.get("/lister_tous_les_utilisateurs", response_model=list[APIUtilisateur])
-def lister_tous_les_utilisateurs() -> list[APIUtilisateur]:
+@user_router.get("/lister_tous_les_utilisateurs", response_model=List[APIUtilisateur])
+def lister_tous_les_utilisateurs(
+    page: int = Query(1, ge=1, description="Numéro de la page, la première par défaut")
+) -> List[APIUtilisateur]:
     """
-    Liste tous les utilisateurs de l'application sans authentification.
+    Liste tous les utilisateurs de l'application, avec pagination.
+    La taille de la page est fixée à 10 utilisateurs (au maximum).
     """
+    TAILLE_PAGE = 10  # Taille fixe de la page
+
     try:
+        # Récupérer tous les utilisateurs
         utilisateurs = utilisateur_dao.lister_tous_les_utilisateurs()
     except Exception as error:
-        raise HTTPException(status_code=500, detail="Erreur lors de la récupération des utilisateurs") from error
+        raise HTTPException(
+            status_code=500,
+            detail="Erreur lors de la récupération des utilisateurs",
+        ) from error
 
-    return [APIUtilisateur(id_utilisateur=u.id_utilisateur, pseudo=u.pseudo) for u in utilisateurs]
+    # Calcul des indices pour la pagination
+    debut = (page - 1) * TAILLE_PAGE
+    fin = debut + TAILLE_PAGE
+
+    # Extraire les utilisateurs pour la page demandée
+    utilisateurs_pagines = utilisateurs[debut:fin]
+
+    # Vérifier si la page est vide
+    if not utilisateurs_pagines:
+        raise HTTPException(status_code=404, detail="Aucun utilisateur trouvé pour cette page")
+
+    return [
+        APIUtilisateur(id_utilisateur=u.id_utilisateur, pseudo=u.pseudo) 
+        for u in utilisateurs_pagines
+    ]
+
+
+@user_router.get("/recherche_par_pseudo", response_model=List[APIUtilisateur])
+def recherche_par_pseudo(
+    pseudo_partiel: str = Query(
+        ...,  # Indique que le paramètre est obligatoire
+        description=(
+        "Partie d'un pseudo à rechercher. Par exemple, "
+        "'th' renverra 'Thibaut', 'Thierry', 'Agathe', etc. s'ils sont dans la base."
+        )
+    )
+) -> List[APIUtilisateur]:
+    """
+    Recherche des utilisateurs à partir d'un pseudo partielle. 
+    """
+    utilisateurs = utilisateur_dao.chercher_utilisateurs_par_pseudo_partiel(pseudo_partiel)
+
+    if not utilisateurs:
+        raise HTTPException(status_code=404, detail="Aucun utilisateur trouvé")
+
+    # Convertir chaque utilisateur en APIUtilisateur pour la réponse
+    return [
+        APIUtilisateur(id_utilisateur=u.id_utilisateur, pseudo=u.pseudo)
+        for u in utilisateurs
+    ]
+
+

@@ -300,6 +300,74 @@ class TestUtilisateurDAO(unittest.TestCase):
             "Utilisateur2 n'est pas dans la liste des utilisateurs.",
         )
 
+    def test_chercher_utilisateurs_par_pseudo_partiel(self):
+        """Test de la recherche d'utilisateurs par pseudo partiel."""
+        # GIVEN
+        sel1 = creer_sel()
+        mot_de_passe_hash1 = hacher_mot_de_passe("MotDePasse1", sel1)
+        utilisateur1 = Utilisateur(
+            pseudo="Thibaut",
+            adresse_email="thibaut@ensai.com",
+            mot_de_passe=mot_de_passe_hash1,
+            sel=sel1,
+        )
+
+        sel2 = creer_sel()
+        mot_de_passe_hash2 = hacher_mot_de_passe("MotDePasse2", sel2)
+        utilisateur2 = Utilisateur(
+            pseudo="Thierry",
+            adresse_email="thierry@ensai.com",
+            mot_de_passe=mot_de_passe_hash2,
+            sel=sel2,
+        )
+
+        sel3 = creer_sel()
+        mot_de_passe_hash3 = hacher_mot_de_passe("MotDePasse3", sel3)
+        utilisateur3 = Utilisateur(
+            pseudo="Alice",
+            adresse_email="alice@ensai.com",
+            mot_de_passe=mot_de_passe_hash3,
+            sel=sel3,
+        )
+
+        # Création des utilisateurs
+        self.utilisateur_dao.creer(utilisateur1)
+        self.utilisateur_dao.creer(utilisateur2)
+        self.utilisateur_dao.creer(utilisateur3)
+        # Enregistrer les IDs pour suppression après le test
+        self.id_utilisateurs_crees.append(utilisateur1.id_utilisateur)
+        self.id_utilisateurs_crees.append(utilisateur2.id_utilisateur)
+        self.id_utilisateurs_crees.append(utilisateur3.id_utilisateur)
+
+        # WHEN
+        utilisateurs_recherches = self.utilisateur_dao.chercher_utilisateurs_par_pseudo_partiel("Th")
+
+        # THEN
+        self.assertGreaterEqual(
+            len(utilisateurs_recherches),
+            2,
+            "La recherche n'a pas retourné au moins deux utilisateurs attendus.",
+        )
+
+        pseudos_recherches = [user.pseudo for user in utilisateurs_recherches]
+        
+        self.assertIn(
+            "Thibaut",
+            pseudos_recherches,
+            "Thibaut n'a pas été trouvé dans la recherche partielle.",
+        )
+        self.assertIn(
+            "Thierry",
+            pseudos_recherches,
+            "Thierry n'a pas été trouvé dans la recherche partielle.",
+        )
+        self.assertNotIn(
+            "Alice",
+            pseudos_recherches,
+            "Alice ne devrait pas être dans la recherche partielle.",
+        )
+
+
 
 if __name__ == "__main__":
     unittest.main()

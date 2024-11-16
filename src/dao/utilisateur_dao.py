@@ -320,3 +320,37 @@ class UtilisateurDAO:
                 liste_utilisateurs.append(utilisateur)
 
         return liste_utilisateurs
+
+    def chercher_utilisateurs_par_pseudo_partiel(self, pseudo_partiel: str) -> list[Utilisateur]:
+        """
+        Cherche des utilisateurs dont le pseudo contient une chaîne partielle.
+
+        Parameters
+        ----------
+        pseudo_partiel : str
+            La chaîne partielle à rechercher dans les pseudos des utilisateurs.
+
+        Returns
+        -------
+        list[Utilisateur]
+            Liste des utilisateurs correspondant au critère ou une liste vide s'il n'y a pas de correspondance.
+        """
+        utilisateurs = []
+        try:
+            with DBConnection().connection as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        SELECT *
+                        FROM utilisateur
+                        WHERE pseudo ILIKE %(pseudo_partiel)s;
+                        """,
+                        {"pseudo_partiel": f"%{pseudo_partiel}%"},
+                    )
+                    res = cursor.fetchall()
+                    if res:
+                        utilisateurs = [Utilisateur(**row) for row in res]
+        except Exception as e:
+            print(f"Erreur lors de la recherche d'utilisateurs par pseudo partiel : {e}")
+        return utilisateurs
+
