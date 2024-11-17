@@ -21,7 +21,7 @@ class JWTBearer(HTTPBearer):
 
         # Vérification : le jeton est-il dans la liste noire ?
         if token in jwt_service.blacklist:
-            raise HTTPException(status_code=403, detail="Invalidated token.")
+            raise HTTPException(status_code=403, detail="Token blacklisted.")
 
         # Validation du jeton
         try:

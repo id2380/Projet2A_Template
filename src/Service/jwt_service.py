@@ -39,11 +39,8 @@ class JwtService:
     def validate_user_jwt(self, token: str) -> str:
         """
         Returns the id of the user authenticated by the JWT
-        Throws in case of invalid or expired, or blacklisted JWT
+        Throws in case of invalid or expired JWT
         """
-        if token in self.blacklist:
-            raise ExpiredSignatureError("Token is blacklisted")
-
         decoded_jwt = self.decode_jwt(token)
         if decoded_jwt["expiry_timestamp"] < time.time():
             raise ExpiredSignatureError("Expired JWT")
