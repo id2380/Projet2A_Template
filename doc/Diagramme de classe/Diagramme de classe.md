@@ -111,7 +111,7 @@ classDiagram
     FilmService ..> TMDBConnexion : utilise
     
     FilmService ..>DAO_film : utilise
-    AvisService ..> DAO_avis : utilise
+    AvisService ..> avis_dao : utilise
     EclaireurService ..> DAO_eclaireurs: utilise
     UtilisateurService ..> DAO_utilisateur : utilise
 ```
