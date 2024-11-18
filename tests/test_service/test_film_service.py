@@ -3,6 +3,8 @@ from unittest.mock import MagicMock
 
 from src.client.film_client import FilmClient
 from src.service.film_service import FilmService
+from src.service.avis_service import AvisService
+from src.dao.avis_dao import AvisDAO
 
 
 class TestFilmService:
@@ -89,6 +91,9 @@ class TestFilmService:
             assert False
         except Exception as e:
             assert str(e) == "Aucun film n'est similaire au film."
+    
+
+    
 
     """
     @mock.patch("src.dao.film_dao.FilmDAO.creer_film")

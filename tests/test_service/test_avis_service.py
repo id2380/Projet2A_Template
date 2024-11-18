@@ -1,8 +1,12 @@
 import pytest
+from unittest import mock
+from unittest.mock import MagicMock
 from src.service.avis_service import AvisService
 from src.service.eclaireur_service import EclaireurService
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.dao.avis_dao import AvisDAO
+from src.Model.film_complet import FilmComplet
+from src.client.film_client import FilmClient
 from src.dao.film_dao import FilmDAO
 from src.Model.utilisateur import Utilisateur
 from src.Model.avis import Avis
@@ -69,7 +73,9 @@ class TestAvisService:
             user = self.utilisateur_dao.chercher_utilisateur_par_pseudo(pseudo)
             if user:
                 self.utilisateur_dao.supprimer_utilisateur(user.id_utilisateur)
-
+        utilisateur2 = self.utilisateur_dao.chercher_utilisateur_par_pseudo("autre_utilisateur")
+        if utilisateur2:
+            self.utilisateur_dao.supprimer_utilisateur(utilisateur2.id_utilisateur)
         # Supprimer le film de test
         if self.film_dao.existe_film(12345):
             self.film_dao.supprimer_film(12345)
@@ -81,6 +87,11 @@ class TestAvisService:
         assert len(avis) == 1
         assert avis[0].note == 5
         assert avis[0].commentaire == "Excellent film"
+    
+    def test_ajouter_avis_fail_existing_avis(self):
+        self.avis_service.ajouter_avis(self.film.id_film, self.utilisateur1_id, 5, "Excellent film")
+        with pytest.raises(ValueError, match="L'utilisateur a déjà partagé un avis pour ce film"):
+            self.avis_service.ajouter_avis(self.film.id_film, self.utilisateur1_id, 4, "Bon film")
 
     def test_obtenir_avis(self):
         """Test pour obtenir les avis d'un film"""
@@ -89,6 +100,10 @@ class TestAvisService:
         assert len(avis) == 1
         assert avis[0].note == 4
         assert avis[0].commentaire == "Bon film"
+    
+    def test_obtenir_avis_fail_no_avis(self):
+        with pytest.raises(ValueError, match="Aucun avis ne correspond à vos critères"):
+            self.avis_service.obtenir_avis(id_film=self.film.id_film)
 
     def test_modifier_avis(self):
         """Test pour modifier un avis existant"""
@@ -97,6 +112,10 @@ class TestAvisService:
         avis = self.avis_dao.lire_avis(self.film.id_film, self.utilisateur1_id)
         assert avis[0].note == 5
         assert avis[0].commentaire == "Meilleur film"
+    
+    def test_modifier_avis_fail_no_existing_avis(self):
+        with pytest.raises(ValueError, match="L'utilisateur n'a pas partagé d'avis pour ce film"):
+            self.avis_service.modifier_avis(self.film.id_film, self.utilisateur1_id, 5, "Meilleur film")
 
     def test_supprimer_avis(self):
         """Test pour supprimer un avis"""
@@ -104,6 +123,10 @@ class TestAvisService:
         self.avis_service.supprimer_avis(self.film.id_film, self.utilisateur1_id)
         avis = self.avis_dao.lire_avis(self.film.id_film, self.utilisateur1_id)
         assert len(avis) == 0
+    
+    def test_supprimer_avis_fail_no_existing_avis(self):
+        with pytest.raises(ValueError, match="L'utilisateur n'a pas partagé d'avis pour ce film"):
+            self.avis_service.supprimer_avis(self.film.id_film, self.utilisateur1_id)
 
     def test_calculer_note_moyenne(self):
         """Test pour calculer la note moyenne d'un film"""
@@ -111,6 +134,10 @@ class TestAvisService:
         self.avis_service.ajouter_avis(self.film.id_film, self.utilisateur2_id, 5, "Excellent film")
         note_moyenne = self.avis_service.calculer_note_moyenne(self.film.id_film)
         assert note_moyenne == 4.5
+
+    def test_calculer_note_moyenne_fail_no_avis(self):
+        with pytest.raises(ValueError, match="Aucun avis pour ce film"):
+            self.avis_service.calculer_note_moyenne(self.film.id_film)
 
     def test_lire_avis_eclaireurs(self):
         """Test pour lire les avis des éclaireurs"""
@@ -120,6 +147,10 @@ class TestAvisService:
         assert len(avis) == 1
         assert avis[0].note == 4
         assert avis[0].commentaire == "Bon film"
+    
+    def test_lire_avis_eclaireurs_fail_no_eclaireurs(self):
+        with pytest.raises(ValueError, match="Aucun de vos éclaireurs n'a donné d'avis pour ce film"):
+            self.avis_service.lire_avis_eclaireurs(self.film.id_film, self.utilisateur1_id)
 
     def test_calculer_note_moyenne_eclaireurs(self):
         """Test pour calculer la note moyenne des avis des éclaireurs"""
@@ -136,7 +167,47 @@ class TestAvisService:
         assert len(avis_communs) == 1
         assert avis_communs[0]["Avis 1"].note == 4
         assert avis_communs[0]["Avis 2"].note == 5
+    
+    def test_watch_list_vide(self):
+        """
+        Teste le cas où la watchlist est vide.
+        """
+        # GIVEN
+        avis_service = AvisService()
+        AvisService().obtenir_avis = MagicMock(return_value=[])
+        autre_utilisateur = Utilisateur(
+            pseudo="autre_utilisateur",
+            adresse_email="autre@exemple.com",
+            mot_de_passe="password456",
+            sel="autreSel"
+        )
+        self.utilisateur_dao.creer(autre_utilisateur)
+        autre_utilisateur_id = self.utilisateur_dao.chercher_utilisateur_par_pseudo("autre_utilisateur").id_utilisateur
 
+        # WHEN AND THEN
+        try:
+            avis_service.watch_list(id_utilisateur=autre_utilisateur_id)
+            assert False, "Une ValueError était attendue mais n'a pas été levée."
+        except ValueError as e:
+            assert str(e) == "Aucun avis n'a été partagé par cet utilisateur."
+
+    def test_watch_list_erreur_api(self):
+        """
+        Teste le cas où une erreur se produit lors de la recherche d'un film via l'API.
+        """
+        # GIVEN
+        avis_service = AvisService()
+        AvisService().obtenir_avis = MagicMock(return_value=[
+            Avis(id_film=101, id_utilisateur=1, note=8, commentaire="Super film!")
+        ])
+        FilmClient().recherche_film_id = MagicMock(side_effect=Exception("Erreur API"))
+
+        # WHEN AND THEN
+        try:
+            avis_service.watch_list(id_utilisateur=1)
+            assert False, "Une ValueError était attendue mais n'a pas été levée."
+        except ValueError as e:
+            assert "Erreur API" in str(e), f"Message d'erreur inattendu : {str(e)}"
 
 if __name__ == "__main__":
     pytest.main([__file__])

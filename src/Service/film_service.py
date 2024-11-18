@@ -2,6 +2,8 @@ from src.client.film_client import FilmClient
 from src.dao.film_dao import FilmDAO
 
 
+
+
 class FilmService:
     """
     Classe contenant les méthodes de service pour les films.
@@ -190,3 +192,5 @@ class FilmService:
     """
     def existe_film(self, id_film: int):
         return FilmDAO().existe_film(id_film)
+
+    
