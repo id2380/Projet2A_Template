@@ -11,10 +11,12 @@ classDiagram
         }
 
         class Utilisateur {
+            +id_utilisateur : int
             +pseudo : str
             +adresse_mail : str
-            -mot_de_passe : str
+            +mot_de_passe : str
             +date_creation : date
+            +sel : str
         }
 
         class Avis {
@@ -47,9 +49,15 @@ classDiagram
         }
 
         class DAO_utilisateur {
-            +créer(Utilisateur)
-            +Chercher_utilisateur(Utilisateur)
-            +supprimer_utilisateur(Utilisateur)
+            +creer(utilisateur : Utilisateur)
+            +chercher_utilisateur_par_id(id_utilisateur : int)
+            +chercher_utilisateur_par_pseudo(pseudo : str)
+            +modifier_pseudo(id_utilisateur : int, nouveau_pseudo : str)
+            +modifier_adresse_email(id_utilisateur : int, nouvelle_adresse_email : str)
+            +modifier_mot_de_passe(id_utilisateur : int, nouveau_mot_de_passe : str)
+            +supprimer_utilisateur(id_utilisateur : int)
+            +lister_tous_les_utilisateur()
+            +chercher_utilisateurs_par_pseudo_partiel(pseudo_partiel : str)
         }
     }
 
@@ -75,12 +83,11 @@ classDiagram
         }
 
         class UtilisateurService {
-            +authentification(pseudo : str, mot_de_passe : str)
-            +creation_compte(adresse_mail : str, pseudo : str, mot_de_passe : str)
-            +est_utilisateur(pseudo : str) bool
-            +hachage_mot_de_passe(mot_de_passe : str)
-            +gestion_compte(user : User)
-            +recherche_utilisateur(pseudo : str)
+            +creation_compte(pseudo : str,adresse_mail : str,  mot_de_passe : str)
+            +modifier_pseudo(id_utilisateur : int, nouveau_pseudo : str)
+            +modifier_adresse_email(id_utilisateur: int, nouvelle_adresse_email : str)
+            +modifier_mot_de_passe(id_utilisateur : int, nouveau_mot_de_passe : str)
+            +supprimer_compte(id_utilisateur : int)
         }
     }
 
