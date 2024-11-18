@@ -83,7 +83,7 @@ def obtenir_utilisateur_depuis_credentials(credentials: HTTPAuthorizationCredent
     Valide le JWT et récupère l'utilisateur associé à ce token.
     """
     token = credentials.credentials
-    user_id = int(jwt_service.validate_user_jwt(token))  # Utilisation de la méthode correcte
+    user_id = int(jwt_service.validate_user_jwt(token))
     utilisateur = utilisateur_dao.chercher_utilisateur_par_id(user_id)
     if not utilisateur:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")

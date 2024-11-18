@@ -10,7 +10,7 @@ from src.Model.jwt_response import JWTResponse
 
 class JwtService:
     """
-    Handler for JWT encryption and validation
+    Gestionnaire pour le chiffrement et la validation des JWT
     """
 
     def __init__(self, secret: str = "", algorithm: str = "HS256"):
@@ -23,7 +23,7 @@ class JwtService:
 
     def encode_jwt(self, user_id: int) -> JWTResponse:
         """
-        Creates a token with a 30 minutes expiry time
+        Crée un jeton avec une durée de validité de 30 minutes
         """
         payload = {"user_id": user_id, "expiry_timestamp": time.time() + 1800}
         token = jwt.encode(payload, self.secret, algorithm=self.algorithm)
@@ -32,18 +32,15 @@ class JwtService:
 
     def decode_jwt(self, token: str) -> dict:
         """
-        Unciphers an authentication token
+        Déchiffre un jeton d'authentification
         """
         return jwt.decode(token, self.secret, algorithms=[self.algorithm])
 
     def validate_user_jwt(self, token: str) -> str:
         """
-        Returns the id of the user authenticated by the JWT
-        Throws in case of invalid or expired, or blacklisted JWT
+        Retourne l'identifiant de l'utilisateur authentifié par le JWT
+        Lève une exception si le JWT est invalide ou expiré
         """
-        if token in self.blacklist:
-            raise ExpiredSignatureError("Token is blacklisted")
-
         decoded_jwt = self.decode_jwt(token)
         if decoded_jwt["expiry_timestamp"] < time.time():
             raise ExpiredSignatureError("Expired JWT")
@@ -51,6 +48,6 @@ class JwtService:
     
     def add_to_blacklist(self, token: str):
         """
-        Adds a token to the blacklist, invalidating it
+        Ajoute un jeton à la liste noire, le rendant invalide
         """
         self.blacklist.add(token)
