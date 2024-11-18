@@ -8,8 +8,9 @@ from src.Interface.jwt_bearer import JWTBearer
 from src.Interface.user_controller import \
     obtenir_utilisateur_depuis_credentials
 from src.service.avis_service import AvisService
+from src.dao.eclaireur_dao import EclaireurDAO
 
-avis_router = APIRouter(prefix="/avis", tags=["Avis"],description="Endpoints pour gérer les avis des utilisateurs sur les films.")
+avis_router = APIRouter(prefix="/avis", tags=["Avis"])
 
 
 @avis_router.post("/ajouter_avis", status_code=status.HTTP_200_OK)
@@ -110,6 +111,29 @@ def recherche_avis(
             raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
 
 
+@avis_router.get("/watchlist", status_code=status.HTTP_200_OK)
+def watchlist(
+    credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
+):
+    """
+    Renvoie la watchlist, la liste des films déjà vu (que l'utilisateur a noté), de l'utilisateur.
+    """
+    import dotenv
+    dotenv.load_dotenv(override=True)
+    utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
+    avis_service = AvisService()
+    try:
+        watch = avis_service.watch_list(
+                id_utilisateur=utilisateur.id_utilisateur
+                )
+        if watch ==[] : 
+            return 'La watchlist est vide'
+        return watch
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
+    
+
+
 @avis_router.get("/rechercher_avis_eclaireurs", status_code=status.HTTP_200_OK)
 def recherche_avis_eclaireurs(
     id_film: int = Query(..., description="L'identifiant du film pour lequel les avis sont recherchés."),
@@ -139,7 +163,9 @@ def recherche_films_communs(
     dotenv.load_dotenv(override=True)
     avis_service = AvisService()
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
-    id_utilisateur1 = utilisteur.id_utilisateur
+    id_utilisateur1 = utilisateur.id_utilisateur
+    if not EclaireurDAO().est_eclaireur(id_utilisateur1,id_utilisateur):
+        return "L'identifiant entré ne fait pas partie de vos éclaireurs"
     try:
         return avis_service.lire_avis_communs(id_utilisateur1, id_utilisateur)
     except Exception as e:

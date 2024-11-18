@@ -19,10 +19,10 @@ entity "Film" as FILM {
 }
 
 entity "Avis" as AVIS {
-    __id_user__: INTEGER
     __id_film__: INTEGER
-    note: INTEGER
+    __id_utilisateur__: INTEGER
     commentaire: VARCHAR (400)
+    note: INTEGER
 }
 
 entity "Abonnes" as ABONNES {
@@ -35,6 +35,7 @@ UTILISATEUR -- AVIS
 FILM -- AVIS
 
 ' Relation avec Abonnes sous Utilisateur
+UTILISATEUR --down-- ABONNES
 UTILISATEUR --down-- ABONNES
 
 @enduml

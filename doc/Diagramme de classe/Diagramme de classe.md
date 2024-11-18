@@ -39,7 +39,11 @@ classDiagram
             +creer_avis(avis :Avis)
             +lire_avis(id_film=None, utilisateur=None, id_utilisateur=None)
             +Modifier_avis(avis:Avis)
-            +supprimer_avis(utilisateur: str, id_film: int)
+            +supprimer_avis(id_film: int, id_utilisateur: int)
+            +existe_avis(id_film: int, id_utilisateur: int)
+            +lire_avis(id_film=None, id_utilisateur=None)
+            +lire_avis_eclaireurs(id_film: int, liste_id: list)
+            +lire_avis_communs(id_utilisateur1: int, id_utilisateur2: int)
         }
 
         class DAO_eclaireurs {
@@ -68,11 +72,15 @@ classDiagram
         }
 
         class AvisService {
-            +consulter_note_moyenne(id_film: int)
-            +obtenir_avis(id_film=None, utilisateur=None, id_utilisateur=None)
-            +ajouter_avis(id_film: int, utilisateur: str, commentaire: str,note: int)
-            +modifier_avis(id_film: int, utilisateur: str, commentaire: str, note: int)
-            +supprimer_avis(id_film: int, utilisateur: str)
+            +ajouter_avis(id_film: int,id_utilisateur: int,note: int,commentaire: str=None)
+            +obtenir_avis(id_film=None, id_utilisateur=None)
+            +modifier_avis(id_film: int,id_utilisateur: int,note: int,commentaire: str)
+            +supprimer_avis(id_film: int, id_utilisateur: int)
+            +watch_list(id_utilisateur)
+            +calculer_note_moyenne(id_film: int)
+            +lire_avis_eclaireurs(id_film: int, id_utilisateur: int)
+            +calculer_note_moyenne_eclaireurs(id_film: int, id_utilisateur: int)
+            
         }
 
         class EclaireurService {
@@ -103,13 +111,15 @@ classDiagram
     Film "1" -- "0..*" Avis : concerne
     Avis "1" -- "1" Utilisateur : rédigé_par
     Utilisateur "1" -- "*" AvisService : interagit_avec
+    EclaireurService"*" -- "*" AvisService : interagit_avec
     Utilisateur "1" -- "*" EclaireurService : accède_à
     Utilisateur "1" -- "*" UtilisateurService : géré_par
     Film "1" -- "*" FilmService : géré_par
     FilmService ..> TMDBConnexion : utilise
+    FilmService"*" -- "*" AvisService : interagit_avec
     
     FilmService ..>DAO_film : utilise
-    AvisService ..> DAO_avis : utilise
+    AvisService ..> avis_dao : utilise
     EclaireurService ..> DAO_eclaireurs: utilise
     UtilisateurService ..> DAO_utilisateur : utilise
 ```

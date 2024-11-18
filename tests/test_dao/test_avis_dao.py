@@ -59,8 +59,10 @@ class TestAvisDao:
 
             # Supprimer l'utilisateur de test
             utilisateur = self.utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur_test")
-            if utilisateur:
+            utilisateur2 = self.utilisateur_dao.chercher_utilisateur_par_pseudo("autre_utilisateur")
+            if utilisateur or utilisateur2:
                 self.utilisateur_dao.supprimer_utilisateur(utilisateur.id_utilisateur)
+                self.utilisateur_dao.supprimer_utilisateur(utilisateur2.id_utilisateur)
 
             # Supprimer le film de test
             if self.film_dao.existe_film(self.film_id):
