@@ -109,6 +109,7 @@ classDiagram
     Utilisateur "1" -- "*" UtilisateurService : géré_par
     Film "1" -- "*" FilmService : géré_par
     FilmService ..> TMDBConnexion : utilise
+    FilmService"*" -- "*" AvisService : interagit_avec
     
     FilmService ..>DAO_film : utilise
     AvisService ..> avis_dao : utilise
