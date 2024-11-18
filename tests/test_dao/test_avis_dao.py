@@ -4,6 +4,8 @@ from src.Model.film import Film
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.Model.avis import Avis
 from src.Model.utilisateur import Utilisateur
+import pytest
+from unittest.mock import patch, MagicMock
 
 
 class TestAvisDao:
@@ -17,7 +19,7 @@ class TestAvisDao:
         self.utilisateur_dao = UtilisateurDAO()
         self.film_dao = FilmDAO()
 
-        # Supprimer les données de test existantes
+        # Nettoyer la base de données
         self.cleanup_database()
 
         # Créer un utilisateur de test
@@ -32,14 +34,15 @@ class TestAvisDao:
 
         # Créer un film de test
         self.film = Film(
-            id_film=14918,
+            id_film=1184918,
             titre="Film Test",
             genres=["Aventure"],
             date_de_sortie="2023-01-01",
             langue_originale="FR",
             synopsis="Synopsis du film test"
         )
-        if not self.film_dao.existe_film(self.film.id_film):
+        self.film_id = self.film.id_film  # Ajout pour éviter l'erreur `film_id`
+        if not self.film_dao.existe_film(self.film_id):
             self.film_dao.creer_film(self.film)
 
     def teardown_method(self):
@@ -47,13 +50,24 @@ class TestAvisDao:
         self.cleanup_database()
 
     def cleanup_database(self):
-        """Supprime les avis et utilisateurs ajoutés pour éviter les conflits."""
-        utilisateurs = ["utilisateur_test", "autre_utilisateur"]
-        for pseudo in utilisateurs:
-            utilisateur = self.utilisateur_dao.chercher_utilisateur_par_pseudo(pseudo)
+        """Supprime explicitement les données créées pour les tests."""
+        try:
+            # Supprimer les avis liés au film de test
+            avis_list = self.avis_dao.lire_avis(id_film=self.film_id)
+            for avis in avis_list:
+                self.avis_dao.supprimer_avis(id_film=avis.id_film, id_utilisateur=avis.id_utilisateur)
+
+            # Supprimer l'utilisateur de test
+            utilisateur = self.utilisateur_dao.chercher_utilisateur_par_pseudo("utilisateur_test")
             if utilisateur:
-                self.avis_dao.supprimer_avis(utilisateur.id_utilisateur, self.film.id_film)
                 self.utilisateur_dao.supprimer_utilisateur(utilisateur.id_utilisateur)
+
+            # Supprimer le film de test
+            if self.film_dao.existe_film(self.film_id):
+                self.film_dao.supprimer_film(self.film_id)
+
+        except Exception as e:
+            print(f"Erreur lors du nettoyage de la base de données : {e}")
 
     def test_creer_avis(self):
         """Test de création d'un avis."""
@@ -148,6 +162,76 @@ class TestAvisDao:
         avis_list = self.avis_dao.lire_avis(id_film=self.film.id_film)
         assert len(avis_list) == 2
 
+    def test_lire_avis_eclaireurs(self):
+        """Test pour récupérer les avis des éclaireurs."""
+        # GIVEN: Créer plusieurs utilisateurs et des avis associés
+        autre_utilisateur = Utilisateur(
+            pseudo="autre_utilisateur",
+            adresse_email="autre@exemple.com",
+            mot_de_passe="autre123",
+            sel="autreSel"
+        )
+        self.utilisateur_dao.creer(autre_utilisateur)
+        autre_utilisateur_id = self.utilisateur_dao.chercher_utilisateur_par_pseudo("autre_utilisateur").id_utilisateur
+
+        avis1 = Avis(
+            id_film=self.film.id_film,
+            id_utilisateur=self.utilisateur_id,
+            note=4,
+            commentaire="Bon film"
+        )
+        avis2 = Avis(
+            id_film=self.film.id_film,
+            id_utilisateur=autre_utilisateur_id,
+            note=5,
+            commentaire="Excellent!"
+        )
+        self.avis_dao.creer_avis(avis1)
+        self.avis_dao.creer_avis(avis2)
+
+        # WHEN: Récupérer les avis des éclaireurs pour le film
+        avis_list = self.avis_dao.lire_avis_eclaireurs(id_film=self.film.id_film, liste_id=[self.utilisateur_id, autre_utilisateur_id])
+
+        # THEN: Vérifier les résultats
+        assert len(avis_list) == 2
+        assert avis_list[0].note == 4
+        assert avis_list[1].commentaire == "Excellent!"
+    def test_lire_avis_communs(self):
+        """Test pour récupérer les avis communs entre deux utilisateurs."""
+        # GIVEN: Créer un autre utilisateur et des avis associés
+        autre_utilisateur = Utilisateur(
+            pseudo="autre_utilisateur",
+            adresse_email="autre@exemple.com",
+            mot_de_passe="autre123",
+            sel="autreSel"
+        )
+        self.utilisateur_dao.creer(autre_utilisateur)
+        autre_utilisateur_id = self.utilisateur_dao.chercher_utilisateur_par_pseudo("autre_utilisateur").id_utilisateur
+
+        avis1 = Avis(
+            id_film=self.film.id_film,
+            id_utilisateur=self.utilisateur_id,
+            note=4,
+            commentaire="Bon film"
+        )
+        avis2 = Avis(
+            id_film=self.film.id_film,
+            id_utilisateur=autre_utilisateur_id,
+            note=5,
+            commentaire="Très bon film"
+        )
+        self.avis_dao.creer_avis(avis1)
+        self.avis_dao.creer_avis(avis2)
+
+        # WHEN: Récupérer les avis communs pour le film
+        avis_communs = self.avis_dao.lire_avis_communs(id_utilisateur1=self.utilisateur_id, id_utilisateur2=autre_utilisateur_id)
+
+        # THEN: Vérifier les résultats
+        assert len(avis_communs) == 1
+        assert avis_communs[0]["Avis 1"].note == 4
+        assert avis_communs[0]["Avis 2"].note == 5
+    
+
+
 if __name__ == "__main__":
-    import pytest
     pytest.main([__file__])
