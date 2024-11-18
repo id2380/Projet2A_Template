@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from src.Interface.jwt_bearer import JWTBearer
 from src.Interface.user_controller import \
     obtenir_utilisateur_depuis_credentials
+from fastapi.security import HTTPAuthorizationCredentials
 from src.service.avis_service import AvisService
 from src.service.film_service import FilmService
 
@@ -62,5 +63,32 @@ def obtenir_fiche_technique(id_film: int):
         film.note_moyenne = note_moyenne
         film.avis = avis
         return film
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
+
+@film_router.get("/recommandation", status_code=status.HTTP_200_OK)
+def recommandation(language: str = "fr",
+                               page: int = 1,credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())):
+    """
+    Renvoie une liste de films similaires à la watchlist, la liste des films déjà vu (que l'utilisateur a noté), de l'utilisateur.
+    """
+    import dotenv
+    dotenv.load_dotenv(override=True)
+    utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
+    avis_service = AvisService()
+    try:
+        if page <= 0 or page > 500:
+            raise ValueError("Le nombre de pages doit être entre 1 et 500.")
+        films=[]
+        watch=avis_service.watch_list2(
+                id_utilisateur=utilisateur.id_utilisateur
+                )
+        if watch ==[] :
+            return 'La watchlist est vide'
+        for f in watch:
+            films.append(FilmService().recherche_films_similaires(id_film=f,
+                                                         language=language,
+                                                         page=page))
+        return films
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")

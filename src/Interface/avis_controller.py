@@ -111,21 +111,24 @@ def recherche_avis(
             raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
 
 
-@avis_router.get("/watch_list", status_code=status.HTTP_200_OK)
-def watch_list(
+@avis_router.get("/watchlist", status_code=status.HTTP_200_OK)
+def watchlist(
     credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
 ):
     """
-    Renvoie la watch list, la liste des films déjà vu (que l'utilisateur a noté), de l'utilisateur.
+    Renvoie la watchlist, la liste des films déjà vu (que l'utilisateur a noté), de l'utilisateur.
     """
     import dotenv
     dotenv.load_dotenv(override=True)
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
     avis_service = AvisService()
     try:
-        return avis_service.watch_list(
+        watch = avis_service.watch_list(
                 id_utilisateur=utilisateur.id_utilisateur
                 )
+        if watch ==[] : 
+            return 'La watchlist est vide'
+        return watch
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
     

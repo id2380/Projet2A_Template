@@ -198,7 +198,21 @@ class AvisService:
 
         return watch_list
         
-        
+    def watch_list2(self,id_utilisateur):
+        watch_list = []
+        avis = self.obtenir_avis(id_utilisateur=id_utilisateur)
+
+        if not avis:
+            raise ValueError("Aucun avis n'a été partagé par cet utilisateur.")
+
+        for a in avis:
+            try:
+                watch_list.append(a.id_film)  
+
+            except Exception as e:
+                raise ValueError(f"Erreur lors de la récupération du film ID {a.id_film}: {str(e)}")
+
+        return watch_list
 
     
 
