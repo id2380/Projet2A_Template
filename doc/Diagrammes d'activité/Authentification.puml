@@ -1,0 +1,23 @@
+@startuml
+title Diagramme d'activité authentification
+
+(*) -down-> "Utilisateur non authentifié"
+
+"Utilisateur non authentifié" --> "Tentative d'authentification"
+
+if "Pseudo/mdp valides ?" then
+  -down->[Oui] "Utilisateur authentifié"
+else
+  -->[Non] "Utilisateur non authentifié"
+endif
+
+"Utilisateur non authentifié" -down-> "Tentative de création de compte"
+
+if "Informations valides ?" then
+  -down->[Oui] "Tentative d'authentification"
+else
+  -->[Non] "Utilisateur non authentifié"
+endif
+
+"Utilisateur authentifié" -->(*)
+@enduml
