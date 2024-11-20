@@ -162,7 +162,7 @@ class AvisService:
         if len(avis_dao.lire_avis(id_film=id_film)) == 0:
             film_service.supprimer_film(id_film)
 
-    def watched_list(self, id_utilisateur):
+    def watched_list(self, id_utilisateur: int):
         """
         Récupère la liste des films associés aux avis de l'utilisateur.
 
