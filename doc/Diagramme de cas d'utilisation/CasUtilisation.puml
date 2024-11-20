@@ -1,4 +1,4 @@
-@startuml Diagramme de cas d'utilisation
+@startuml
 title Diagramme de cas d'utilisation
 left to right direction
 
@@ -14,12 +14,12 @@ rectangle Système {
   usecase "Consulter la liste de ses éclaireurs" as 2 #DDA0DD
   usecase "Rechercher un utilisateur" as 3 #DDA0DD
   usecase "Sélectionner un utilisateur/éclaireur" as 4 #DDA0DD
-  usecase "Consulter la liste des films en commun et les notes associées" as 5 #DDA0DD
-  usecase "Consulter la liste des films vus par l'utilisateur/éclaireur et les notes associées" as 6 #DDA0DD
+  usecase "Consulter la liste des films en commun et les avis associés" as 5 #DDA0DD
+  usecase "Consulter la liste des films vus par l'utilisateur/éclaireur et les avis associés" as 6 #DDA0DD
   usecase "Gérer son abonnement à un utilisateur/éclaireur" as 7 #DDA0DD
   usecase "S'abonner à un utilisateur (ajout à sa liste d'éclaireurs)" as 8 #DDA0DD
   usecase "Se désabonner d'un éclaireur (suppression de sa liste d'éclaireurs)" as 9 #DDA0DD
-  usecase "Consulter sa liste de films" as 10 #DDA0DD
+  usecase "Consulter sa liste de films/avis" as 10 #DDA0DD
   usecase "Rechercher un film" as 11 #FFB6C1
   usecase "Sélectionner un film" as 12 #FFB6C1
   usecase "Consulter la fiche technique du film" as 13 #FFB6C1
@@ -30,7 +30,17 @@ rectangle Système {
   usecase "Modifier un avis" as 18 #DDA0DD
   usecase "Supprimer un avis" as 19 #DDA0DD
   usecase "Créer un compte" as 20 #FFDAB9
-  usecase "Se connecter" as 21 #FFDAB9
+  usecase "S'authentifier" as 21 #FFDAB9
+  usecase "Gérer son compte" as 22 #DDA0DD
+  usecase "Modifier son mdp" as 23 #DDA0DD
+  usecase "Modifier son pseudo" as 24 #DDA0DD
+  usecase "Modifier son email" as 25 #DDA0DD
+  usecase "Supprimer son compte" as 26 #DDA0DD
+  usecase "Consulter la liste des utilisateurs" as 27 #FFB6C1
+  usecase "Rechercher des films similaires" as 28 #FFB6C1
+  usecase "Obtenir la note moyenne des avis sur le film" as 29 #FFB6C1
+  usecase "Obtenir la note moyenne des avis des éclaireurs sur le film" as 30 #DDA0DD
+  usecase "Savoir si déjà éclaireur" as 31 #DDA0DD
 }
 u1 --> 11 #FFDAB9
 10 --> 12 #DDA0DD
@@ -55,4 +65,17 @@ u2 --> 3 #DDA0DD
 7 --> 8 #DDA0DD
 7 --> 9 #DDA0DD
 u2 --> 10 #DDA0DD
+u2 --> 22 #DDA0DD
+22 --> 23 #DDA0DD
+22 --> 24 #DDA0DD
+22 --> 25 #DDA0DD
+22 --> 26 #DDA0DD
+u1 --> 27 #FFDAB9
+u2 --> 27 #DDA0DD
+27 --> 4 #DDA0DD
+12 --> 28 #FFB6C1
+28 --> 12 #FFB6C1
+12 --> 29 #FFB6C1
+12 --> 30 #DDA0DD
+7 --> 31 #DDA0DD
 @enduml
