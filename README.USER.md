@@ -37,7 +37,7 @@ Lorsque vous exécutez la commande suivante :
 
 `bash : pdm start`
 
-La base de données se charge automatiquement avec des utilisateurs, des films et des avis pré-enregistrés. Vous pouvez retrouver les différents codes et mot de passes (si vous voulez utiliser un compte déjà pré-enregistré) dans src.data.init_data_db.
+La base de données se charge automatiquement avec des utilisateurs, des films et des avis pré-enregistrés. 
 
 ### Étape 2 : Accéder à l'application
 Une fois le serveur démarré, ouvrez votre navigateur préféré et accédez à l'application via : (http://localhost:8000/docs)
