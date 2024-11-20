@@ -16,7 +16,23 @@ Grâce à **Cinégram**, vous pouvez :
 
 ## 🚀 **Démarrage de l'application**
 
-### Étape 1 : Initialiser la base de données
+### Étape 1 : Créer un fichier .env 
+Avant de commencer à utiliser notre application, il vous faut un fichier .env. Il faut le créer à la racine
+du projet et celui-ci doit avoir la forme suivante :
+
+WEBSERVICE_HOST=https://api.themoviedb.org/3
+WEBSERVICE_TOKEN=...
+POSTGRES_HOST=...
+POSTGRES_PORT=...
+POSTGRES_DATABASE=...
+POSTGRES_USER=...
+POSTGRES_PASSWORD=...
+POSTGRES_SCHEMA=...
+JWT_SECRET=2b5e1b209b27a9b4e04ef8f3a5bcac6a5093d03e9b4925e2f07c5d3b2d7bfa9a
+
+Remplissez les ... par vos informations. Pour le token, utilisez votre token pour l'API Tmdb. 
+
+### Étape 2 : Initialiser la base de données
 Lorsque vous exécutez la commande suivante :
 
 `bash : pdm start`
