@@ -137,14 +137,13 @@ classDiagram
     %% Relations
     Film "1" -- "0..*" Avis : concerne
     Avis "1" -- "1" Utilisateur : rédigé_par
-    Utilisateur "1" -- "*" AvisService : interagit_avec
     EclaireurService"*" -- "*" AvisService : interagit_avec
     Utilisateur "1" -- "*" EclaireurService : accède_à
     Utilisateur "1" -- "*" UtilisateurService : géré_par
     Film "1" -- "*" FilmService : géré_par
     FilmService ..> FilmClient : utilise
     FilmService"*" -- "*" AvisService : interagit_avec
-    
+    UtilisateurService"*" -- "*" AvisService : interagit_avec
     FilmService ..>DAO_film : utilise
     AvisService ..> avis_dao : utilise
     EclaireurService ..> DAO_eclaireurs: utilise
