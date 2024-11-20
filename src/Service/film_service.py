@@ -2,8 +2,6 @@ from src.client.film_client import FilmClient
 from src.dao.film_dao import FilmDAO
 
 
-
-
 class FilmService:
     """
     Classe contenant les méthodes de service pour les films.
@@ -193,4 +191,22 @@ class FilmService:
     def existe_film(self, id_film: int):
         return FilmDAO().existe_film(id_film)
 
-    
+    """
+    Renvoie un film existant dans la base de données.
+
+    Parameters
+    ----------
+    id_film : int
+        L'identifiant du film.
+
+    Retour
+    ----------
+    Film : le film recherché.
+
+    Exception
+    -------
+    ValueError : erreur lors de la recherche dans la base.
+
+    """
+    def lire_film(self, id_film: int):
+        return FilmDAO().lire_film(id_film)

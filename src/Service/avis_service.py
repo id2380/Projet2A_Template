@@ -1,9 +1,9 @@
+from src.client.film_client import FilmClient
 from src.dao.avis_dao import AvisDAO
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.Model.avis import Avis
 from src.service.eclaireur_service import EclaireurService
 from src.service.film_service import FilmService
-from src.client.film_client import FilmClient
 
 
 class AvisService:
@@ -161,10 +161,10 @@ class AvisService:
         avis_dao.supprimer_avis(id_film, id_utilisateur)
         if len(avis_dao.lire_avis(id_film=id_film)) == 0:
             film_service.supprimer_film(id_film)
-   
-    def watch_list(self,id_utilisateur):
+
+    def watched_list(self, id_utilisateur):
         """
-        Récupère la liste des films associés aux avis de l'utilisateur, avec leurs noms.
+        Récupère la liste des films associés aux avis de l'utilisateur.
 
         Parameters
         ----------
@@ -174,47 +174,21 @@ class AvisService:
         Returns
         -------
         list[str]
-            La liste des noms des films dans la watchlist.
+            La liste des films dans la watchedlist.
 
         Raises
         ------
-        ValueError
-            Si la watchlist de l'utilisateur est vide.
+        ValueError : erreur lors de la recherche d'avis dans la base.
+        ValueError : erreur lors de la recherche d'un film dans la base.
+        ValueError : si l'utilisateur n'existe pas.
+        ValueError : si l'utilisateur ne possède pas d'avis.
         """
-        watch_list = []
         avis = self.obtenir_avis(id_utilisateur=id_utilisateur)
-
-        if not avis:
-            raise ValueError("Aucun avis n'a été partagé par cet utilisateur.")
-
+        film_service = FilmService()
+        watched_list = []
         for a in avis:
-            try:
-                film = FilmClient().recherche_film_id(a.id_film)
-                watch_list.append(film.titre)  # Adaptation au format dictionnaire
-            except KeyError:
-                raise ValueError(f"Erreur lors de la récupération du film ID {a.id_film}: Attribut 'titre' manquant.")
-            except Exception as e:
-                raise ValueError(f"Erreur lors de la récupération du film ID {a.id_film}: {str(e)}")
-
-        return watch_list
-        
-    def watch_list2(self,id_utilisateur):
-        watch_list = []
-        avis = self.obtenir_avis(id_utilisateur=id_utilisateur)
-
-        if not avis:
-            raise ValueError("Aucun avis n'a été partagé par cet utilisateur.")
-
-        for a in avis:
-            try:
-                watch_list.append(a.id_film)  
-
-            except Exception as e:
-                raise ValueError(f"Erreur lors de la récupération du film ID {a.id_film}: {str(e)}")
-
-        return watch_list
-
-    
+            watched_list.append(film_service.lire_film(a.id_film))
+        return watched_list
 
     def calculer_note_moyenne(self, id_film: int) -> float:
         """

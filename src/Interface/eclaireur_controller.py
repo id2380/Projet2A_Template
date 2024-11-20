@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials
 
 from src.Interface.jwt_bearer import JWTBearer
@@ -11,9 +11,10 @@ eclaireur_router = APIRouter(prefix="/Eclaireurs", tags=["Eclaireurs"])
 
 @eclaireur_router.post("/ajouter_eclaireur_id", status_code=status.HTTP_200_OK)
 def ajouter_eclaireur_id(
-    id_eclaireur: int,
+    id_eclaireur: int = Query(..., description="L'identifiant du futur éclaireur."),
     credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
 ):
+    "Permet d'ajouter, avec son id, un utilisateur à la liste de ses éclaireurs."
     import dotenv
     dotenv.load_dotenv(override=True)
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
@@ -27,9 +28,10 @@ def ajouter_eclaireur_id(
 
 @eclaireur_router.post("/ajouter_eclaireur_pseudo", status_code=201)
 def ajouter_eclaireur_pseudo(
-    pseudo_eclaireur: str,
+    pseudo_eclaireur: str = Query(..., description="Le pseudo du futur éclaireur."),
     credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
 ):
+    "Permet d'ajouter, avec son pseudo, un utilisateur à la liste de ses éclaireurs."
     import dotenv
     dotenv.load_dotenv(override=True)
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
@@ -43,9 +45,10 @@ def ajouter_eclaireur_pseudo(
 
 @eclaireur_router.get("/est_eclaireur_id", status_code=201)
 def est_eclaireur_id(
-    id_eclaireur: int,
+    id_eclaireur: int = Query(..., description="L'identifiant de l'utilisateur."),
     credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
 ):
+    "Permet de savoir, avec son id, si un utilisateur est dans sa liste d'éclaireurs."
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
     import dotenv
     dotenv.load_dotenv(override=True)
@@ -61,9 +64,10 @@ def est_eclaireur_id(
 
 @eclaireur_router.get("/est_eclaireur_pseudo", status_code=status.HTTP_200_OK)
 def est_eclaireur_pseudo(
-    pseudo_eclaireur: str,
+    pseudo_eclaireur: str = Query(..., description="Le pseudo du futur éclaireur."),
     credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
 ):
+    "Permet de savoir, avec son pseudo, si un utilisateur est dans sa liste d'éclaireurs."
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
     import dotenv
     dotenv.load_dotenv(override=True)
@@ -83,6 +87,7 @@ def est_eclaireur_pseudo(
 def liste_eclaireurs(
     credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
 ):
+    "Permet d'obtenir la liste de ses éclaireurs."
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
     import dotenv
     dotenv.load_dotenv(override=True)
@@ -96,9 +101,10 @@ def liste_eclaireurs(
 
 @eclaireur_router.delete("/supprimer_eclaireur_id", status_code=status.HTTP_200_OK)
 def supprimer_eclaireur_id(
-    id_eclaireur: int,
+    id_eclaireur: int = Query(..., description="L'identifiant de l'éclaireur."),
     credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
 ):
+    "Permet de supprimer, avec son id, un utilisateur de sa liste d'éclaireurs."
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
     import dotenv
     dotenv.load_dotenv(override=True)
@@ -113,9 +119,10 @@ def supprimer_eclaireur_id(
 
 @eclaireur_router.delete("/supprimer_eclaireur_pseudo", status_code=status.HTTP_200_OK)
 def supprimer_eclaireur_pseudo(
-    pseudo_eclaireur: str,
+    pseudo_eclaireur: str = Query(..., description="Le pseudo de l'éclaireur."),
     credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
 ):
+    "Permet de supprimer, avec son pseudo, un utilisateur de sa liste d'éclaireurs."
     utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
     import dotenv
     dotenv.load_dotenv(override=True)

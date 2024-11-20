@@ -4,11 +4,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel
 
+from src.dao.eclaireur_dao import EclaireurDAO
 from src.Interface.jwt_bearer import JWTBearer
 from src.Interface.user_controller import \
     obtenir_utilisateur_depuis_credentials
 from src.service.avis_service import AvisService
-from src.dao.eclaireur_dao import EclaireurDAO
 
 avis_router = APIRouter(prefix="/avis", tags=["Avis"])
 
@@ -65,7 +65,7 @@ def modifier_avis(
 
 @avis_router.delete("/supprimer_avis", status_code=status.HTTP_200_OK)
 def supprimer_avis(
-    id_film: int  = Query(..., description="L'identifiant du film pour lequel l'avis est supprimé."),
+    id_film: int = Query(..., description="L'identifiant du film pour lequel l'avis est supprimé."),
     credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
 ):
     """
@@ -109,29 +109,6 @@ def recherche_avis(
                                              id_utilisateur=id_utilisateur)
         except Exception as e:
             raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
-
-
-@avis_router.get("/watchlist", status_code=status.HTTP_200_OK)
-def watchlist(
-    credentials: HTTPAuthorizationCredentials = Depends(JWTBearer())
-):
-    """
-    Renvoie la watchlist, la liste des films déjà vu (que l'utilisateur a noté), de l'utilisateur.
-    """
-    import dotenv
-    dotenv.load_dotenv(override=True)
-    utilisateur = obtenir_utilisateur_depuis_credentials(credentials)
-    avis_service = AvisService()
-    try:
-        watch = avis_service.watch_list(
-                id_utilisateur=utilisateur.id_utilisateur
-                )
-        if watch ==[] : 
-            return 'La watchlist est vide'
-        return watch
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"Erreur : {str(e)}")
-    
 
 
 @avis_router.get("/rechercher_avis_eclaireurs", status_code=status.HTTP_200_OK)
