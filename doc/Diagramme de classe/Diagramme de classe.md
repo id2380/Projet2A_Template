@@ -15,7 +15,7 @@ classDiagram
             +pays_origine: str
             +societe_prod: str
             +duree: int
-            +revenue: int
+            +recette: int
             +note_moyenne: float
             +avis: list[Avis]
         }

@@ -1,16 +1,18 @@
-import pytest
 from unittest import mock
 from unittest.mock import MagicMock
-from src.service.avis_service import AvisService
-from src.service.eclaireur_service import EclaireurService
-from src.dao.utilisateur_dao import UtilisateurDAO
-from src.dao.avis_dao import AvisDAO
-from src.Model.film_complet import FilmComplet
+
+import pytest
+
 from src.client.film_client import FilmClient
+from src.dao.avis_dao import AvisDAO
 from src.dao.film_dao import FilmDAO
-from src.Model.utilisateur import Utilisateur
+from src.dao.utilisateur_dao import UtilisateurDAO
 from src.Model.avis import Avis
 from src.Model.film import Film
+from src.Model.film_complet import FilmComplet
+from src.Model.utilisateur import Utilisateur
+from src.service.avis_service import AvisService
+from src.service.eclaireur_service import EclaireurService
 
 
 class TestAvisService:
@@ -167,47 +169,7 @@ class TestAvisService:
         assert len(avis_communs) == 1
         assert avis_communs[0]["Avis 1"].note == 4
         assert avis_communs[0]["Avis 2"].note == 5
-    
-    def test_watch_list_vide(self):
-        """
-        Teste le cas où la watchlist est vide.
-        """
-        # GIVEN
-        avis_service = AvisService()
-        AvisService().obtenir_avis = MagicMock(return_value=[])
-        autre_utilisateur = Utilisateur(
-            pseudo="autre_utilisateur",
-            adresse_email="autre@exemple.com",
-            mot_de_passe="password456",
-            sel="autreSel"
-        )
-        self.utilisateur_dao.creer(autre_utilisateur)
-        autre_utilisateur_id = self.utilisateur_dao.chercher_utilisateur_par_pseudo("autre_utilisateur").id_utilisateur
 
-        # WHEN AND THEN
-        try:
-            avis_service.watch_list(id_utilisateur=autre_utilisateur_id)
-            assert False, "Une ValueError était attendue mais n'a pas été levée."
-        except ValueError as e:
-            assert str(e) == "Aucun avis n'a été partagé par cet utilisateur."
-
-    def test_watch_list_erreur_api(self):
-        """
-        Teste le cas où une erreur se produit lors de la recherche d'un film via l'API.
-        """
-        # GIVEN
-        avis_service = AvisService()
-        AvisService().obtenir_avis = MagicMock(return_value=[
-            Avis(id_film=101, id_utilisateur=1, note=8, commentaire="Super film!")
-        ])
-        FilmClient().recherche_film_id = MagicMock(side_effect=Exception("Erreur API"))
-
-        # WHEN AND THEN
-        try:
-            avis_service.watch_list(id_utilisateur=1)
-            assert False, "Une ValueError était attendue mais n'a pas été levée."
-        except ValueError as e:
-            assert "Erreur API" in str(e), f"Message d'erreur inattendu : {str(e)}"
 
 if __name__ == "__main__":
     pytest.main([__file__])

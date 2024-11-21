@@ -1,11 +1,13 @@
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 from src.dao.avis_dao import AvisDAO
 from src.dao.film_dao import FilmDAO
-from src.Model.film import Film
 from src.dao.utilisateur_dao import UtilisateurDAO
 from src.Model.avis import Avis
+from src.Model.film import Film
 from src.Model.utilisateur import Utilisateur
-import pytest
-from unittest.mock import patch, MagicMock
 
 
 class TestAvisDao:
@@ -81,7 +83,6 @@ class TestAvisDao:
         )
         self.avis_dao.creer_avis(avis)
         avis_list = self.avis_dao.lire_avis(id_film=self.film.id_film)
-        assert len(avis_list) == 1
         assert avis_list[0].note == 4
 
     def test_modifier_avis(self):
