@@ -33,8 +33,9 @@ JWT_SECRET=2b5e1b209b27a9b4e04ef8f3a5bcac6a5093d03e9b4925e2f07c5d3b2d7bfa9a
 Remplissez les ... par vos informations. Pour le token, utilisez votre token pour l'API Tmdb. 
 
 ### Étape 2 : Initialiser la base de données
-Lorsque vous exécutez la commande suivante :
+Lorsque vous exécutez les commandes suivantes :
 
+`bash : pdm install`
 `bash : pdm start`
 
 La base de données se charge automatiquement avec des utilisateurs, des films et des avis pré-enregistrés. 
