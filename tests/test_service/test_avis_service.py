@@ -168,7 +168,7 @@ class TestAvisService:
         assert avis_communs[0]["Avis 1"].note == 4
         assert avis_communs[0]["Avis 2"].note == 5
     
-    def test_watch_list_vide(self):
+    def test_watched_list_vide(self):
         """
         Teste le cas où la watchlist est vide.
         """
@@ -186,7 +186,7 @@ class TestAvisService:
 
         # WHEN AND THEN
         try:
-            avis_service.watch_list(id_utilisateur=autre_utilisateur_id)
+            avis_service.watched_list(id_utilisateur=autre_utilisateur_id)
             assert False, "Une ValueError était attendue mais n'a pas été levée."
         except ValueError as e:
             assert str(e) == "Aucun avis n'a été partagé par cet utilisateur."
@@ -204,8 +204,8 @@ class TestAvisService:
 
         # WHEN AND THEN
         try:
-            avis_service.watch_list(id_utilisateur=1)
-            assert False, "Une ValueError était attendue mais n'a pas été levée."
+            avis_service.watched_list(id_utilisateur=1)
+            assert "Une ValueError était attendue mais n'a pas été levée."
         except ValueError as e:
             assert "Erreur API" in str(e), f"Message d'erreur inattendu : {str(e)}"
 
