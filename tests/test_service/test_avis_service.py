@@ -1,16 +1,18 @@
-import pytest
 from unittest import mock
 from unittest.mock import MagicMock
-from src.service.avis_service import AvisService
-from src.service.eclaireur_service import EclaireurService
-from src.dao.utilisateur_dao import UtilisateurDAO
-from src.dao.avis_dao import AvisDAO
-from src.Model.film_complet import FilmComplet
+
+import pytest
+
 from src.client.film_client import FilmClient
+from src.dao.avis_dao import AvisDAO
 from src.dao.film_dao import FilmDAO
-from src.Model.utilisateur import Utilisateur
+from src.dao.utilisateur_dao import UtilisateurDAO
 from src.Model.avis import Avis
 from src.Model.film import Film
+from src.Model.film_complet import FilmComplet
+from src.Model.utilisateur import Utilisateur
+from src.service.avis_service import AvisService
+from src.service.eclaireur_service import EclaireurService
 
 
 class TestAvisService:

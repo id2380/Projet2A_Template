@@ -36,8 +36,8 @@ class FilmComplet(Film):
         La société de production du film.
     duree : int
         La durée du film.
-    revenue : int
-        Le revenue du film.
+    recette : int
+        La recette du film.
     note_moyenne : float
         La note moyenne du film.
     avis : list
@@ -48,7 +48,7 @@ class FilmComplet(Film):
     pays_origine: Optional[str] = None
     societe_prod: Optional[str] = None
     duree: Optional[int] = None
-    revenue: Optional[int] = None
+    recette: Optional[int] = None
     note_moyenne: Optional[float] = None
     avis: Optional[list] = None
 

@@ -197,7 +197,7 @@ class FilmClient(metaclass=Singleton):
                 pays_origine=proposition.get("origin_country", ["Non spécifiée"])[0] ,
                 societe_prod=proposition["production_companies"][0]["name"] if proposition["production_companies"] else "Non spécifiée",
                 duree=proposition.get("runtime", "Non spécifiée"),
-                revenue=int(proposition.get("revenue", 0) if proposition.get("revenue") is not None else 0)
+                recette=int(proposition.get("revenue", 0) if proposition.get("revenue") is not None else 0)
             )
             return film
         elif req.status_code == 404:
