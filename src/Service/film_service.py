@@ -54,7 +54,7 @@ class FilmService:
                                                        primary_release_year)
         if len(films) == 0:
             raise ValueError("Aucun film ne correspond à vos critères.")
-        if primary_release_year is not None and films[1].date_de_sortie !=primary_release_year:
+        if primary_release_year is not None and films[1].date_de_sortie.year !=primary_release_year:
             raise ValueError("Aucun film ne correspond à vos critères.")
         return films
 
